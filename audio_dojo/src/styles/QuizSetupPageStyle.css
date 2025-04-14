@@ -1,0 +1,181 @@
+/* === Audio Dojo Enhanced Styles === */
+
+.quiz-setup-container {
+    font-family: 'Helvetica-Oblique', sans-serif;
+    font-weight: thin;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem;
+    background-color: #1e1e1e;
+    min-height: 100vh;
+    color: white;
+}
+
+.quiz-setup-header {
+    align-items: left;
+    font-size: 6rem;
+    font-weight: 800;
+    margin-bottom: 2rem;
+    color: #ffffff;
+}
+
+/* Audio Processing Options */
+.audio-processing-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem;
+    justify-items: center;
+
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.audio-processing-option {
+    padding: 1rem;
+    border-radius: 1rem;
+    width: 180px;
+    min-height: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    text-align: left;
+}
+
+.eq-option {
+    background-color: rgba(255, 255, 0, 0.1);
+    border: 10px solid #facc15;
+    color: #facc15;
+}
+
+.processing-option {
+    background-color: rgba(100, 100, 100, 0.3);
+    opacity: 0.5;
+    pointer-events: none;
+    color: #bbb;
+}
+
+.option-title {
+    font-weight: bold;
+    font-size: 1.2rem;
+    margin-bottom: 0.25rem;
+}
+
+.option-description {
+    font-size: 0.9rem;
+}
+
+.coming-soon-badge {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    background: #ef4444;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.7rem;
+    border-radius: 0.5rem;
+}
+
+/* Instruments List */
+.sample-banks {
+    margin-bottom: 2rem;
+}
+
+.section-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.sample-banks-column {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.sample-bank-option {
+    display: flex;
+    align-items: center;
+    background-color: #2d2d2d;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.sample-bank-option:hover {
+    background-color: #3d3d3d;
+}
+
+.sample-bank-checkbox {
+    margin-right: 0.5rem;
+}
+
+/* Number of Questions */
+.number-of-questions {
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.questions-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+    margin-bottom: 0.75rem;
+}
+
+.question-option {
+    padding: 0.5rem 1.25rem;
+    border-radius: 9999px;
+    border: 1px solid #666;
+    background-color: #2d2d2d;
+    color: #ddd;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.question-option:hover {
+    background-color: #3d3d3d;
+}
+
+.question-option.selected {
+    background-color: #84cc16;
+    color: black;
+    border-color: #84cc16;
+}
+
+.custom-questions-input {
+    padding: 0.5rem;
+    font-size: 1rem;
+    border-radius: 0.375rem;
+    border: 1px solid #555;
+    background-color: #121212;
+    color: white;
+    width: 100px;
+    text-align: center;
+}
+
+/* Start Button */
+.start-quiz-button {
+    margin-top: 2rem;
+    background-color: #a3e635;
+    color: black;
+    font-weight: 700;
+    padding: 0.75rem 2rem;
+    font-size: 1.25rem;
+    border: none;
+    border-radius: 9999px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.start-quiz-button:hover {
+    background-color: #bef264;
+}
