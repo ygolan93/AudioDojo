@@ -1,0 +1,133 @@
+.navbar {
+  animation: fadeInNavbar 0.6s ease-in-out;
+  position: fixed;
+  top: 0;
+  width: 100vw;
+  height: 8rem;
+  background-color: rgba(30, 30, 30, 0.5);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  z-index: 100;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  flex-wrap: wrap;
+}
+
+.nav-logo {
+  scale: 1.6;
+  object-fit: contain;
+  filter: drop-shadow(0 0 0.6rem black);
+}
+
+.nav-links {
+  display: flex;
+  gap: 20rem;
+  list-style: none;
+  flex-wrap: wrap;
+  align-items: center;
+  padding: 0;
+  margin: 0;
+}
+
+.nav-links li a {
+  color: white;
+  text-decoration: none;
+  font-weight: 650;
+  font-size: 1.5rem;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.nav-links li a:hover,
+.nav-links li a:focus:not(:hover) {
+  color: white;
+  filter: brightness(2) drop-shadow(0 0 0.3em white);
+}
+
+.nav-links li a:active {
+  color: #64c1ff;
+  filter: brightness(0.8) drop-shadow(0 0 0.1em #64c1ff);
+}
+
+.nav-links li a:focus {
+  outline: none;
+  color: #00c921;
+  filter: brightness(1.1) drop-shadow(0 0 0.1em #00c921);
+}
+
+.nav-links li a:focus:active {
+  color: #64c1ff;
+  filter: brightness(0.8) drop-shadow(0 0 0.1em #64c1ff);
+}
+
+.nav-links li a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -5px;
+  width: 0%;
+  height: 2px;
+  background-color: #64c1ff;
+  transition: width 0.3s ease;
+}
+
+.nav-links li a:hover::after {
+  width: 100%;
+}
+
+/* Active tab (focused) styling */
+.nav-links li a.focused {
+  color: #88ff00 !important;
+  font-weight: 700;
+  filter: drop-shadow(0 0 0.25em #88ff00);
+}
+
+.nav-links li a.focused::after {
+  width: 100%;
+  background-color: #88ff00;
+}
+
+.nav-links li a.focused:hover,
+.nav-links li a.focused:focus,
+.nav-links li a.focused:active {
+  color: #88ff00 !important;
+  filter: drop-shadow(0 0 0.25em #88ff00);
+}
+
+@keyframes fadeInNavbar {
+  0% {
+    opacity: 0;
+    transform: translateY(-1rem);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .navbar {
+    background-color: #1e1e1e;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem;
+    gap: 1rem;
+  }
+
+  .logo-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
+  .nav-links {
+    gap: 0.5rem;
+  }
+
+  .nav-links li a {
+    padding: 0.3rem 0;
+  }
+}

@@ -1,132 +1,204 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import "../styles/QuizSetupPageStyle.css";
+import PageWrapper from "../components/PageWrapper";
+import "../styles/AudioStyle.css";
 
 export default function QuizSetupPage() {
   const navigate = useNavigate();
 
-  const instrumentList = [
+  const SampleBanks = [
     "Piano",
     "Drums",
+    "Guitar",
     "Vocals",
-    "Brass",
+    "Synth",
     "Strings",
+    "Brass",
     "Woodwinds",
-    "Guitars",
-    "Bass",
   ];
 
-  const [selectedInstruments, setSelectedInstruments] = useState([]);
-  const [selectedQuestions, setSelectedQuestions] = useState(40);
-  const [customQuestions, setCustomQuestions] = useState(35);
+  const [selectedOptions, setSelectedOptions] = useState({});
+  const [selectedQuestions, setSelectedQuestions] = useState(null);
+  const [customValue, setCustomValue] = useState("");
+  const [selectedProcesses, setSelectedProcesses] = useState([]);
+  const [customSaved, setCustomSaved] = useState(false);
+  const customInputRef = useRef(null);
 
-  const toggleInstrument = (instrument) => {
-    setSelectedInstruments((prev) =>
-      prev.includes(instrument)
-        ? prev.filter((i) => i !== instrument)
-        : [...prev, instrument]
-    );
-  };
+  useEffect(() => {
+    if (selectedQuestions === "Custom" && customInputRef.current) {
+      customInputRef.current.focus();
+    }
+  }, [selectedQuestions]);
 
-  const startQuiz = () => {
-    const numQuestions = selectedQuestions === "custom" ? customQuestions : selectedQuestions;
-    navigate("/quiz", {
-      state: {
-        numQuestions,
-        selectedInstruments,
-      },
+  const toggleOption = (category, option) => {
+    setSelectedOptions((prev) => {
+      const categoryOptions = prev[category] || [];
+      const updatedOptions = categoryOptions.includes(option)
+        ? categoryOptions.filter((i) => i !== option)
+        : [...categoryOptions, option];
+      return { ...prev, [category]: updatedOptions };
     });
   };
 
-  return (
-    <div className="quiz-setup-container">
-      <h1 className="quiz-setup-header">QUIZ SETUP</h1>
+  const handleCheckboxClick = (id) => {
+    const checkbox = document.querySelector(`#${id} .checkbox`);
+    if (checkbox) {
+      checkbox.checked = !checkbox.checked;
+    }
 
-    <div className="audio-processing-grid">
-        <div className="audio-processing-option eq-option">
-            <div className="option-title">EQ</div>
-            <div className="option-description">Spectral listening</div>
-        </div>
-        <div className="audio-processing-option processing-option">
-            <div className="option-title">COMPRESSION</div>
-            <div className="option-description">Dynamic Listening</div>
-            <div className="coming-soon-badge">COMING SOON</div>
-        </div>
-        <div className="audio-processing-option processing-option">
-            <div className="option-title">REVERB</div>
-            <div className="option-description">Spatial Listening</div>
-            <div className="coming-soon-badge">COMING SOON</div>
-        </div>
-        <div className="audio-processing-option processing-option">
-            <div className="option-title">Saturation</div>
-            <div className="option-description">Harmonic Listening</div>
-            <div className="coming-soon-badge">COMING SOON</div>
-        </div>
-    </div>
-    {/* Sample Banks */}
-      <div className="sample-banks">
-        <h2 className="section-title">Sample Banks</h2>
-        <div className="sample-banks-column">
-          {instrumentList.map((instrument) => (
-            <label
-              key={instrument}
-              className="sample-bank-option"
-            >
+    setSelectedProcesses((prev) =>
+      prev.includes(id)
+        ? prev.filter((item) => item !== id)
+        : [...prev, id]
+    );
+  };
+
+  const renderOptions = (category, options) => {
+    return options
+      .reduce((acc, option, index) => {
+        const columnIndex = Math.floor(index / Math.ceil(options.length / 2));
+        acc[columnIndex] = acc[columnIndex] || [];
+        acc[columnIndex].push(option);
+        return acc;
+      }, [])
+      .map((column, colIndex) => (
+        <div key={colIndex} className="effect-list">
+          {column.map((option) => (
+            <label key={option} className="effect-item">
               <input
                 type="checkbox"
-                checked={selectedInstruments.includes(instrument)}
-                onChange={() => toggleInstrument(instrument)}
-                className="sample-bank-checkbox"
+                checked={(selectedOptions[category] || []).includes(option)}
+                onChange={() => toggleOption(category, option)}
+                className="checkbox"
               />
-              {instrument}
+              {option}
             </label>
           ))}
         </div>
-      </div>
+      ));
+  };
+  return (
+    <PageWrapper>
+      <div className="quiz-setup-container">
+          <div className="quiz-setup-header">
+            <h1>QUIZ SETUP</h1>
+          </div>
 
-      {/* Number of Questions */}
-      <div className="number-of-questions">
-        <h2 className="section-title">No. of Questions</h2>
-        <div className="questions-options">
-          {[20, 40, 60, 120].map((num) => (
-            <button
-              key={num}
-              onClick={() => setSelectedQuestions(num)}
-              className={`question-option ${
-                selectedQuestions === num ? "selected" : ""
-              }`}
-            >
-              {num}
-            </button>
-          ))}
-          <button
-            onClick={() => setSelectedQuestions("custom")}
-            className={`question-option ${
-              selectedQuestions === "custom" ? "selected" : ""
-            }`}
-          >
-            CUSTOM: {customQuestions}
-          </button>
-        </div>
-        {selectedQuestions === "custom" && (
-          <input
-            type="number"
-            min={1}
-            max={200}
-            value={customQuestions}
-            onChange={(e) => setCustomQuestions(Number(e.target.value))}
-            className="custom-questions-input"
-          />
-        )}
-      </div>
+          <div className="quiz-setup-grid">
+            {/* Processing Grid */}
+            <div className="quiz-grid-item">
+              <div className="processing-grid">
+                {["EQ", "Compression", "Reverb", "Saturation"].map((process) => (
+                  <div
+                    key={process}
+                    className={`quiz-setup-option ${
+                      selectedProcesses.includes(process) ? "selected" : ""
+                    }`}
+                    id={process}
+                    onClick={() => handleCheckboxClick(process)}
+                  >
+                    <div className="quiz-setup-wrapper">
+                      <div>
+                        <div className="processing-header">
+                          <input 
+                          type="checkbox" 
+                          className="checkbox" 
+                          checked={selectedProcesses.includes(process)}
+                          readOnly/>
+                          {process}
+                        </div>
+                        {process === "EQ" && "Spectral listening"}
+                        {process === "Compression" && "Dynamic Listening"}
+                        {process === "Reverb" && "Spatial Listening"}
+                        {process === "Saturation" && "Harmonic Listening"}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
 
-      {/* Start Quiz Button */}
-      <button
-        onClick={startQuiz}
-        className="start-quiz-button"
-      >
-        START
-      </button>
-    </div>
+            {/* Sample Banks */}
+            <div className="quiz-grid-item">
+              <h2>Sample Banks</h2>
+              <div className="sample-banks">
+                {renderOptions("Sample Banks", SampleBanks)}
+              </div>
+            </div>
+
+            {/* Number of Questions */}
+            <div className="quiz-grid-item">
+              <h2>No. of Questions</h2>
+              <div className="question-options-horizontal">
+                {[20, 40, 60, 120].map((q) => (
+                  <div
+                    key={q}
+                    className={`question-button ${
+                      selectedQuestions === q ? "selected" : ""
+                    }`}
+                    onClick={() => {
+                      setSelectedQuestions(q);
+                      setCustomValue("");
+                    }}
+                  >
+                    {q}
+                  </div>
+                ))}
+
+                <div
+                  className={`question-button ${selectedQuestions === "Custom" ? "selected" : ""}`}
+                  onClick={() => {
+                    setSelectedQuestions("Custom");
+                    setCustomSaved(false); // Reset save state
+                  }}
+                >
+                  {selectedQuestions === "Custom" ? (
+                    <>
+                      <span className="custom-label">CUSTOM:</span>
+                      <input
+                        type="number"
+                        ref={customInputRef}
+                        value={customValue}
+                        placeholder="0"
+                        className="custom-inline-input"
+                        onClick={(e) => e.stopPropagation()}
+                        onChange={(e) => setCustomValue(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            const parsed = parseInt(customValue, 10);
+                            if (!isNaN(parsed)) {
+                              setSelectedQuestions("Custom");
+                              setCustomSaved(true); 
+                            }
+                          }
+                        }}
+                        
+                      />
+                      {!customSaved &&(
+                        <button
+                          className="custom-save-button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            const parsed = parseInt(customValue, 10);
+                            if (!isNaN(parsed)) {
+                              setSelectedQuestions("Custom");
+                              setCustomSaved(true); 
+                            }
+                          }}
+                        >
+                          Save
+                        </button>
+                      )}
+                      </>
+                    ) : (
+                      customValue ? `CUSTOM: ${customValue}` : "CUSTOM"
+                    )}
+                  </div>
+
+              </div>
+            </div>
+          </div>
+      </div>
+    </PageWrapper>
   );
 }
