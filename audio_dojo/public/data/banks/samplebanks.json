@@ -1,0 +1,16 @@
+{
+    "category": "Sample Banks",
+    "instruments": ["Male Vocal",
+    "Female Vocal",
+    "Piano",
+    "Drumset",
+    "Kick",
+    "Snare",
+    "Acousitc Guitar",
+    "Electric Guitar",
+    "Bass Guitar",
+    "Synth",
+    "Woodwinds",
+    "Strings",
+    "Brass"]
+}

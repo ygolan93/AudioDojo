@@ -1,30 +1,61 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { Link, useLocation } from 'react-router-dom';
 import PageWrapper from "../components/PageWrapper";
 import "../styles/AudioStyle.css";
+import { useSetup } from "../context/setupContext";
+
 
 export default function QuizSetupPage() {
   const navigate = useNavigate();
 
   const SampleBanks = [
+    "Male Vocal",
+    "Female Vocal",
     "Piano",
-    "Drums",
-    "Guitar",
-    "Vocals",
+    "Drumset",
+    "Kick",
+    "Snare",
+    "Acousitc Guitar",
+    "Electric Guitar",
+    "Bass Guitar",
     "Synth",
+    "Woodwinds",
     "Strings",
     "Brass",
-    "Woodwinds",
   ];
+  const { quizSetup, setQuizSetup } = useSetup();
+  const [selectedOptions, setSelectedOptions] = useState(() => {
+    return { "Sample Banks": quizSetup.sampleBanks || [] };
 
-  const [selectedOptions, setSelectedOptions] = useState({});
-  const [selectedQuestions, setSelectedQuestions] = useState(null);
-  const [customValue, setCustomValue] = useState("");
-  const [selectedProcesses, setSelectedProcesses] = useState([]);
+  });
+  const [selectedQuestions, setSelectedQuestions] = useState(() => quizSetup.numOfQuestions || null);
+  const [customValue, setCustomValue] = useState(() => 
+    quizSetup.numOfQuestions !== null && ![20, 40, 60, 120].includes(quizSetup.numOfQuestions)
+      ? quizSetup.numOfQuestions.toString()
+      : ""
+  );  
+  const [selectedProcesses, setSelectedProcesses] = useState(() => quizSetup.processes || []);
   const [customSaved, setCustomSaved] = useState(false);
   const customInputRef = useRef(null);
 
+
+
   useEffect(() => {
+    setQuizSetup({
+      processes: selectedProcesses,
+      sampleBanks: selectedOptions["Sample Banks"] || [],
+      numOfQuestions: selectedQuestions === "Custom" ? parseInt(customValue, 10) : selectedQuestions
+    });    
+  }, [selectedProcesses, selectedOptions, selectedQuestions, customValue],  
+  console.log("Updating quizSetup context", {
+    processes: selectedProcesses,
+    sampleBanks: Object.keys(selectedOptions).filter((key) => selectedOptions[key]),
+    numOfQuestions: selectedQuestions === "Custom" ? parseInt(customValue, 10) : selectedQuestions
+  }));
+
+  useEffect(() => {
+    
     if (selectedQuestions === "Custom" && customInputRef.current) {
       customInputRef.current.focus();
     }
@@ -194,9 +225,25 @@ export default function QuizSetupPage() {
                       customValue ? `CUSTOM: ${customValue}` : "CUSTOM"
                     )}
                   </div>
-
               </div>
             </div>
+          </div>
+          <div>
+            <Link to="/quiz">
+              <button
+                className="page-button"
+                style={{ marginTop: "2em", marginLeft: "18em" }}
+                onClick={() => {
+                  if (selectedQuestions) {
+                    navigate("/quiz", {
+                      state: { selectedQuestions, selectedProcesses },
+                    });
+                  }
+                }}
+              >
+                START QUIZ
+              </button>
+            </Link>
           </div>
       </div>
     </PageWrapper>

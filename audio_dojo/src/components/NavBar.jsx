@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { IoIosSettings } from "react-icons/io";
 import '../styles/NavBarStyle.css';
 
 const Navbar = () => {
@@ -38,6 +39,14 @@ const Navbar = () => {
             className={location.pathname === '/history' ? 'focused' : ''}
           >
             HISTORY
+          </Link>
+        </li>
+        <li>
+          <Link 
+            to="/process-setup" 
+            className={location.pathname === '/process-setup' ? 'focused' : ''}
+          >
+            <IoIosSettings className="settings-icon" />
           </Link>
         </li>
       </ul>

@@ -1,0 +1,89 @@
+{
+    "category": "EQ",
+    "questions": [
+        {
+            "question": "Which frequency was boosted in this audio clip?",
+            "instruments": ["Drumset"],
+            "frequency": ["all"],
+            "shape": ["Bell"],
+            "gain": ["+3dB","+6dB","+12dB"],
+            "answer format":["Hz"]
+        },
+        {
+            "question": "Which frequency was boosted in this audio clip?",
+            "instruments": ["Drumset"],
+            "frequency": ["all"],
+            "shape": ["Bell"],
+            "gain": ["+3dB","+6dB","+12dB"],
+            "answer format":["Hz", "dB"]
+        },
+
+        {
+            "question": "Which frequency was cut in this audio clip?",
+            "instruments": ["Drumset"],
+            "frequency": ["all"],
+            "shape": ["Bell"],
+            "gain": ["-3dB","-6dB","-12dB"],
+            "answer format":["Hz"]
+        },
+        {
+            "question": "Which frequency was cut in this audio clip?",
+            "instruments": ["Drumset"],
+            "frequency": ["all"],
+            "shape": ["Bell"],
+            "gain": ["-3dB","-6dB","-12dB"],
+            "answer format":["Hz", "dB"]
+        },
+
+        {
+            "question":"which low shelf was applied in this audio clip?",
+            "instruments": ["Drumset"],
+            "frequency": ["120Hz","250Hz","500Hz", "1KHz"],
+            "shape": ["Low Shelf"],
+            "gain": ["+3dB","-3dB","+6dB","-6dB"],
+            "answer format":["Hz"]
+        },
+        {
+            "question":"which low shelf was applied in this audio clip?",
+            "instruments": ["Drumset"],
+            "frequency": ["120Hz","250Hz","500Hz", "1KHz"],
+            "shape": ["Low Shelf"],
+            "gain": ["+3dB","-3dB","+6dB","-6dB"],
+            "answer format":["Hz", "dB"]
+        },
+
+        {
+            "question":"which high shelf was applied in this audio clip?",
+            "instruments": ["Drumset"],
+            "frequency": ["4KHz","8KHz","10KHz"],
+            "shape": ["High Shelf"],
+            "gain": ["+3dB","-3dB","+6dB","-6dB"],
+            "answer format":["Hz"]
+        },
+        {
+            "question":"which high shelf was applied in this audio clip?",
+            "instruments": ["Drumset"],
+            "frequency": ["4KHz","8KHz","10KHz"],
+            "shape": ["High Shelf"],
+            "gain": ["+3dB","-3dB","+6dB","-6dB"],
+            "answer format":["Hz", "dB"]
+        },
+
+        {
+            "question":"which low cut was applied in this audio clip?",
+            "instruments": ["Drumset"],
+            "frequency": ["120Hz","250Hz","500Hz", "1KHz"],
+            "shape": ["Low Cut"],
+            "gain": [null],
+            "answer format":["Hz"]
+        },
+        {
+            "question":"which high cut was applied in this audio clip?",
+            "instruments": ["Drumset"],
+            "frequency": ["1KHz","2KHz","4KHz","8KHz"],
+            "shape": ["High Cut"],
+            "gain": [null],
+            "answer format":["Hz"]
+        }
+    ]
+}

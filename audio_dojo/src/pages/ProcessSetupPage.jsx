@@ -1,11 +1,47 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/AudioStyle.css";
 import PageWrapper from "../components/PageWrapper";
+import { useSetup } from "../context/setupContext";
+
 
 export default function ProcessSetupPage() {
-  const navigate = useNavigate();
 
+  const navigate = useNavigate();
+  const { processSetup, setProcessSetup } = useSetup();
+  const [selectedOptions, setSelectedOptions] = useState(() => {
+    return {
+      EQ_Frequency: processSetup.EQ.frequency || [],
+      EQ_Shape: processSetup.EQ.shape || [],
+      EQ_Gain: processSetup.EQ.gain || []
+    };
+  });
+
+  useEffect(() => {
+    setProcessSetup((prev) => ({
+      ...prev,
+      EQ: {
+        frequency: selectedOptions["EQ_Frequency"] || [],
+        shape: selectedOptions["EQ_Shape"] || [],
+        gain: selectedOptions["EQ_Gain"] || []
+      },
+      Compression: {
+        attack: selectedOptions["Compression_Attack"] || [],
+        release: selectedOptions["Compression_Release"] || [],
+        gr: selectedOptions["Compression_GR"] || []
+      },
+      Reverb: {
+        attack: selectedOptions["Reverb_Attack"] || [],
+        release: selectedOptions["Reverb_Release"] || [],
+        type: selectedOptions["Reverb_Type"] || []
+      },
+      Saturation: {
+        attack: selectedOptions["Saturation_Attack"] || [],
+        release: selectedOptions["Saturation_Release"] || []
+      }
+    }));
+  }, [selectedOptions], console.log("Updating processSetup context", selectedOptions));
+  
   const EQ_Frequency = [
     "60Hz",
     "120Hz",
@@ -122,7 +158,6 @@ export default function ProcessSetupPage() {
     "ALL",
   ];
 
-  const [selectedOptions, setSelectedOptions] = useState({});
 
   const toggleOption = (category, option) => {
     setSelectedOptions((prev) => {
@@ -157,6 +192,8 @@ export default function ProcessSetupPage() {
           ))}
         </div>
       ));
+
+
   };
 
   return (

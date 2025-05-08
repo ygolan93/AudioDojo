@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/AudioStyle.css";
 import PageWrapper from "../components/PageWrapper";
-
+import { Link } from "react-router-dom";
 export default function QuizModulePage() {
     const navigate = useNavigate();
 
@@ -16,9 +16,11 @@ export default function QuizModulePage() {
                             In this game mode you will be listening to an audio source before and after processing. It will be up to you to choose of 4 possible answers - which processing was applied to the source. You can input your own samples or use our built-in samples for the quiz!
                         </p>
                         <div className="quiz-module-selection">
-                            <button className="page-button" onClick={()=>navigate("/process-setup")}> Set it up! </button>
+                            <button className="page-button" onClick={()=>navigate("/quiz-setup")}> Set it up! </button>
                             <button className="page-button">Use Practice Code </button>
+                            <Link to="/quiz">
                             <button className="page-button">START </button>
+                            </Link>
                         </div>
                     </div>
 

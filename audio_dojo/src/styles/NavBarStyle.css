@@ -22,6 +22,12 @@
   filter: drop-shadow(0 0 0.6rem black);
 }
 
+.settings-icon{
+  width: 3rem;
+  height: 3rem;
+  filter: drop-shadow(0 0 0.6rem black);
+}
+
 .nav-links {
   display: flex;
   gap: 20rem;
@@ -54,8 +60,8 @@
 
 .nav-links li a:focus {
   outline: none;
-  color: #00c921;
-  filter: brightness(1.1) drop-shadow(0 0 0.1em #00c921);
+  color: #a3e635;
+  filter: brightness(1.1) drop-shadow(0 0 0.1em #a3e635);
 }
 
 .nav-links li a:focus:active {
@@ -80,22 +86,24 @@
 
 /* Active tab (focused) styling */
 .nav-links li a.focused {
-  color: #88ff00 !important;
+  color: #a3e635 !important;
   font-weight: 700;
-  filter: drop-shadow(0 0 0.25em #88ff00);
+  filter: drop-shadow(0 0 0.25em #a3e635);
 }
 
 .nav-links li a.focused::after {
   width: 100%;
-  background-color: #88ff00;
+  background-color: #a3e635;
 }
 
 .nav-links li a.focused:hover,
 .nav-links li a.focused:focus,
 .nav-links li a.focused:active {
-  color: #88ff00 !important;
-  filter: drop-shadow(0 0 0.25em #88ff00);
+  color: #a3e635 !important;
+  filter: drop-shadow(0 0 0.25em #a3e635);
 }
+
+
 
 @keyframes fadeInNavbar {
   0% {

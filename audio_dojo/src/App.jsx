@@ -11,6 +11,8 @@ import QuizModulePage from './pages/QuizModulePage';
 import QuizSetupPage from './pages/QuizSetupPage';
 import LessonsPage from './pages/LessonsPage';
 import HistoryPage from './pages/HistoryPage';
+import Quiz from './pages/Quiz';
+import { SetupProvider } from './context/setupContext';
 import './App.css';
 
 function App() {
@@ -18,6 +20,7 @@ function App() {
 
   return (
     <>
+      <SetupProvider>
       <Navbar />
       <div className="App" id="root">
         <AnimatePresence mode="wait">
@@ -30,9 +33,11 @@ function App() {
             <Route path="/sound-test" element={<SoundTestPage />} />
             <Route path="/lessons" element={<LessonsPage />} />
             <Route path="/history" element={<HistoryPage />} />
+            <Route path="/quiz" element={<Quiz />} />
           </Routes>
         </AnimatePresence>
       </div>
+      </SetupProvider>
     </>
   );
 }

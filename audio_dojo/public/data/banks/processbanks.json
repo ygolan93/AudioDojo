@@ -1,0 +1,23 @@
+{
+  "process banks": {
+    "EQ": {
+      "frequency": ["60Hz", "120Hz", "250Hz", "500Hz", "1KHz", "2KHz", "4KHz", "8KHz", "10KHz", "12KHz"],
+      "shape": ["Bell", " Low Shelf", "High Shelf", "Low Cut", "High Cut"],
+      "gain": ["+12db", "-12db", "+6db", "-6db", "+3db", "-3db"]
+    },
+    "Saturation": {
+      "attack": ["0.1ms", "1ms", "5ms", "10ms", "15ms", "30ms", "100ms"],
+      "release": ["1ms", "20ms", "50ms", "80ms", "100ms", "200ms"]
+    },
+    "Reverb": {
+      "attack": ["0.1ms", "1ms", "5ms", "10ms", "15ms", "30ms", "100ms"],
+      "release": ["1ms", "20ms", "50ms", "80ms", "100ms", "200ms"],
+      "type": ["+12db", "-12db", "+6db", "-6db", "+3db", "-3db"]
+    },
+    "Compression": {
+      "attack": ["0.1ms", "1ms", "5ms", "10ms", "15ms", "30ms", "100ms"],
+      "release": ["1ms", "20ms", "50ms", "80ms", "100ms", "200ms"],
+      "gr": ["+12db", "-12db", "+6db", "-6db", "+3db", "-3db"]
+    }
+  }
+}
