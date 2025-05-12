@@ -1,0 +1,18 @@
+{
+  "drumset": [
+    {
+      "file": "/sounds/original/drumset/kick/kick1.wav",
+      "part": "Kick",
+      "frequency": 60,
+      "shape": "sine",
+      "gain": 0
+    },
+    {
+      "file": "/sounds/original/drumset/snare/snare1.wav",
+      "part": "Snare",
+      "frequency": 200,
+      "shape": "square",
+      "gain": 0
+    }
+  ]
+}

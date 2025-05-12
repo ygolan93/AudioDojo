@@ -1,55 +1,51 @@
 import { useEffect, useState } from "react";
 import PageWrapper from "../components/PageWrapper";
 import { useSetup } from "../context/setupContext";
+import AudioPlayer from "../components/AudioPlayer";
 import "../styles/AudioStyle.css";
 import { generateQuestionsFromTemplates } from "../utils/questionGenerator";
+import { IoMdPlay , IoMdPause  } from "react-icons/io";
+
 
 export default function Quiz() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [showScore, setShowScore] = useState(false);
   const [questions, setQuestions] = useState([]);
+  const [isPlayingOriginal, setIsPlayingOriginal] = useState(false);
+  const [shuffledOptions, setShuffledOptions] = useState([]);
 
-  const { quizSetup, processSetup } = useSetup();
+  const { quizSetup, processSetup, audioBanks } = useSetup();
 
   useEffect(() => {
     fetch("/data/questions/eq_questions.json")
       .then((res) => res.json())
       .then((data) => {
         const expandedQuestions = generateQuestionsFromTemplates(data.questions);
-
-        const filtered = expandedQuestions.filter((q) => {
-          const instruments = q.instruments || [];
-          const selectedInstruments = quizSetup.sampleBanks;
-
-          const hasInstrumentMatch =
-            instruments.includes("all") ||
-            instruments.some((inst) => selectedInstruments.includes(inst));
-
-          const selectedEQ = processSetup.EQ;
-          const normalize = (val) => (val ? val.toLowerCase() : "");
-          const selectedFreqs = selectedEQ.frequency || [];
-          const freqMatch =
-            (q.frequency && (q.frequency.includes("all") || q.frequency.some((f) => selectedFreqs.includes(f)))) ||
-            !q.frequency;
-
-          const selectedShapes = selectedEQ.shape || [];
-          const shapeMatch =
-            (q.shape && (q.shape.includes("all") || q.shape.some((s) => selectedShapes.includes(s)))) ||
-            !q.shape;
-
-          const selectedGains = selectedEQ.gain || [];
-          const gainMatch =
-            (q.gain && (q.gain.includes("all") || q.gain.some((g) => selectedGains.map(normalize).includes(normalize(g))))) ||
-            !q.gain;
-
-          return hasInstrumentMatch && freqMatch && shapeMatch && gainMatch;
-        });
-        const limitedQuestions = filtered.slice(0, quizSetup.numOfQuestions);
-        console.log("Filtered questions:", limitedQuestions);
+        const limitedQuestions = expandedQuestions.slice(0, quizSetup.numOfQuestions);
         setQuestions(limitedQuestions);
       });
   }, [quizSetup, processSetup]);
+
+  useEffect(() => {
+    if (questions.length > 0) {
+      const currentQuestion = questions[currentQuestionIndex];
+      const correct = currentQuestion.correctAnswer;
+      const dummyAnswers = ["Dummy A", "Dummy B", "Dummy C"];
+      const options = [];
+      const correctIndex = Math.floor(Math.random() * 4);
+
+      for (let i = 0; i < 4; i++) {
+        if (i === correctIndex) {
+          options.push(correct);
+        } else {
+          options.push(dummyAnswers.shift());
+        }
+      }
+
+      setShuffledOptions(options);
+    }
+  }, [currentQuestionIndex, questions]);
 
   const handleAnswerOptionClick = (isCorrect) => {
     if (isCorrect) {
@@ -72,19 +68,15 @@ export default function Quiz() {
     );
   }
 
-  const correct = questions[currentQuestionIndex].correctAnswer;
-  const dummyAnswers = ["Dummy A", "Dummy B", "Dummy C"];
+  const currentQuestion = questions[currentQuestionIndex];
+  const { parts } = currentQuestion;
 
-  const options = [];
-  const correctIndex = Math.floor(Math.random() * 4);
+  // מציאת הקובץ המקורי
+  const drumsetFiles = audioBanks.drumset || [];
+  const originalFile = drumsetFiles.find((f) => f.part === parts[0]);
 
-  for (let i = 0; i < 4; i++) {
-    if (i === correctIndex) {
-      options.push(correct);
-    } else {
-      options.push(dummyAnswers.shift());
-    }
-  }
+  console.log("Looking for part:", parts[0]);
+  console.log("Drumset Files:", drumsetFiles);
 
   return (
     <PageWrapper className="p-4">
@@ -99,17 +91,52 @@ export default function Quiz() {
               Question {currentQuestionIndex + 1}/{questions.length}
             </div>
             <div className="quiz-question-text">
-              {questions[currentQuestionIndex].question}
+              {currentQuestion.question}
             </div>
-            <audio controls className="quiz-audio-player">
-              <source src={questions[currentQuestionIndex].audio} type="audio/mp3" />
-              Your browser does not support the audio element.
-            </audio>
+            <div className="audio-container">
+              <div className="audio-player">
+                {originalFile ? (
+                  <div>
+                    Pre
+                    <button className="audio-button" onClick={() => setIsPlayingOriginal(!isPlayingOriginal)}>
+                      {isPlayingOriginal ?<IoMdPause />  : <IoMdPlay />}
+                    </button>
+                    
+                    <AudioPlayer
+                      audioFiles={[{ file: originalFile.file }]} 
+                      isPlaying={isPlayingOriginal}
+                      selectedIndex={0}
+                    />
+                  </div>
+                ) : (
+                  <p>Original file not found for {parts[0]}</p>
+                )}
+              </div>
+              <div className="audio-player">
+                {originalFile ? (
+                  <div>
+
+                    Post
+                    <button className="audio-button" onClick={() => setIsPlayingOriginal(!isPlayingOriginal)}>
+                      {isPlayingOriginal ?<IoMdPause />  : <IoMdPlay />}
+                    </button>
+                    
+                    <AudioPlayer
+                      audioFiles={[{ file: originalFile.file }]} 
+                      isPlaying={isPlayingOriginal}
+                      selectedIndex={0}
+                    />
+                  </div>
+                ) : (
+                  <p>Original file not found for {parts[0]}</p>
+                )}
+                </div>
+            </div>
             <div className="quiz-options">
-              {options.map((answer, index) => (
+              {shuffledOptions.map((answer, index) => (
                 <button
                   key={index}
-                  onClick={() => handleAnswerOptionClick(answer === correct)}
+                  onClick={() => handleAnswerOptionClick(answer === currentQuestion.correctAnswer)}
                   className="quiz-option-button"
                 >
                   <span className="quiz-option-label">{String.fromCharCode(65 + index)}</span>
@@ -123,4 +150,3 @@ export default function Quiz() {
     </PageWrapper>
   );
 }
- 

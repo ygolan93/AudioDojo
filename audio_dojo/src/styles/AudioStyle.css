@@ -520,9 +520,72 @@
 }
 
 .quiz-audio-player {
+  justify-content: center;
+  text-align: center;
   width: 100%;
   margin: 1rem 0;
 }
+
+.audio-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 1rem;
+  width: 100%;
+}
+
+.audio-container .audio-player {
+  justify-content: center;
+  padding-inline: 3.5rem;
+  background-color: #2d2d2d;
+  border-radius: 30px;
+  color: white;
+  font-weight: bold;
+  box-sizing: border-box;
+}
+.audio-button {
+  position: relative;
+  width: 55px;
+  height: 55px;
+  background-color: transparent;
+  /* color: #a3e635;
+  border: 2px solid #a3e635; */
+  color: white;
+  border: 2px solid white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  overflow: hidden;
+  filter: brightness(1.2) drop-shadow(0 0 0.1em white);
+}
+
+.audio-button:hover {
+  /* background-color: #bef264; */
+  background-color: white;
+  color: black;
+}
+
+.audio-button:active {
+  background-color: #59a7db;
+  color: white;
+  border-color: #64c1ff;
+  filter: brightness(0.8) drop-shadow(0 0 0.2em #64c1ff);
+}
+
+.audio-button svg {
+  scale: 3.7;
+  width: 28px;  /* הגדלת האייקון */
+  height: 28px;
+  /* transition: transform 0.3s ease, width 0.3s ease, height 0.3s ease; */
+}
+
+
+
+
+
 
 .quiz-options {
   display: flex;

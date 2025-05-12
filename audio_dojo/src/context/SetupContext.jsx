@@ -20,22 +20,45 @@ export function SetupProvider({ children }) {
         };
   });
 
-  // Sync quizSetup to localStorage
+  const [audioBanks, setAudioBanks] = useState({
+    drumset: [],
+    piano: [],
+    guitar: []
+  });
+
   useEffect(() => {
     localStorage.setItem("quizSetup", JSON.stringify(quizSetup));
   }, [quizSetup]);
 
-  // Sync processSetup to localStorage
   useEffect(() => {
     localStorage.setItem("processSetup", JSON.stringify(processSetup));
   }, [processSetup]);
 
-  // Debugging: log current state
-  console.log("Quiz Setup:", quizSetup);
-  console.log("Process Setup:", processSetup);
+  const loadAudioBank = async (bankName, filePath) => {
+    try {
+      const res = await fetch(filePath);
+      const data = await res.json();
+      setAudioBanks((prev) => ({ ...prev, [bankName]: data[bankName] || [] }));
+    } catch (err) {
+      console.error(`Failed to load ${bankName} files:`, err);
+    }
+  };
+
+  useEffect(() => {
+    loadAudioBank("drumset", "/data/banks/drumset_files.json");
+    // ניתן להוסיף כאן קריאות נוספות לכלים אחרים בהמשך
+  }, []);
 
   return (
-    <SetupContext.Provider value={{ quizSetup, setQuizSetup, processSetup, setProcessSetup }}>
+    <SetupContext.Provider
+      value={{
+        quizSetup,
+        setQuizSetup,
+        processSetup,
+        setProcessSetup,
+        audioBanks
+      }}
+    >
       {children}
     </SetupContext.Provider>
   );

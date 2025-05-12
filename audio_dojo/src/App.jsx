@@ -1,6 +1,10 @@
 // App.jsx
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
+import { Cloudinary } from '@cloudinary/url-gen';
+import { auto } from '@cloudinary/url-gen/actions/resize';
+import { autoGravity } from '@cloudinary/url-gen/qualifiers/gravity';
+import { AdvancedImage } from '@cloudinary/react';
 
 import SoundTestPage from './pages/SoundTestPage';
 import Navbar from './components/NavBar';
@@ -17,6 +21,13 @@ import './App.css';
 
 function App() {
   const location = useLocation();
+  const cld = new Cloudinary({ cloud: { cloudName: 'ds79llyes' } });
+  
+  const img = cld
+    .image('cld-sample-5')
+    .format('auto')
+    .quality('auto')
+    .resize(auto().gravity(autoGravity()).width(500).height(500));
 
   return (
     <>
@@ -36,6 +47,7 @@ function App() {
             <Route path="/quiz" element={<Quiz />} />
           </Routes>
         </AnimatePresence>
+        <AdvancedImage cldImg={img}/>
       </div>
       </SetupProvider>
     </>

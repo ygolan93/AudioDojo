@@ -1,33 +1,30 @@
 import { useEffect, useRef } from "react";
 import { Howl } from "howler";
 
-export default function AudioPlayer({ audioUrl, isPlaying }) {
+export default function AudioPlayer({ audioFiles = [], isPlaying, selectedIndex = 0 }) {
   const soundRef = useRef(null);
   const soundIdRef = useRef(null);
 
-  // Initialize the Howl instance when the component mounts and when the audioUrl changes
   useEffect(() => {
+    if (!audioFiles.length) return;
+
     soundRef.current = new Howl({
-      src: [audioUrl],
+      src: [audioFiles[selectedIndex].file],
       html5: true,
     });
 
     return () => {
-      soundRef.current.stop(); // Stop the sound when the component unmounts
+      soundRef.current.stop();
     };
-  }, [audioUrl]);
+  }, [audioFiles, selectedIndex]);
 
-  // Play or pause the sound when isPlaying changes
-  // This effect runs whenever the isPlaying prop changes
   useEffect(() => {
     if (!soundRef.current) return;
 
     if (isPlaying) {
       soundIdRef.current = soundRef.current.play();
     } else {
-      if (soundIdRef.current !== null) {
-        soundRef.current.pause(soundIdRef.current);
-      }
+      soundRef.current.pause();
     }
   }, [isPlaying]);
 
