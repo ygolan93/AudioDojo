@@ -10,11 +10,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@cloudinary/react": "^1.14.1",
+    "@cloudinary/url-gen": "^1.21.0",
     "@fontsource/assistant": "^5.2.6",
     "cloudinary": "^2.6.1",
     "dotenv": "^16.5.0",
     "fake-indexeddb": "^6.0.1",
     "framer-motion": "^12.7.4",
+    "fs": "^0.0.1-security",
     "howler": "^2.2.4",
     "node-web-audio-api": "^1.0.4",
     "react": "^19.0.0",

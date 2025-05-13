@@ -4,9 +4,11 @@ import { AudioContext } from 'node-web-audio-api';
 import cloudinary from 'cloudinary';
 import { Readable } from 'stream';
 import dotenv from 'dotenv';
+import path from 'path';
+import fs from 'fs';
+
 dotenv.config({ path: '../.env' });
 
-dotenv.config();
 
 cloudinary.v2.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -15,6 +17,7 @@ cloudinary.v2.config({
 });
 
 const FOLDER = "audio_dojo";
+const AUDIO_PATH = path.join(process.cwd(), 'public/sounds/original/drumset');
 
 // Check if file exists in Cloudinary
 async function checkFileInServer(hashId) {
@@ -39,14 +42,12 @@ async function checkFileInServer(hashId) {
   return null;
 }
 
-
-
 // Upload file to Cloudinary
 async function uploadFileToServer(hashId, blob) {
   console.log(`Uploading file to Cloudinary with hashId: ${hashId}`);
 
   try {
-    const buffer = await blob.arrayBuffer(); // המרת ה-Blob ל-Buffer
+    const buffer = await blob.arrayBuffer();
     const readableStream = Readable.from(Buffer.from(buffer));
 
     const uploadStream = cloudinary.v2.uploader.upload_stream(
@@ -69,29 +70,60 @@ async function uploadFileToServer(hashId, blob) {
   }
 }
 
-
-
-async function generateAudioFile(params) {
-  console.log('Generating audio file with parameters:', params);
-
-  const sampleRate = 44100;
-  const duration = 1;
-  const frequency = 400;
-  const amplitude = 0.5;
-
-  const samples = new Float32Array(sampleRate * duration);
-
-  for (let i = 0; i < samples.length; i++) {
-    samples[i] = amplitude * Math.sin(2 * Math.PI * frequency * (i / sampleRate));
+async function loadAudioBuffer(audioContext, filePath) {
+  try {
+    const fileData = fs.readFileSync(filePath);
+    const arrayBuffer = fileData.buffer.slice(fileData.byteOffset, fileData.byteOffset + fileData.byteLength);
+    return await audioContext.decodeAudioData(arrayBuffer);
+  } catch (error) {
+    console.error("Error loading audio file:", error);
+    throw error;
   }
+}
 
+
+function applyProcessing(audioContext, audioBuffer, gain) {
+  const gainNode = audioContext.createGain();
+  gainNode.gain.value = gain;
+
+  const source = audioContext.createBufferSource();
+  source.buffer = audioBuffer;
+  source.connect(gainNode);
+  gainNode.connect(audioContext.destination);
+
+  return audioBuffer;
+}
+
+async function bufferToBlob(audioBuffer, sampleRate) {
   const audioData = {
     sampleRate,
-    channelData: [samples],
+    channelData: [audioBuffer.getChannelData(0)],
   };
 
   const wavBuffer = await WavEncoder.encode(audioData);
   return new Blob([wavBuffer], { type: 'audio/wav' });
+}
+
+async function generateAudioFile(params) {
+  const { instrument, gain } = params;
+  const fileName = instrument === 'Kick' ? 'kick/kick1.wav' : 'snare/snare1.wav';
+  const filePath = path.join(AUDIO_PATH, fileName);
+
+  console.log(`Processing audio file: ${filePath}`);
+
+  try {
+    const audioContext = new AudioContext();
+    const audioBuffer = await loadAudioBuffer(audioContext, filePath);
+    const processedBuffer = applyProcessing(audioContext, audioBuffer, gain);
+    const processedBlob = await bufferToBlob(processedBuffer, audioContext.sampleRate);
+
+    console.log("Audio processing complete");
+    return processedBlob;
+
+  } catch (error) {
+    console.error("Error processing audio file:", error);
+    return null;
+  }
 }
 
 export { checkFileInServer, uploadFileToServer, generateAudioFile };
