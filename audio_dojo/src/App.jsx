@@ -16,7 +16,7 @@ import QuizSetupPage from './pages/QuizSetupPage';
 import LessonsPage from './pages/LessonsPage';
 import HistoryPage from './pages/HistoryPage';
 import Quiz from './pages/Quiz';
-import { SetupProvider } from './context/tempContext.jsx';
+import { SetupProvider } from './context/setupContext.jsx';
 import './App.css';
 
 function App() {
