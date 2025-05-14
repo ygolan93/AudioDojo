@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import PageWrapper from "../components/PageWrapper";
-import { useSetup } from "../context/setupContext";
+import { useSetup } from "../context/tempContext.jsx";
 import AudioPlayer from "../components/AudioPlayer";
 import "../styles/AudioStyle.css";
 import { generateQuestionsFromTemplates } from "../utils/questionGenerator";

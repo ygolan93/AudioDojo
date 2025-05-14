@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/AudioStyle.css";
 import PageWrapper from "../components/PageWrapper";
-import { useSetup } from "../context/setupContext";
+import { useSetup } from "../context/tempContext.jsx";
 
 
 export default function ProcessSetupPage() {
