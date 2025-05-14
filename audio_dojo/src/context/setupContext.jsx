@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect } from "react";
 
-const setupContext = createContext();
+const SetupContext = createContext();
 
 export function SetupProvider({ children }) {
   const [quizSetup, setQuizSetup] = useState(() => {
@@ -65,5 +65,5 @@ export function SetupProvider({ children }) {
 }
 
 export function useSetup() {
-  return useContext(setupContext);
+  return useContext(SetupContext);
 }
