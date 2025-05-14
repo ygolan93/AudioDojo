@@ -23,11 +23,6 @@ function App() {
   const location = useLocation();
   const cld = new Cloudinary({ cloud: { cloudName: 'ds79llyes' } });
   
-  const img = cld
-    .image('cld-sample-5')
-    .format('auto')
-    .quality('auto')
-    .resize(auto().gravity(autoGravity()).width(500).height(500));
 
   return (
     <>
@@ -47,7 +42,6 @@ function App() {
             <Route path="/quiz" element={<Quiz />} />
           </Routes>
         </AnimatePresence>
-        <AdvancedImage cldImg={img}/>
       </div>
       </SetupProvider>
     </>
