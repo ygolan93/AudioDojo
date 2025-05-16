@@ -118,7 +118,7 @@ export default function QuizSetupPage() {
           <div className="quiz-setup-grid">
             {/* Processing Grid */}
             <div className="quiz-grid-item">
-              <div className="processing-grid">
+              <div className="quiz-processing-grid">
                 {["EQ", "Compression", "Reverb", "Saturation"].map((process) => (
                   <div
                     key={process}
@@ -138,10 +138,10 @@ export default function QuizSetupPage() {
                           readOnly/>
                           {process}
                         </div>
-                        {process === "EQ" && "Spectral listening"}
-                        {process === "Compression" && "Dynamic Listening"}
-                        {process === "Reverb" && "Spatial Listening"}
-                        {process === "Saturation" && "Harmonic Listening"}
+                        {process === "EQ" &&  <span className="process-option-subtitle"> Spectral listening </span>}
+                        {process === "Compression"  && <span className="process-option-subtitle">Dynamic Listening</span> }
+                        {process === "Reverb" && <span className="process-option-subtitle">Spatial Listening</span>}
+                        {process === "Saturation"  && <span className="process-option-subtitle"> Harmonic Listening</span> }
                       </div>
                     </div>
                   </div>
@@ -150,7 +150,7 @@ export default function QuizSetupPage() {
             </div>
 
             {/* Sample Banks */}
-            <div className="quiz-grid-item">
+            <div className="quiz-grid-item" id="sample-banks">
               <h2>Sample Banks</h2>
               <div className="sample-banks">
                 {renderOptions("Sample Banks", SampleBanks)}
@@ -158,7 +158,7 @@ export default function QuizSetupPage() {
             </div>
 
             {/* Number of Questions */}
-            <div className="quiz-grid-item">
+            <div className="quiz-grid-item" id="number-of-questions">
               <h2>No. of Questions</h2>
               <div className="question-options-horizontal">
                 {[20, 40, 60, 120].map((q) => (

@@ -6,8 +6,8 @@ import { AudioContext } from 'node-web-audio-api';
 
 // Main function to manage audio flow
 async function handleAudioPlayback(params) {
-  const { instrument, shape, frequency, gain } = params;
-  const hashId = `${instrument}_${shape}_${frequency}_${gain}`;
+  const { instrument, shape, frequency } = params;
+  const hashId = `${instrument}_${shape}_${frequency}`;
 
   console.log(`Handling playback for: ${hashId}`);
 
@@ -38,24 +38,18 @@ async function handleAudioPlayback(params) {
     console.log('Blob type after generation:', newBlob.type);
     playAudioFromBlob(newBlob);
 
-        // העלאה לשרת Cloudinary
     await uploadFileToServer(hashId, newBlob);
   }
 }
 
-
-
-// Play audio from Blob with GainNode control
-function playAudioFromBlob(blob, gainValue = 1.0) {
+// Play audio from Blob
+function playAudioFromBlob(blob) {
   if (!(blob instanceof Blob)) {
     console.error('Expected a Blob, received:', typeof blob);
     return;
   }
 
   const audioContext = new AudioContext();
-  const gainNode = audioContext.createGain();
-  gainNode.gain.value = gainValue; // ערך ברירת מחדל: 1.0 (עוצמה רגילה)
-
   const blobURL = URL.createObjectURL(blob);
 
   fetch(blobURL)
@@ -64,11 +58,7 @@ function playAudioFromBlob(blob, gainValue = 1.0) {
     .then(audioBuffer => {
       const source = audioContext.createBufferSource();
       source.buffer = audioBuffer;
-
-      // חיבור ה-GainNode ל-AudioContext
-      source.connect(gainNode);
-      gainNode.connect(audioContext.destination);
-
+      source.connect(audioContext.destination);
       source.start();
       console.log('Playing audio from Blob:', blobURL);
 
@@ -83,42 +73,10 @@ function playAudioFromBlob(blob, gainValue = 1.0) {
     });
 }
 
-
-
-
 // Clear local cache after session
 function clearAudioCache() {
   console.log('Clearing local audio cache');
   clearCache();
 }
-
-// Test function with multiple sets of parameters
-async function runTest() {
-  const testParams1 = {
-    instrument: 'Kick',
-    shape: 'Sine',
-    frequency: '400Hz',
-    gain: '+3dB'
-  };
-
-  const testParams2 = {
-    instrument: 'Snare',
-    shape: 'Square',
-    frequency: '600Hz',
-    gain: '-3dB'
-  };
-
-  console.log('Running test with first parameter set:', testParams1);
-  await handleAudioPlayback(testParams1);
-
-  console.log('Running test with second parameter set:', testParams2);
-  await handleAudioPlayback(testParams2);
-
-  console.log('Running test with first parameter set again (should use cache):', testParams1);
-  await handleAudioPlayback(testParams1);
-}
-
-// Run the test
-runTest();
 
 export { handleAudioPlayback, clearAudioCache };

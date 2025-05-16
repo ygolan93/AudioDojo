@@ -1,4 +1,4 @@
-// audioCacheNode.js - IndexedDB Implementation for Node.js using fake-indexeddb
+// audioCache.js - IndexedDB Implementation for Node.js using fake-indexeddb
 
 import { indexedDB } from 'fake-indexeddb';
 
@@ -28,7 +28,7 @@ async function saveAudioFile(id, blob) {
   const tx = db.transaction(STORE_NAME, 'readwrite');
   const store = tx.objectStore(STORE_NAME);
 
-  const fileEntry = { id, blob }; // Directly store the blob in Node.js
+  const fileEntry = { id, blob }; // Store the blob
   store.put(fileEntry);
 
   return id;

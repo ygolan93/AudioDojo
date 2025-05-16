@@ -9,7 +9,6 @@ import fs from 'fs';
 
 dotenv.config({ path: '../.env' });
 
-
 cloudinary.v2.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
@@ -81,19 +80,6 @@ async function loadAudioBuffer(audioContext, filePath) {
   }
 }
 
-
-function applyProcessing(audioContext, audioBuffer, gain) {
-  const gainNode = audioContext.createGain();
-  gainNode.gain.value = gain;
-
-  const source = audioContext.createBufferSource();
-  source.buffer = audioBuffer;
-  source.connect(gainNode);
-  gainNode.connect(audioContext.destination);
-
-  return audioBuffer;
-}
-
 async function bufferToBlob(audioBuffer, sampleRate) {
   const audioData = {
     sampleRate,
@@ -105,7 +91,7 @@ async function bufferToBlob(audioBuffer, sampleRate) {
 }
 
 async function generateAudioFile(params) {
-  const { instrument, gain } = params;
+  const { instrument } = params;
   const fileName = instrument === 'Kick' ? 'kick/kick1.wav' : 'snare/snare1.wav';
   const filePath = path.join(AUDIO_PATH, fileName);
 
@@ -114,8 +100,7 @@ async function generateAudioFile(params) {
   try {
     const audioContext = new AudioContext();
     const audioBuffer = await loadAudioBuffer(audioContext, filePath);
-    const processedBuffer = applyProcessing(audioContext, audioBuffer, gain);
-    const processedBlob = await bufferToBlob(processedBuffer, audioContext.sampleRate);
+    const processedBlob = await bufferToBlob(audioBuffer, audioContext.sampleRate);
 
     console.log("Audio processing complete");
     return processedBlob;

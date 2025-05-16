@@ -6,8 +6,7 @@ async function testAudioFlow() {
   const testParams = {
     instrument: 'Kick',
     shape: 'Sine',
-    frequency: '400Hz',
-    gain: '+3dB'
+    frequency: '400Hz'
   };
 
   console.log('Starting audio flow test with parameters:', testParams);

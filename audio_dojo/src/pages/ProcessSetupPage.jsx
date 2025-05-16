@@ -4,18 +4,25 @@ import "../styles/AudioStyle.css";
 import PageWrapper from "../components/PageWrapper";
 import { useSetup } from "../context/setupContext.jsx";
 
-
 export default function ProcessSetupPage() {
-
   const navigate = useNavigate();
   const { processSetup, setProcessSetup } = useSetup();
   const [selectedOptions, setSelectedOptions] = useState(() => {
     return {
-      EQ_Frequency: processSetup.EQ.frequency || [],
-      EQ_Shape: processSetup.EQ.shape || [],
-      EQ_Gain: processSetup.EQ.gain || []
+      EQ_Frequency: processSetup?.EQ?.frequency || [],
+      EQ_Shape: processSetup?.EQ?.shape || [],
+      EQ_Gain: processSetup?.EQ?.gain || []
     };
   });
+
+  const [processBanks, setProcessBanks] = useState(null);
+
+  useEffect(() => {
+    fetch("/data/banks/processbanks.json")
+      .then((res) => res.json())
+      .then((data) => setProcessBanks(data["process banks"]))
+      .catch((err) => console.error("Failed to load processbanks.json", err));
+  }, []);
 
   useEffect(() => {
     setProcessSetup((prev) => ({
@@ -36,128 +43,18 @@ export default function ProcessSetupPage() {
         type: selectedOptions["Reverb_Type"] || []
       },
       Saturation: {
-        attack: selectedOptions["Saturation_Attack"] || [],
-        release: selectedOptions["Saturation_Release"] || []
+        drive: selectedOptions["Saturation_Drive"] || [],
+        curveType: selectedOptions["Saturation_CurveType"] || [],
+        bias: selectedOptions["Saturation_Bias"] || [],
+        mix: selectedOptions["Saturation_Mix"] || []
       }
     }));
-  }, [selectedOptions], console.log("Updating processSetup context", selectedOptions));
-  
-  const EQ_Frequency = [
-    "60Hz",
-    "120Hz",
-    "250Hz",
-    "500Hz",
-    "1kHz",
-    "2kHz",
-    "4kHz",
-    "8kHz",
-    "10kHz",
-    "12kHz",
-    "ALL",
-  ];
+  }, [selectedOptions]);
 
-  const EQ_Shape = [
-    "Bell",
-    "Low Shelf",
-    "High Shelf",
-    "High Cut",
-    "Low Cut",
-    "ALL",
-  ];
-
-  const EQ_Gain = [
-    "+12dB",
-    "-12dB",
-    "+6dB",
-    "-6dB",
-    "+3dB",
-    "-3dB",
-    "ALL",
-  ];
-
-  const Compression_Attack = [
-    "0.1ms",
-    "1ms",
-    "5ms",
-    "10ms",
-    "20ms",
-    "30ms",
-    "100ms",
-    "ALL",
-  ];
-
-  const Compression_Release = [
-    "1ms",
-    "20ms",
-    "50ms",
-    "80ms",
-    "100ms",
-    "200ms",
-    "ALL",
-  ];
-
-  const Compression_GR = [
-    "+12dB",
-    "-12dB",
-    "+6dB",
-    "-6dB",
-    "+3dB",
-    "-3dB",
-    "ALL",
-  ];
-
-  const Reverb_Attack = [
-    "0.1ms",
-    "1ms",
-    "5ms",
-    "10ms",
-    "15ms",
-    "30ms",
-    "100ms",
-    "ALL",
-  ];
-
-  const Reverb_Release = [
-    "1ms",
-    "20ms",
-    "50ms",
-    "80ms",
-    "100ms",
-    "200ms",
-    "ALL",
-  ];
-
-  const Reverb_Type = [
-    "+12dB",
-    "-12dB",
-    "+6dB",
-    "-6dB",
-    "+3dB",
-    "-3dB",
-    "ALL",
-  ];
-
-  const Saturation_Attack = [
-    "0.1ms",
-    "1ms",
-    "5ms",
-    "10ms",
-    "15ms",
-    "30ms",
-    "100ms",
-    "ALL",
-  ];
-
-  const Saturation_Release = [
-    "1ms",
-    "20ms",
-    "50ms",
-    "80ms",
-    "100ms",
-    "200ms",
-    "ALL",
-  ];
-
+  const getOptions = (process, param) => {
+    if (!processBanks || !processBanks[process] || !processBanks[process][param]) return [];
+    return processBanks[process][param];
+  };
 
   const toggleOption = (category, option) => {
     setSelectedOptions((prev) => {
@@ -192,102 +89,55 @@ export default function ProcessSetupPage() {
           ))}
         </div>
       ));
-
-
   };
+
+  if (!processBanks) return <div>Loading...</div>;
+
+  // Helper to determine if a value is a list of selectable options
+  const isSelectableArray = (arr) => Array.isArray(arr) && arr.every(v => typeof v === 'string' || typeof v === 'number');
 
   return (
     <PageWrapper className="p-4">
-      <div className="process-setup-container">
-        <div className="page-wrapper">
-          <div className="processing-container">
-            <div className="processing-setup-header">
-              <h1> SETUP </h1>
-              <div className="setup-buttons">
-                <button className="page-button">Share Setup Code</button>
-                <button className="page-button">Use Setup Code</button>
+      <div className="process-setup-outer">
+        <div className="process-setup-container">
+          <div className="page-wrapper">
+            <div className="processing-container">
+              <div className="processing-setup-header">
+                <h1> SETUP </h1>
+                <div className="process-setup-buttons">
+                  <button className="page-button">Share Setup Code</button>
+                  <button className="page-button">Use Setup Code</button>
+                </div>
               </div>
-            </div>
-            <div className="processing-grid">
-              <div className="processing-option" id="EQ">
-                <div className="processing-wrapper">
-                  <div>
-                    <div className="processing-header">EQ</div>
-                    <div className="processing-text">
-                      Spectral listening training parameters
+              <div className="processing-grid">
+                {Object.entries(processBanks).map(([processName, params]) => {
+                  const { subtitle, ...selectableParams } = params;
+                  return (
+                    <div className="processing-option" id={processName} key={processName}>
+                      <div className="processing-wrapper">
+                        <div className="process-heading" style={{marginRight: 0, paddingRight: 0}}>
+                          <div className="processing-header">{processName}</div>
+                          <div className="processing-text">
+                            {Array.isArray(subtitle) ? subtitle.join(" ") : `${processName} parameters`}
+                          </div>
+                        </div>
+                        {Object.entries(selectableParams).map(([paramName, paramOptions]) => (
+                          isSelectableArray(paramOptions) ? (
+                            <div key={paramName} className="param-block">
+                              {paramName.charAt(0).toUpperCase() + paramName.slice(1)}
+                              <div className="processing-wrapper">
+                                {renderOptions(
+                                  `${processName}_${paramName.charAt(0).toUpperCase() + paramName.slice(1)}`,
+                                  paramOptions
+                                )}
+                              </div>
+                            </div>
+                          ) : null
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                  <div>
-                    Frequency
-                    <div className="processing-wrapper">
-                      {renderOptions("EQ_Frequency", EQ_Frequency)}
-                    </div>
-                  </div>
-                  <div>
-                    Shape
-                    {renderOptions("EQ_Shape", EQ_Shape)}
-                  </div>
-                  <div>
-                    Gain
-                    {renderOptions("EQ_Gain", EQ_Gain)}
-                  </div>
-                </div>
-              </div>
-              <div className="processing-option" id="Compression">
-                <div className="processing-wrapper">
-                  <div>
-                    <div className="processing-header">Compression</div>
-                    <div className="processing-text">Dynamic Listening</div>
-                  </div>
-                  <div>
-                    Attack
-                    {renderOptions("Compression_Attack", Compression_Attack)}
-                  </div>
-                  <div>
-                    Release
-                    {renderOptions("Compression_Release", Compression_Release)}
-                  </div>
-                  <div>
-                    GR
-                    {renderOptions("Compression_GR", Compression_GR)}
-                  </div>
-                </div>
-              </div>
-              <div className="processing-option" id="Reverb">
-                <div className="processing-wrapper">
-                  <div>
-                    <div className="processing-header">Reverb</div>
-                    <div className="processing-text">Spatial Listening</div>
-                  </div>
-                  <div>
-                    Attack
-                    {renderOptions("Reverb_Attack", Reverb_Attack)}
-                  </div>
-                  <div>
-                    Release
-                    {renderOptions("Reverb_Release", Reverb_Release)}
-                  </div>
-                  <div>
-                    Type
-                    {renderOptions("Reverb_Type", Reverb_Type)}
-                  </div>
-                </div>
-              </div>
-              <div className="processing-option" id="Saturation">
-                <div className="processing-wrapper">
-                  <div>
-                    <div className="processing-header">Saturation</div>
-                    <div className="processing-text">Harmonic Listening</div>
-                  </div>
-                  <div>
-                    Attack
-                    {renderOptions("Saturation_Attack", Saturation_Attack)}
-                  </div>
-                  <div>
-                    Release
-                    {renderOptions("Saturation_Release", Saturation_Release)}
-                  </div>
-                </div>
+                  );
+                })}
               </div>
             </div>
           </div>
