@@ -860,3 +860,64 @@
         grid-template-columns: 1fr;
     }
   }
+/* === Sample-dropdown styling === */
+.sample-dropdown {
+  background-color: #2d2d2d;
+  color: white;
+  border: 2px solid #a3e635;
+  border-radius: 30px;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: bold;
+  appearance: none;
+  -webkit-appearance: none;
+  outline: none;
+  filter: brightness(1.2) drop-shadow(0 0 0.15em #7eff64);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+/* Remove the custom triangles */
+.sample-dropdown {
+  background-image: none !important;
+}
+
+/* Shrink the text and tighten padding */
+.sample-dropdown {
+  font-size: 0.75rem;
+  padding: 0.3rem 0.6rem;
+  max-width: 140px;
+}
+
+/* hover/active states */
+.sample-dropdown:hover {
+  filter: drop-shadow(0 0 0.2em #7eff64);
+}
+.sample-dropdown:active {
+  filter: drop-shadow(0 0 0.1em #64c1ff);
+}
+
+/* tighten up header layout so the select doesn’t push too far right */
+.processing-setup-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;              /* small gap between H1 and select */
+}
+
+/* optional: ensure the select doesn’t stretch the header too much */
+.processing-setup-header h1 {
+  flex-shrink: 0;
+}
+
+/* match your neon theme, but in red to signal “stop” */
+.stop-button {
+  background-color: #661010;
+  border-color: #ff4d4d;
+  color: white;
+  filter: drop-shadow(0 0 0.2em #ff4d4d);
+}
+.stop-button:hover {
+  background-color: #ff4d4d;
+    filter: drop-shadow(0 0 1em #fd1f1f);
+  color: black;
+}

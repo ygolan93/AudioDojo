@@ -8,15 +8,24 @@ export const audioCtx = new (window.AudioContext || window.webkitAudioContext)()
  */
 const FILE_MAP = {
   // originals
-  Kick:  "Kick.wav",
-  Snare: "Snare.wav",
+  Kick:             "Kick.wav",
+  Snare:            "Snare.wav",
+  Brass:            "Brass.wav",
+  "Electric Guitar": "Electric Guitar.wav",
+  "Acoustic Guitar": "Acoustic Guitar.wav",
+  "Bass Guitar":     "Bass Guitar.wav",
+  Strings:          "Strings.wav",
+  Male:             "Male.wav",
+  Female:           "Female.wav",
+  Synth:            "Synth.wav",
+  Woodwind:         "Woodwind.wav",
 
   // reverbs (IRs)
-  Room:   "Room.wav",
-  Plate:  "Plate.wav",
-  Hall:   "Hall.wav",
-  Spring: "Spring.wav",
-  Custom: "Custom.wav",
+  Room:             "Room.wav",
+  Plate:            "Plate.wav",
+  Hall:             "Hall.wav",
+  Spring:           "Spring.wav",
+  Custom:           "Custom.wav",
 };
 
 /**
@@ -40,11 +49,29 @@ async function loadAudioBuffer(key, folder = "original") {
   return ctx.decodeAudioData(arrayBuffer);
 }
 
+let currentCtx = null;
+let currentSrc = null;
+
+export function stopCurrent() {
+  if (currentSrc) {
+    try { currentSrc.stop(); }
+    catch {}
+    currentSrc.disconnect?.();
+    currentSrc = null;
+  }
+  // don’t close the context; reuse it
+}
+
 /** 1) apply EQ only */
 export async function applyEQ({ instrument, shape, frequency, gain }) {
+  // stop any existing
+  stopCurrent();
+
   const buffer = await loadAudioBuffer(instrument, "original");
-  const ctx    = audioCtx; 
-  const src    = ctx.createBufferSource();
+  // reuse or create one AudioContext
+  const ctx = currentCtx ||= new (window.AudioContext||window.webkitAudioContext)();
+  const src = ctx.createBufferSource();
+  currentSrc = src;               // remember it!
   src.buffer   = buffer;
 
   const EQ_TYPE_MAP = {
@@ -65,13 +92,14 @@ export async function applyEQ({ instrument, shape, frequency, gain }) {
 
 /** 2) apply Compression only */
 export async function applyCompression({ instrument, attack, release, threshold }) {
+  stopCurrent();
   const buffer = await loadAudioBuffer(instrument, "original");
-  const ctx    = audioCtx;
-  const src    = ctx.createBufferSource();
-  src.buffer   = buffer;
+  const ctx = currentCtx ||= new (window.AudioContext||window.webkitAudioContext)();
+  const src = ctx.createBufferSource();
+  currentSrc = src;
+  src.buffer = buffer;
 
   const comp = ctx.createDynamicsCompressor();
-  // ✅ use .value on each AudioParam
   comp.attack.value    = parseFloat(attack)  / 1000;  // ms→s
   comp.release.value   = parseFloat(release) / 1000;
   comp.threshold.value = parseFloat(threshold);      // dB
@@ -82,22 +110,21 @@ export async function applyCompression({ instrument, attack, release, threshold 
 
 /** 3) apply Reverb only (dry/wet mix) */
 export async function applyReverb({ instrument, type, decayTime, mix }) {
+  stopCurrent();
   const buffer = await loadAudioBuffer(instrument, "original");
-  const ctx    = audioCtx;
-  const src    = ctx.createBufferSource();
-  src.buffer   = buffer;
+  const ctx = currentCtx ||= new (window.AudioContext||window.webkitAudioContext)();
+  const src = ctx.createBufferSource();
+  currentSrc = src;
+  src.buffer = buffer;
 
-  // dry & wet gains
   const dryGain = ctx.createGain();
   dryGain.gain.value = 1 - parseFloat(mix);
   const wetGain = ctx.createGain();
   wetGain.gain.value = parseFloat(mix);
 
-  // convolver – load IR by 'type', not by 'instrument'
   const conv  = ctx.createConvolver();
   conv.buffer = await loadAudioBuffer(type, "reverb");
 
-  // graph
   src.connect(dryGain).connect(ctx.destination);
   src.connect(conv).connect(wetGain).connect(ctx.destination);
 
@@ -106,9 +133,11 @@ export async function applyReverb({ instrument, type, decayTime, mix }) {
 
 /** 4) apply Saturation only (waveshaper + dry/wet mix) */
 export async function applySaturation({ instrument, drive, curveType, bias, mix }) {
+  stopCurrent();
   const buffer = await loadAudioBuffer(instrument, "original");
-  const ctx    = audioCtx;
-  const src    = ctx.createBufferSource();
+  const ctx = currentCtx ||= new (window.AudioContext||window.webkitAudioContext)();
+  const src = ctx.createBufferSource();
+  currentSrc = src;
   src.buffer = buffer;
 
   // build curve
@@ -124,13 +153,11 @@ export async function applySaturation({ instrument, drive, curveType, bias, mix 
   const shaper = ctx.createWaveShaper();
   shaper.curve = curve;
 
-  // dry & wet
   const dryGain = ctx.createGain();
   dryGain.gain.value = 1 - parseFloat(mix);
   const wetGain = ctx.createGain();
   wetGain.gain.value = parseFloat(mix);
 
-  // graph
   src.connect(dryGain).connect(ctx.destination);
   src.connect(shaper).connect(wetGain).connect(ctx.destination);
 

@@ -1,0 +1,88 @@
+{
+  "samples": [
+    {
+      "file": "/sounds/original/Kick.wav",
+      "part": "Kick",
+      "frequency": 60,
+      "shape": "sine",
+      "gain": 0
+    },
+    {
+      "file": "/sounds/original/Snare.wav",
+      "part": "Snare",
+      "frequency": 200,
+      "shape": "square",
+      "gain": 0
+    },
+    {
+      "file": "/sounds/original/Brass.wav",
+      "part": "Brass",
+      "frequency": 600,
+      "shape": "triangle",
+      "gain": 0
+    },
+    {
+      "file": "/sounds/original/Electric Guitar.wav",
+      "part": "Electric Guitar",
+      "frequency": 440,
+      "shape": "sawtooth",
+      "gain": 0
+    },
+    {
+      "file": "/sounds/original/Acoustic Guitar.wav",
+      "part": "Acoustic Guitar",
+      "frequency": 330,
+      "shape": "triangle",
+      "gain": 0
+    },
+    {
+      "file": "/sounds/original/Bass Guitar.wav",
+      "part": "Bass Guitar",
+      "frequency": 100,
+      "shape": "sine",
+      "gain": 0
+    },
+    {
+      "file": "/sounds/original/Strings.wav",
+      "part": "Strings",
+      "frequency": 550,
+      "shape": "triangle",
+      "gain": 0
+    },
+    {
+      "file": "/sounds/original/Male.wav",
+      "part": "Male",
+      "frequency": 120,
+      "shape": "sine",
+      "gain": 0
+    },
+    {
+      "file": "/sounds/original/Female.wav",
+      "part": "Female",
+      "frequency": 220,
+      "shape": "sine",
+      "gain": 0
+    },
+    {
+      "file": "/sounds/original/Synth.wav",
+      "part": "Synth",
+      "frequency": 440,
+      "shape": "sawtooth",
+      "gain": 0
+    },
+    {
+      "file": "/sounds/original/Woodwind.wav",
+      "part": "Woodwind",
+      "frequency": 500,
+      "shape": "sine",
+      "gain": 0
+    },
+    {
+      "file": "/sounds/original/Piano.wav",
+      "part": "Piano",
+      "frequency": 262,
+      "shape": "triangle",
+      "gain": 0
+    }
+  ]
+}
