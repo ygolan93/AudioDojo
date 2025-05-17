@@ -14,9 +14,9 @@ export function SetupProvider({ children }) {
       ? JSON.parse(stored)
       : {
           EQ: { frequency: [], shape: [], gain: [] },
-          Compression: {},
-          Reverb: {},
-          Saturation: {}
+          Compression: { attack: [], release: [], gr: []},
+          Reverb: {attack: [], release: [], type: [] },
+          Saturation: { drive: [], curveType: [], bias: [], mix: []}
         };
   });
 

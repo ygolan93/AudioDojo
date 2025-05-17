@@ -1,82 +1,171 @@
-// audioManager.js - Central Audio Management Logic
+// src/utils/audioManager.js
 
-import { getAudioFile, saveAudioFile, clearCache } from './audioCache.js';
-import { checkFileInServer, uploadFileToServer, generateAudioFile } from './audioAPI.js';
-import { AudioContext } from 'node-web-audio-api';
+// create one context that lives for the life of the page:
+export const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+/**
+ * Map your logical keys to the *exact* filenames in public/sounds/…
+ * (case-sensitive to match what you actually have on disk)
+ */
+const FILE_MAP = {
+  // originals
+  Kick:  "Kick.wav",
+  Snare: "Snare.wav",
 
-// Main function to manage audio flow
-async function handleAudioPlayback(params) {
-  const { instrument, shape, frequency } = params;
-  const hashId = `${instrument}_${shape}_${frequency}`;
+  // reverbs (IRs)
+  Room:   "Room.wav",
+  Plate:  "Plate.wav",
+  Hall:   "Hall.wav",
+  Spring: "Spring.wav",
+  Custom: "Custom.wav",
+};
 
-  console.log(`Handling playback for: ${hashId}`);
+/**
+ * Fetch + decode any .wav under public/sounds/{folder}/
+ */
+async function loadAudioBuffer(key, folder = "original") {
+  const fileName = FILE_MAP[key] || `${key}.wav`;
+  const url = `/sounds/${folder}/${fileName}`;
+  console.log("⤵️ fetching audio:", url);
 
-  let blob = await getAudioFile(hashId);
-
-  if (blob) {
-    console.log('Playing from local cache:', hashId);
-    console.log('Blob type from cache:', blob.type);
-    playAudioFromBlob(blob);
-    return;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`Failed to fetch ${url}: ${res.status}`);
+  const ct = res.headers.get("Content-Type") || "";
+  if (!ct.includes("audio")) {
+    console.error("Wrong content-type for", url, ct);
+    throw new Error(`Invalid content-type ${ct}`);
   }
 
-  const serverURL = await checkFileInServer(hashId);
-
-  if (serverURL) {
-    console.log('Found in server cache, downloading:', hashId);
-    const response = await fetch(serverURL);
-    blob = await response.blob();
-    console.log('Blob type from server:', blob.type);
-    playAudioFromBlob(blob);
-    return;
-  }
-
-  console.log('Generating new audio file for:', hashId);
-  const newBlob = await generateAudioFile(params);
-
-  if (newBlob) {
-    console.log('Blob type after generation:', newBlob.type);
-    playAudioFromBlob(newBlob);
-
-    await uploadFileToServer(hashId, newBlob);
-  }
+  const arrayBuffer = await res.arrayBuffer();
+  const ctx = audioCtx;
+  return ctx.decodeAudioData(arrayBuffer);
 }
 
-// Play audio from Blob
-function playAudioFromBlob(blob) {
-  if (!(blob instanceof Blob)) {
-    console.error('Expected a Blob, received:', typeof blob);
-    return;
+/** 1) apply EQ only */
+export async function applyEQ({ instrument, shape, frequency, gain }) {
+  const buffer = await loadAudioBuffer(instrument, "original");
+  const ctx    = audioCtx; 
+  const src    = ctx.createBufferSource();
+  src.buffer   = buffer;
+
+  const EQ_TYPE_MAP = {
+    Bell:        "peaking",
+    "Low Shelf": "lowshelf",
+    "High Shelf":"highshelf",
+    "Low Cut":   "highpass",
+    "High Cut":  "lowpass",
+  };
+  const eq = ctx.createBiquadFilter();
+  eq.type            = EQ_TYPE_MAP[shape]    || "peaking";
+  eq.frequency.value = frequency;
+  eq.gain.value      = gain;
+
+  src.connect(eq).connect(ctx.destination);
+  src.start();
+}
+
+/** 2) apply Compression only */
+export async function applyCompression({ instrument, attack, release, threshold }) {
+  const buffer = await loadAudioBuffer(instrument, "original");
+  const ctx    = audioCtx;
+  const src    = ctx.createBufferSource();
+  src.buffer   = buffer;
+
+  const comp = ctx.createDynamicsCompressor();
+  // ✅ use .value on each AudioParam
+  comp.attack.value    = parseFloat(attack)  / 1000;  // ms→s
+  comp.release.value   = parseFloat(release) / 1000;
+  comp.threshold.value = parseFloat(threshold);      // dB
+
+  src.connect(comp).connect(ctx.destination);
+  src.start();
+}
+
+/** 3) apply Reverb only (dry/wet mix) */
+export async function applyReverb({ instrument, type, decayTime, mix }) {
+  const buffer = await loadAudioBuffer(instrument, "original");
+  const ctx    = audioCtx;
+  const src    = ctx.createBufferSource();
+  src.buffer   = buffer;
+
+  // dry & wet gains
+  const dryGain = ctx.createGain();
+  dryGain.gain.value = 1 - parseFloat(mix);
+  const wetGain = ctx.createGain();
+  wetGain.gain.value = parseFloat(mix);
+
+  // convolver – load IR by 'type', not by 'instrument'
+  const conv  = ctx.createConvolver();
+  conv.buffer = await loadAudioBuffer(type, "reverb");
+
+  // graph
+  src.connect(dryGain).connect(ctx.destination);
+  src.connect(conv).connect(wetGain).connect(ctx.destination);
+
+  src.start();
+}
+
+/** 4) apply Saturation only (waveshaper + dry/wet mix) */
+export async function applySaturation({ instrument, drive, curveType, bias, mix }) {
+  const buffer = await loadAudioBuffer(instrument, "original");
+  const ctx    = audioCtx;
+  const src    = ctx.createBufferSource();
+  src.buffer = buffer;
+
+  // build curve
+  const samples = 44100;
+  const curve   = new Float32Array(samples);
+  const d = parseFloat(drive), b = parseFloat(bias);
+  for (let i = 0; i < samples; i++) {
+    let x = (i/(samples-1)) * 2 - 1 + b;
+    if (curveType === "hard")       curve[i] = Math.tanh(x * d);
+    else if (curveType === "medium") curve[i] = (Math.atan(x * d)/Math.PI)*2;
+    else                             curve[i] = x/(1 + Math.abs(x)*d);
+  }
+  const shaper = ctx.createWaveShaper();
+  shaper.curve = curve;
+
+  // dry & wet
+  const dryGain = ctx.createGain();
+  dryGain.gain.value = 1 - parseFloat(mix);
+  const wetGain = ctx.createGain();
+  wetGain.gain.value = parseFloat(mix);
+
+  // graph
+  src.connect(dryGain).connect(ctx.destination);
+  src.connect(shaper).connect(wetGain).connect(ctx.destination);
+
+  src.start();
+}
+
+/**
+ * Inspect a convolution IR by key (e.g. "Room", "Plate", etc.).
+ * Fetches /sounds/{folder}/{key}.wav, decodes it, logs sampleRate,
+ * channels and duration, and returns the AudioBuffer.
+ */
+export async function inspectIR(key, folder = "reverb") {
+  // build the URL exactly as your loadAudioBuffer does
+  const url = `/sounds/${folder}/${key}.wav`;
+  console.log(`🔍 Inspecting IR at ${url}…`);
+
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`Failed to fetch ${url}: ${res.status}`);
+  const ct = res.headers.get("Content-Type") || "";
+  if (!ct.includes("audio")) {
+    throw new Error(`Invalid content-type ${ct} for ${url}`);
   }
 
-  const audioContext = new AudioContext();
-  const blobURL = URL.createObjectURL(blob);
+  const arrayBuffer = await res.arrayBuffer();
+  const ctx         = new (window.AudioContext || window.webkitAudioContext)();
+  const audioBuffer = await ctx.decodeAudioData(arrayBuffer);
 
-  fetch(blobURL)
-    .then(response => response.arrayBuffer())
-    .then(arrayBuffer => audioContext.decodeAudioData(arrayBuffer))
-    .then(audioBuffer => {
-      const source = audioContext.createBufferSource();
-      source.buffer = audioBuffer;
-      source.connect(audioContext.destination);
-      source.start();
-      console.log('Playing audio from Blob:', blobURL);
+  console.table({
+    key,
+    folder,
+    sampleRate: audioBuffer.sampleRate,
+    channels:   audioBuffer.numberOfChannels,
+    length:     audioBuffer.length,
+    duration:   audioBuffer.duration.toFixed(3) + " s"
+  });
 
-      source.onended = () => {
-        console.log('Audio playback finished. Releasing Blob URL:', blobURL);
-        URL.revokeObjectURL(blobURL);
-      };
-    })
-    .catch(err => {
-      console.error('Error playing audio:', err);
-      URL.revokeObjectURL(blobURL);
-    });
+  return audioBuffer;
 }
-
-// Clear local cache after session
-function clearAudioCache() {
-  console.log('Clearing local audio cache');
-  clearCache();
-}
-
-export { handleAudioPlayback, clearAudioCache };

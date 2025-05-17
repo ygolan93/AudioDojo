@@ -19,20 +19,14 @@ const FOLDER = "audio_dojo";
 const AUDIO_PATH = path.join(process.cwd(), 'public/sounds/original/drumset');
 
 // Check if file exists in Cloudinary
-async function checkFileInServer(hashId) {
-  console.log(`Checking file in Cloudinary with hashId: ${hashId}`);
-
+export async function checkFileInServer(hashId) {
   try {
     const result = await cloudinary.v2.search
       .expression(`folder:audio_dojo AND filename:${hashId}`)
       .execute();
 
     if (result.resources.length > 0) {
-      const fileUrl = result.resources[0].secure_url;
-      console.log("File found in Cloudinary:", fileUrl);
-      return fileUrl;
-    } else {
-      console.log(`File not found in Cloudinary: ${hashId}`);
+      return result.resources[0].secure_url;
     }
   } catch (error) {
     console.error("Error checking file in Cloudinary:", error);
@@ -41,10 +35,20 @@ async function checkFileInServer(hashId) {
   return null;
 }
 
-// Upload file to Cloudinary
-async function uploadFileToServer(hashId, blob) {
-  console.log(`Uploading file to Cloudinary with hashId: ${hashId}`);
+// Load AudioBuffer using fs (Node.js)
+export async function loadAudioBuffer(audioContext, filePath) {
+  try {
+    const fileData = fs.readFileSync(filePath);
+    const arrayBuffer = fileData.buffer.slice(fileData.byteOffset, fileData.byteOffset + fileData.byteLength);
+    return await audioContext.decodeAudioData(arrayBuffer);
+  } catch (error) {
+    console.error("Error loading audio file:", error);
+    throw error;
+  }
+}
 
+// Upload file to Cloudinary
+export async function uploadFileToServer(hashId, blob) {
   try {
     const buffer = await blob.arrayBuffer();
     const readableStream = Readable.from(Buffer.from(buffer));
@@ -56,31 +60,18 @@ async function uploadFileToServer(hashId, blob) {
           console.error("Cloudinary upload error:", error);
           return null;
         }
-        console.log("File uploaded to Cloudinary:", result.secure_url);
         return result.secure_url;
       }
     );
 
     readableStream.pipe(uploadStream);
-
   } catch (error) {
     console.error("Error uploading file to Cloudinary:", error);
     return null;
   }
 }
 
-async function loadAudioBuffer(audioContext, filePath) {
-  try {
-    const fileData = fs.readFileSync(filePath);
-    const arrayBuffer = fileData.buffer.slice(fileData.byteOffset, fileData.byteOffset + fileData.byteLength);
-    return await audioContext.decodeAudioData(arrayBuffer);
-  } catch (error) {
-    console.error("Error loading audio file:", error);
-    throw error;
-  }
-}
-
-async function bufferToBlob(audioBuffer, sampleRate) {
+export async function bufferToBlob(audioBuffer, sampleRate) {
   const audioData = {
     sampleRate,
     channelData: [audioBuffer.getChannelData(0)],
@@ -89,26 +80,3 @@ async function bufferToBlob(audioBuffer, sampleRate) {
   const wavBuffer = await WavEncoder.encode(audioData);
   return new Blob([wavBuffer], { type: 'audio/wav' });
 }
-
-async function generateAudioFile(params) {
-  const { instrument } = params;
-  const fileName = instrument === 'Kick' ? 'kick/kick1.wav' : 'snare/snare1.wav';
-  const filePath = path.join(AUDIO_PATH, fileName);
-
-  console.log(`Processing audio file: ${filePath}`);
-
-  try {
-    const audioContext = new AudioContext();
-    const audioBuffer = await loadAudioBuffer(audioContext, filePath);
-    const processedBlob = await bufferToBlob(audioBuffer, audioContext.sampleRate);
-
-    console.log("Audio processing complete");
-    return processedBlob;
-
-  } catch (error) {
-    console.error("Error processing audio file:", error);
-    return null;
-  }
-}
-
-export { checkFileInServer, uploadFileToServer, generateAudioFile };

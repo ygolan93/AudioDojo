@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>IR Inspector</title>
+  <style>
+    body { font-family: sans-serif; padding: 2rem; background: #222; color: #eee; }
+    input { margin-bottom: 1rem; }
+    pre   { background: #111; padding: 1rem; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <h1>Impulse-Response Inspector</h1>
+  <p>Select a .wav file to see its properties:</p>
+  <input type="file" id="file" accept=".wav" />
+  <pre id="output">No file loaded.</pre>
+
+  <script>
+    const fileInput = document.getElementById('file');
+    const output    = document.getElementById('output');
+
+    fileInput.addEventListener('change', async e => {
+      const file = e.target.files[0];
+      if (!file) {
+        output.textContent = 'No file selected.';
+        return;
+      }
+      output.textContent = 'Loading…';
+
+      try {
+        const arrayBuffer = await file.arrayBuffer();
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const audioBuffer = await ctx.decodeAudioData(arrayBuffer);
+
+        const info = {
+          name:       file.name,
+          channels:   audioBuffer.numberOfChannels,
+          sampleRate: audioBuffer.sampleRate,
+          length:     audioBuffer.length,
+          duration:   audioBuffer.duration.toFixed(3) + ' s'
+        };
+
+        output.textContent = JSON.stringify(info, null, 2);
+      } catch (err) {
+        output.textContent = '❌ Error decoding audio:\n' + err;
+      }
+    });
+  </script>
+</body>
+</html>

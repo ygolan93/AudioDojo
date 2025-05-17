@@ -1,39 +1,31 @@
 {
-    "process banks": {
-      "EQ": {
-        "subtitle":["Spectral listening"],
-        "frequency": ["60Hz", "120Hz", "250Hz", "500Hz", "1KHz", "2KHz", "4KHz", "8KHz", "10KHz", "12KHz"],
-        "shape": ["Bell", "Low Shelf", "High Shelf", "Low Cut", "High Cut"],
-        "gain": ["+12db", "-12db", "+6db", "-6db", "+3db", "-3db"]
-      },
-        "Compression": {
-        "subtitle":["Dynamic Listening"],
-        "attack": ["0.1ms", "1ms", "5ms", "10ms", "15ms", "30ms", "100ms"],
-        "release": ["1ms", "20ms", "50ms", "80ms", "100ms", "200ms"],
-        "gr": ["+12db", "-12db", "+6db", "-6db", "+3db", "-3db"]
-      },
-          "Reverb": {
-        "subtitle":["Spatial Listening"],
-        "attack": ["0.1ms", "1ms", "5ms", "10ms", "15ms", "30ms", "100ms"],
-        "release": ["1ms", "20ms", "50ms", "80ms", "100ms", "200ms"],
-        "type": ["Room", "Hall", "Plate", "Spring", "Custom"],
-        "impulse Response": [
-          "Room",
-          "Hall",
-          "Plate",
-          "Spring"
-        ],
-        "decayTime": ["1s", "2s", "5s", "10s"],
-        "mix": ["0.0", "0.25", "0.5", "0.75", "1.0"]
-      },
-      "Saturation": {
-        "subtitle":["Harmonic Listening"],
-        "drive": ["0.0", "0.25", "0.5", "0.75", "1.0"],
-        "curveType": ["soft", "medium", "hard", "custom"],
-        "bias": ["-1.0", "-0.5", "0.0", "0.5", "1.0"],
-        "mix": ["0.0", "0.25", "0.5", "0.75", "1.0"]
-      }
-
-
+  "process banks": {
+    "EQ": {
+      "subtitle": "Spectral listening",
+      "frequency": ["60Hz", "120Hz", "250Hz", "500Hz", "1KHz", "2KHz", "4KHz", "8KHz", "10KHz", "12KHz"],
+      "shape": ["Bell", "Low Shelf", "High Shelf", "Low Cut", "High Cut"],
+      "gain": ["+12db", "-12db", "+6db", "-6db", "+3db", "-3db"]
+    },
+    "Compression": {
+      "subtitle": "Dynamic Listening",
+      "attack": ["0.1ms", "1ms", "5ms", "10ms", "15ms", "30ms", "100ms"],
+      "release": ["1ms", "20ms", "50ms", "80ms", "100ms", "200ms"],
+      "gr": ["+12db", "-12db", "+6db", "-6db", "+3db", "-3db"]
+    },
+    "Reverb": {
+      "subtitle": "Spatial Listening",
+      "attack": ["0.1ms", "1ms", "5ms", "10ms", "15ms", "30ms", "100ms"],
+      "release": ["1ms", "20ms", "50ms", "80ms", "100ms", "200ms"],
+      "impulseResponse": ["Room", "Hall", "Plate", "Spring"],
+      "decayTime": ["1s", "2s", "5s", "10s"],
+      "mix": ["0.0", "0.25", "0.5", "0.75", "1.0"]
+    },
+    "Saturation": {
+      "subtitle": "Harmonic Listening",
+      "drive": ["0.0", "0.25", "0.5", "0.75", "1.0"],
+      "curveType": ["soft", "medium", "hard"],
+      "bias": ["-1.0", "-0.5", "0.0", "0.5", "1.0"],
+      "mix": ["0.0", "0.25", "0.5", "0.75", "1.0"]
     }
   }
+}
