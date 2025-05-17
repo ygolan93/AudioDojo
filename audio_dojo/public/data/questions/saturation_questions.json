@@ -1,0 +1,893 @@
+{
+  "category": "Saturation",
+  "questions": [
+    {
+      "question": "Which drive was set for the Kick sound?",
+      "instruments": [
+        "Kick"
+      ],
+      "parts": [
+        "Kick"
+      ],
+      "drive": [
+        "0.0",
+        "0.25",
+        "0.5",
+        "0.75",
+        "1.0"
+      ],
+      "answer format": [
+        "type"
+      ]
+    },
+    {
+      "question": "Which curve type was used for the Kick sound?",
+      "instruments": [
+        "Kick"
+      ],
+      "parts": [
+        "Kick"
+      ],
+      "curveType": [
+        "soft",
+        "medium",
+        "hard"
+      ],
+      "answer format": [
+        "type"
+      ]
+    },
+    {
+      "question": "Which bias was applied for the Kick sound?",
+      "instruments": [
+        "Kick"
+      ],
+      "parts": [
+        "Kick"
+      ],
+      "bias": [
+        "-1.0",
+        "-0.5",
+        "0.0",
+        "0.5",
+        "1.0"
+      ],
+      "answer format": [
+        "type"
+      ]
+    },
+    {
+      "question": "Which mix was set for the Kick sound?",
+      "instruments": [
+        "Kick"
+      ],
+      "parts": [
+        "Kick"
+      ],
+      "mix": [
+        "0.0",
+        "0.25",
+        "0.5",
+        "0.75",
+        "1.0"
+      ],
+      "answer format": [
+        "type"
+      ]
+    },
+    {
+      "question": "Which drive was set for the Snare sound?",
+      "instruments": [
+        "Snare"
+      ],
+      "parts": [
+        "Snare"
+      ],
+      "drive": [
+        "0.0",
+        "0.25",
+        "0.5",
+        "0.75",
+        "1.0"
+      ],
+      "answer format": [
+        "type"
+      ]
+    },
+    {
+      "question": "Which curve type was used for the Snare sound?",
+      "instruments": [
+        "Snare"
+      ],
+      "parts": [
+        "Snare"
+      ],
+      "curveType": [
+        "soft",
+        "medium",
+        "hard"
+      ],
+      "answer format": [
+        "type"
+      ]
+    },
+    {
+      "question": "Which bias was applied for the Snare sound?",
+      "instruments": [
+        "Snare"
+      ],
+      "parts": [
+        "Snare"
+      ],
+      "bias": [
+        "-1.0",
+        "-0.5",
+        "0.0",
+        "0.5",
+        "1.0"
+      ],
+      "answer format": [
+        "type"
+      ]
+    },
+    {
+      "question": "Which mix was set for the Snare sound?",
+      "instruments": [
+        "Snare"
+      ],
+      "parts": [
+        "Snare"
+      ],
+      "mix": [
+        "0.0",
+        "0.25",
+        "0.5",
+        "0.75",
+        "1.0"
+      ],
+      "answer format": [
+        "type"
+      ]
+    },
+    {
+      "question": "Which drive was set for the Brass sound?",
+      "instruments": [
+        "Brass"
+      ],
+      "parts": [
+        "Brass"
+      ],
+      "drive": [
+        "0.0",
+        "0.25",
+        "0.5",
+        "0.75",
+        "1.0"
+      ],
+      "answer format": [
+        "type"
+      ]
+    },
+    {
+      "question": "Which curve type was used for the Brass sound?",
+      "instruments": [
+        "Brass"
+      ],
+      "parts": [
+        "Brass"
+      ],
+      "curveType": [
+        "soft",
+        "medium",
+        "hard"
+      ],
+      "answer format": [
+        "type"
+      ]
+    },
+    {
+      "question": "Which bias was applied for the Brass sound?",
+      "instruments": [
+        "Brass"
+      ],
+      "parts": [
+        "Brass"
+      ],
+      "bias": [
+        "-1.0",
+        "-0.5",
+        "0.0",
+        "0.5",
+        "1.0"
+      ],
+      "answer format": [
+        "type"
+      ]
+    },
+    {
+      "question": "Which mix was set for the Brass sound?",
+      "instruments": [
+        "Brass"
+      ],
+      "parts": [
+        "Brass"
+      ],
+      "mix": [
+        "0.0",
+        "0.25",
+        "0.5",
+        "0.75",
+        "1.0"
+      ],
+      "answer format": [
+        "type"
+      ]
+    },
+    {
+      "question": "Which drive was set for the Electric Guitar sound?",
+      "instruments": [
+        "Electric Guitar"
+      ],
+      "parts": [
+        "Electric Guitar"
+      ],
+      "drive": [
+        "0.0",
+        "0.25",
+        "0.5",
+        "0.75",
+        "1.0"
+      ],
+      "answer format": [
+        "type"
+      ]
+    },
+    {
+      "question": "Which curve type was used for the Electric Guitar sound?",
+      "instruments": [
+        "Electric Guitar"
+      ],
+      "parts": [
+        "Electric Guitar"
+      ],
+      "curveType": [
+        "soft",
+        "medium",
+        "hard"
+      ],
+      "answer format": [
+        "type"
+      ]
+    },
+    {
+      "question": "Which bias was applied for the Electric Guitar sound?",
+      "instruments": [
+        "Electric Guitar"
+      ],
+      "parts": [
+        "Electric Guitar"
+      ],
+      "bias": [
+        "-1.0",
+        "-0.5",
+        "0.0",
+        "0.5",
+        "1.0"
+      ],
+      "answer format": [
+        "type"
+      ]
+    },
+    {
+      "question": "Which mix was set for the Electric Guitar sound?",
+      "instruments": [
+        "Electric Guitar"
+      ],
+      "parts": [
+        "Electric Guitar"
+      ],
+      "mix": [
+        "0.0",
+        "0.25",
+        "0.5",
+        "0.75",
+        "1.0"
+      ],
+      "answer format": [
+        "type"
+      ]
+    },
+    {
+      "question": "Which drive was set for the Acoustic Guitar sound?",
+      "instruments": [
+        "Acoustic Guitar"
+      ],
+      "parts": [
+        "Acoustic Guitar"
+      ],
+      "drive": [
+        "0.0",
+        "0.25",
+        "0.5",
+        "0.75",
+        "1.0"
+      ],
+      "answer format": [
+        "type"
+      ]
+    },
+    {
+      "question": "Which curve type was used for the Acoustic Guitar sound?",
+      "instruments": [
+        "Acoustic Guitar"
+      ],
+      "parts": [
+        "Acoustic Guitar"
+      ],
+      "curveType": [
+        "soft",
+        "medium",
+        "hard"
+      ],
+      "answer format": [
+        "type"
+      ]
+    },
+    {
+      "question": "Which bias was applied for the Acoustic Guitar sound?",
+      "instruments": [
+        "Acoustic Guitar"
+      ],
+      "parts": [
+        "Acoustic Guitar"
+      ],
+      "bias": [
+        "-1.0",
+        "-0.5",
+        "0.0",
+        "0.5",
+        "1.0"
+      ],
+      "answer format": [
+        "type"
+      ]
+    },
+    {
+      "question": "Which mix was set for the Acoustic Guitar sound?",
+      "instruments": [
+        "Acoustic Guitar"
+      ],
+      "parts": [
+        "Acoustic Guitar"
+      ],
+      "mix": [
+        "0.0",
+        "0.25",
+        "0.5",
+        "0.75",
+        "1.0"
+      ],
+      "answer format": [
+        "type"
+      ]
+    },
+    {
+      "question": "Which drive was set for the Bass Guitar sound?",
+      "instruments": [
+        "Bass Guitar"
+      ],
+      "parts": [
+        "Bass Guitar"
+      ],
+      "drive": [
+        "0.0",
+        "0.25",
+        "0.5",
+        "0.75",
+        "1.0"
+      ],
+      "answer format": [
+        "type"
+      ]
+    },
+    {
+      "question": "Which curve type was used for the Bass Guitar sound?",
+      "instruments": [
+        "Bass Guitar"
+      ],
+      "parts": [
+        "Bass Guitar"
+      ],
+      "curveType": [
+        "soft",
+        "medium",
+        "hard"
+      ],
+      "answer format": [
+        "type"
+      ]
+    },
+    {
+      "question": "Which bias was applied for the Bass Guitar sound?",
+      "instruments": [
+        "Bass Guitar"
+      ],
+      "parts": [
+        "Bass Guitar"
+      ],
+      "bias": [
+        "-1.0",
+        "-0.5",
+        "0.0",
+        "0.5",
+        "1.0"
+      ],
+      "answer format": [
+        "type"
+      ]
+    },
+    {
+      "question": "Which mix was set for the Bass Guitar sound?",
+      "instruments": [
+        "Bass Guitar"
+      ],
+      "parts": [
+        "Bass Guitar"
+      ],
+      "mix": [
+        "0.0",
+        "0.25",
+        "0.5",
+        "0.75",
+        "1.0"
+      ],
+      "answer format": [
+        "type"
+      ]
+    },
+    {
+      "question": "Which drive was set for the Strings sound?",
+      "instruments": [
+        "Strings"
+      ],
+      "parts": [
+        "Strings"
+      ],
+      "drive": [
+        "0.0",
+        "0.25",
+        "0.5",
+        "0.75",
+        "1.0"
+      ],
+      "answer format": [
+        "type"
+      ]
+    },
+    {
+      "question": "Which curve type was used for the Strings sound?",
+      "instruments": [
+        "Strings"
+      ],
+      "parts": [
+        "Strings"
+      ],
+      "curveType": [
+        "soft",
+        "medium",
+        "hard"
+      ],
+      "answer format": [
+        "type"
+      ]
+    },
+    {
+      "question": "Which bias was applied for the Strings sound?",
+      "instruments": [
+        "Strings"
+      ],
+      "parts": [
+        "Strings"
+      ],
+      "bias": [
+        "-1.0",
+        "-0.5",
+        "0.0",
+        "0.5",
+        "1.0"
+      ],
+      "answer format": [
+        "type"
+      ]
+    },
+    {
+      "question": "Which mix was set for the Strings sound?",
+      "instruments": [
+        "Strings"
+      ],
+      "parts": [
+        "Strings"
+      ],
+      "mix": [
+        "0.0",
+        "0.25",
+        "0.5",
+        "0.75",
+        "1.0"
+      ],
+      "answer format": [
+        "type"
+      ]
+    },
+    {
+      "question": "Which drive was set for the Male sound?",
+      "instruments": [
+        "Male Vocal"
+      ],
+      "parts": [
+        "Male Vocal"
+      ],
+      "drive": [
+        "0.0",
+        "0.25",
+        "0.5",
+        "0.75",
+        "1.0"
+      ],
+      "answer format": [
+        "type"
+      ]
+    },
+    {
+      "question": "Which curve type was used for the Male sound?",
+      "instruments": [
+        "Male Vocal"
+      ],
+      "parts": [
+        "Male Vocal"
+      ],
+      "curveType": [
+        "soft",
+        "medium",
+        "hard"
+      ],
+      "answer format": [
+        "type"
+      ]
+    },
+    {
+      "question": "Which bias was applied for the Male sound?",
+      "instruments": [
+        "Male Vocal"
+      ],
+      "parts": [
+        "Male Vocal"
+      ],
+      "bias": [
+        "-1.0",
+        "-0.5",
+        "0.0",
+        "0.5",
+        "1.0"
+      ],
+      "answer format": [
+        "type"
+      ]
+    },
+    {
+      "question": "Which mix was set for the Male sound?",
+      "instruments": [
+        "Male Vocal"
+      ],
+      "parts": [
+        "Male Vocal"
+      ],
+      "mix": [
+        "0.0",
+        "0.25",
+        "0.5",
+        "0.75",
+        "1.0"
+      ],
+      "answer format": [
+        "type"
+      ]
+    },
+    {
+      "question": "Which drive was set for the Female sound?",
+      "instruments": [
+        "Female Vocal"
+      ],
+      "parts": [
+        "Female Vocal"
+      ],
+      "drive": [
+        "0.0",
+        "0.25",
+        "0.5",
+        "0.75",
+        "1.0"
+      ],
+      "answer format": [
+        "type"
+      ]
+    },
+    {
+      "question": "Which curve type was used for the Female sound?",
+      "instruments": [
+        "Female Vocal"
+      ],
+      "parts": [
+        "Female Vocal"
+      ],
+      "curveType": [
+        "soft",
+        "medium",
+        "hard"
+      ],
+      "answer format": [
+        "type"
+      ]
+    },
+    {
+      "question": "Which bias was applied for the Female sound?",
+      "instruments": [
+        "Female Vocal"
+      ],
+      "parts": [
+        "Female Vocal"
+      ],
+      "bias": [
+        "-1.0",
+        "-0.5",
+        "0.0",
+        "0.5",
+        "1.0"
+      ],
+      "answer format": [
+        "type"
+      ]
+    },
+    {
+      "question": "Which mix was set for the Female sound?",
+      "instruments": [
+        "Female Vocal"
+      ],
+      "parts": [
+        "Female Vocal"
+      ],
+      "mix": [
+        "0.0",
+        "0.25",
+        "0.5",
+        "0.75",
+        "1.0"
+      ],
+      "answer format": [
+        "type"
+      ]
+    },
+    {
+      "question": "Which drive was set for the Synth sound?",
+      "instruments": [
+        "Synth"
+      ],
+      "parts": [
+        "Synth"
+      ],
+      "drive": [
+        "0.0",
+        "0.25",
+        "0.5",
+        "0.75",
+        "1.0"
+      ],
+      "answer format": [
+        "type"
+      ]
+    },
+    {
+      "question": "Which curve type was used for the Synth sound?",
+      "instruments": [
+        "Synth"
+      ],
+      "parts": [
+        "Synth"
+      ],
+      "curveType": [
+        "soft",
+        "medium",
+        "hard"
+      ],
+      "answer format": [
+        "type"
+      ]
+    },
+    {
+      "question": "Which bias was applied for the Synth sound?",
+      "instruments": [
+        "Synth"
+      ],
+      "parts": [
+        "Synth"
+      ],
+      "bias": [
+        "-1.0",
+        "-0.5",
+        "0.0",
+        "0.5",
+        "1.0"
+      ],
+      "answer format": [
+        "type"
+      ]
+    },
+    {
+      "question": "Which mix was set for the Synth sound?",
+      "instruments": [
+        "Synth"
+      ],
+      "parts": [
+        "Synth"
+      ],
+      "mix": [
+        "0.0",
+        "0.25",
+        "0.5",
+        "0.75",
+        "1.0"
+      ],
+      "answer format": [
+        "type"
+      ]
+    },
+    {
+      "question": "Which drive was set for the Woodwind sound?",
+      "instruments": [
+        "Woodwind"
+      ],
+      "parts": [
+        "Woodwind"
+      ],
+      "drive": [
+        "0.0",
+        "0.25",
+        "0.5",
+        "0.75",
+        "1.0"
+      ],
+      "answer format": [
+        "type"
+      ]
+    },
+    {
+      "question": "Which curve type was used for the Woodwind sound?",
+      "instruments": [
+        "Woodwind"
+      ],
+      "parts": [
+        "Woodwind"
+      ],
+      "curveType": [
+        "soft",
+        "medium",
+        "hard"
+      ],
+      "answer format": [
+        "type"
+      ]
+    },
+    {
+      "question": "Which bias was applied for the Woodwind sound?",
+      "instruments": [
+        "Woodwind"
+      ],
+      "parts": [
+        "Woodwind"
+      ],
+      "bias": [
+        "-1.0",
+        "-0.5",
+        "0.0",
+        "0.5",
+        "1.0"
+      ],
+      "answer format": [
+        "type"
+      ]
+    },
+    {
+      "question": "Which mix was set for the Woodwind sound?",
+      "instruments": [
+        "Woodwind"
+      ],
+      "parts": [
+        "Woodwind"
+      ],
+      "mix": [
+        "0.0",
+        "0.25",
+        "0.5",
+        "0.75",
+        "1.0"
+      ],
+      "answer format": [
+        "type"
+      ]
+    },
+    {
+      "question": "Which drive was set for the Piano sound?",
+      "instruments": [
+        "Piano"
+      ],
+      "parts": [
+        "Piano"
+      ],
+      "drive": [
+        "0.0",
+        "0.25",
+        "0.5",
+        "0.75",
+        "1.0"
+      ],
+      "answer format": [
+        "type"
+      ]
+    },
+    {
+      "question": "Which curve type was used for the Piano sound?",
+      "instruments": [
+        "Piano"
+      ],
+      "parts": [
+        "Piano"
+      ],
+      "curveType": [
+        "soft",
+        "medium",
+        "hard"
+      ],
+      "answer format": [
+        "type"
+      ]
+    },
+    {
+      "question": "Which bias was applied for the Piano sound?",
+      "instruments": [
+        "Piano"
+      ],
+      "parts": [
+        "Piano"
+      ],
+      "bias": [
+        "-1.0",
+        "-0.5",
+        "0.0",
+        "0.5",
+        "1.0"
+      ],
+      "answer format": [
+        "type"
+      ]
+    },
+    {
+      "question": "Which mix was set for the Piano sound?",
+      "instruments": [
+        "Piano"
+      ],
+      "parts": [
+        "Piano"
+      ],
+      "mix": [
+        "0.0",
+        "0.25",
+        "0.5",
+        "0.75",
+        "1.0"
+      ],
+      "answer format": [
+        "type"
+      ]
+    }
+  ]
+}

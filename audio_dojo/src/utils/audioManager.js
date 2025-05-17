@@ -196,3 +196,22 @@ export async function inspectIR(key, folder = "reverb") {
 
   return audioBuffer;
 }
+
+/**
+ * Loads and plays the raw sample for the given instrument.
+ * @param {{ instrument: string }} opts
+ */
+export async function playOriginal({ instrument }) {
+  try {
+    // build path from instrument name (must match your public folder)
+    const filePath = `/sounds/original/${instrument.toLowerCase()}/${instrument.toLowerCase()}1.wav`;
+    const ac = new (window.AudioContext||window.webkitAudioContext)();
+    const buffer = await loadAudioBuffer(ac, filePath);
+    const src = ac.createBufferSource();
+    src.buffer = buffer;
+    src.connect(ac.destination);
+    src.start();
+  } catch (err) {
+    console.error("playOriginal error:", err);
+  }
+}

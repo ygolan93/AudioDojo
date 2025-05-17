@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/AudioStyle.css";
-
 import PageWrapper from "../components/PageWrapper";
 import { useSetup } from "../context/setupContext.jsx";
 import {
@@ -9,8 +8,8 @@ import {
   applyCompression,
   applyReverb,
   applySaturation,
-  stopCurrent,
-  inspectIR
+  playOriginal,
+  stopCurrent
 } from "../utils/audioManager.js";
 
 export default function ProcessSetupPage() {
@@ -34,22 +33,27 @@ export default function ProcessSetupPage() {
     }
   }, [sampleBanks]);
 
-  // State for process parameters
-  const [selectedOptions, setSelectedOptions] = useState({
-    EQ_Frequency: [],
-    EQ_Shape: [],
-    EQ_Gain: [],
-    Compression_Attack: [],
-    Compression_Release: [],
-    Compression_Gr: [],
-    Reverb_Attack: [],
-    Reverb_Release: [],
-    Reverb_Type: [],
-    Saturation_Drive: [],
-    Saturation_CurveType: [],
-    Saturation_Bias: [],
-    Saturation_Mix: [],
-  });
+  // State for process parameters, seeded once from context
+  const [selectedOptions, setSelectedOptions] = useState(() => ({
+    EQ_Frequency:        processSetup.EQ?.frequency   || [],
+    EQ_Shape:            processSetup.EQ?.shape       || [],
+    EQ_Gain:             processSetup.EQ?.gain        || [],
+
+    Compression_Attack:  processSetup.Compression?.attack  || [],
+    Compression_Release: processSetup.Compression?.release || [],
+    Compression_Gr:      processSetup.Compression?.gr      || [],
+
+    Reverb_Attack:       processSetup.Reverb?.attack     || [],
+    Reverb_Release:      processSetup.Reverb?.release    || [],
+    Reverb_Type:         processSetup.Reverb?.type       || [],
+    Reverb_DecayTime:    processSetup.Reverb?.decayTime  || [],
+    Reverb_Mix:          processSetup.Reverb?.mix        || [],
+
+    Saturation_Drive:    processSetup.Saturation?.drive     || [],
+    Saturation_CurveType:processSetup.Saturation?.curveType|| [],
+    Saturation_Bias:     processSetup.Saturation?.bias      || [],
+    Saturation_Mix:      processSetup.Saturation?.mix       || [],
+  }));
 
   // Load process banks
   const [processBanks, setProcessBanks] = useState(null);
@@ -75,9 +79,11 @@ export default function ProcessSetupPage() {
         gr: selectedOptions.Compression_Gr,
       },
       Reverb: {
-        attack: selectedOptions.Reverb_Attack,
-        release: selectedOptions.Reverb_Release,
-        type: selectedOptions.Reverb_Type,
+        attack:    selectedOptions.Reverb_Attack,
+        release:   selectedOptions.Reverb_Release,
+        type:      selectedOptions.Reverb_Type,
+        decayTime: selectedOptions.Reverb_DecayTime,
+        mix:       selectedOptions.Reverb_Mix,
       },
       Saturation: {
         drive: selectedOptions.Saturation_Drive,
@@ -85,8 +91,8 @@ export default function ProcessSetupPage() {
         bias: selectedOptions.Saturation_Bias,
         mix: selectedOptions.Saturation_Mix,
       },
-    }));
-  }, [selectedOptions]);
+    }))
+  }, [selectedOptions, setProcessSetup])
 
   // Toggle a checkbox option
   const toggleOption = (category, option) => {
@@ -155,9 +161,9 @@ export default function ProcessSetupPage() {
   };
 
   const handleApplyReverb = async () => {
-    const type = selectedOptions.Reverb_Type[0];
-    const decayTime = selectedOptions.Reverb_Attack[0];
-    const mix = selectedOptions.Reverb_Release[0];
+    const type      = selectedOptions.Reverb_Type[0];
+    const decayTime = selectedOptions.Reverb_DecayTime[0];
+    const mix       = selectedOptions.Reverb_Mix[0];
     await applyReverb({ instrument: selectedSample, type, decayTime, mix });
   };
 
@@ -230,6 +236,9 @@ export default function ProcessSetupPage() {
           </div>
           <br />
           <div className="process-setup-buttons">
+            {/* <button onClick={() => playOriginal({ instrument: selectedSample })} className="page-button">
+              Play Original
+            </button> */}
             <button onClick={handleApplyEQ} className="page-button">
               Play with EQ
             </button>

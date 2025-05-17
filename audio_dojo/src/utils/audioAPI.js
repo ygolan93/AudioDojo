@@ -36,7 +36,7 @@ export async function checkFileInServer(hashId) {
 }
 
 // Load AudioBuffer using fs (Node.js)
-export async function loadAudioBuffer(audioContext, filePath) {
+export async function loadAudioBufferNode(audioContext, filePath) {
   try {
     const fileData = fs.readFileSync(filePath);
     const arrayBuffer = fileData.buffer.slice(fileData.byteOffset, fileData.byteOffset + fileData.byteLength);
@@ -45,6 +45,31 @@ export async function loadAudioBuffer(audioContext, filePath) {
     console.error("Error loading audio file:", error);
     throw error;
   }
+}
+
+// Load AudioBuffer from a relative file path under /public (Browser)
+export async function loadAudioBufferBrowser(audioContext, filePath) {
+  try {
+    const res = await fetch(`/${filePath}`);
+    if (!res.ok) throw new Error(`Failed to fetch audio: ${res.status}`);
+    const arrayBuffer = await res.arrayBuffer();
+    return await audioContext.decodeAudioData(arrayBuffer);
+  } catch (err) {
+    console.error('Error loading audio buffer:', err);
+    throw err;
+  }
+}
+
+/**
+ * Load an AudioBuffer via fetch from /public.
+ * @param {AudioContext} audioContext
+ * @param {string} filePath  // e.g. "sounds/original/male vocal1.wav"
+ */
+export async function loadAudioBuffer(audioContext, filePath) {
+  const res = await fetch(`/${filePath}`);
+  if (!res.ok) throw new Error(`Failed to fetch ${filePath}: ${res.status}`);
+  const arrayBuffer = await res.arrayBuffer();
+  return await audioContext.decodeAudioData(arrayBuffer);
 }
 
 // Upload file to Cloudinary
@@ -71,12 +96,19 @@ export async function uploadFileToServer(hashId, blob) {
   }
 }
 
-export async function bufferToBlob(audioBuffer, sampleRate) {
+/**
+ * Encode an AudioBuffer back into a WAV-format Blob.
+ * @param {AudioBuffer} audioBuffer
+ * @returns {Promise<Blob>}
+ */
+export async function bufferToBlob(audioBuffer) {
+  const sampleRate = audioBuffer.sampleRate;
   const audioData = {
     sampleRate,
-    channelData: [audioBuffer.getChannelData(0)],
+    channelData: Array.from({ length: audioBuffer.numberOfChannels }, (_, ch) =>
+      audioBuffer.getChannelData(ch)
+    )
   };
-
   const wavBuffer = await WavEncoder.encode(audioData);
   return new Blob([wavBuffer], { type: 'audio/wav' });
 }

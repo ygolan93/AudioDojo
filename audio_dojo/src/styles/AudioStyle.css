@@ -553,14 +553,22 @@
 }
 
 .audio-container .audio-player {
-  justify-content: center;
-  padding-inline: 3.5rem;
-  background-color: #2d2d2d;
-  border-radius: 30px;
-  color: white;
-  font-weight: bold;
-  box-sizing: border-box;
-}
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;          /* space between label and button */
+    padding-inline: 3.5rem;
+    background-color: #2d2d2d;
+    border-radius: 30px;
+    color: white;
+    font-weight: bold;
+  }
+
+.audio-label {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+  }
+
 .audio-button {
   position: relative;
   width: 55px;

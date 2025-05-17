@@ -5,25 +5,12 @@ import PageWrapper from "../components/PageWrapper";
 import "../styles/AudioStyle.css";
 import { useSetup } from "../context/setupContext.jsx";
 
-
 export default function QuizSetupPage() {
   const navigate = useNavigate();
 
-  const SampleBanks = [
-    "Male Vocal",
-    "Female Vocal",
-    "Piano",
-    "Drumset",
-    "Kick",
-    "Snare",
-    "Acousitc Guitar",
-    "Electric Guitar",
-    "Bass Guitar",
-    "Synth",
-    "Woodwinds",
-    "Strings",
-    "Brass",
-  ];
+  // 1) hold your public/data/banks/samplebanks.json in state
+  const [SampleBanks, setSampleBanks] = useState([]);
+
   const { quizSetup, setQuizSetup } = useSetup();
   const [selectedOptions, setSelectedOptions] = useState(() => {
     return { "Sample Banks": quizSetup.sampleBanks || [] };
@@ -39,20 +26,69 @@ export default function QuizSetupPage() {
   const [customSaved, setCustomSaved] = useState(false);
   const customInputRef = useRef(null);
 
+  // 2) fetch it at runtime (Vite will serve public/data as “/data”)
+  useEffect(() => {
+    fetch("/data/banks/samplebanks.json")
+      .then((res) => res.json())
+      .then((d) => {
+        setSampleBanks(d.instruments);
 
+        // 1) drop any previously‐selected banks not in the new list
+        setSelectedOptions((prev) => {
+          const valid = (prev["Sample Banks"] || []).filter((opt) =>
+            d.instruments.includes(opt)
+          );
+          if (valid.length !== (prev["Sample Banks"] || []).length) {
+            console.log(
+              "Pruned stale sampleBanks selection:",
+              prev["Sample Banks"],
+              "→",
+              valid
+            );
+          }
+          return { ...prev, "Sample Banks": valid };
+        });
+
+        // 2) also scrub your context so /quiz gets the clean array
+        setQuizSetup((qs) => {
+          const validCtx = (qs.sampleBanks || []).filter((opt) =>
+            d.instruments.includes(opt)
+          );
+          if (validCtx.length !== (qs.sampleBanks || []).length) {
+            console.log(
+              "Pruned context.sampleBanks:",
+              qs.sampleBanks,
+              "→",
+              validCtx
+            );
+          }
+          return { ...qs, sampleBanks: validCtx };
+        });
+      })
+      .catch((err) => console.error("Could not load samplebanks.json", err));
+  }, []);
 
   useEffect(() => {
+    const sb = selectedOptions["Sample Banks"] || [];
+    console.log("Updating quizSetup context", {
+      processes: selectedProcesses,
+      sampleBanks: sb,
+      numOfQuestions:
+        selectedQuestions === "Custom"
+          ? parseInt(customValue, 10)
+          : selectedQuestions,
+    });
+
     setQuizSetup({
       processes: selectedProcesses,
-      sampleBanks: selectedOptions["Sample Banks"] || [],
-      numOfQuestions: selectedQuestions === "Custom" ? parseInt(customValue, 10) : selectedQuestions
-    });    
-  }, [selectedProcesses, selectedOptions, selectedQuestions, customValue],  
-  console.log("Updating quizSetup context", {
-    processes: selectedProcesses,
-    sampleBanks: Object.keys(selectedOptions).filter((key) => selectedOptions[key]),
-    numOfQuestions: selectedQuestions === "Custom" ? parseInt(customValue, 10) : selectedQuestions
-  }));
+      sampleBanks: sb,
+      numOfQuestions:
+        selectedQuestions === "Custom"
+          ? parseInt(customValue, 10)
+          : selectedQuestions,
+    });
+  }, [selectedProcesses, selectedOptions, selectedQuestions, customValue],
+  );
 
   useEffect(() => {
     

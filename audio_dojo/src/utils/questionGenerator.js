@@ -9,28 +9,45 @@ const FREQUENCY_POOL = [
     const allQuestions = [];
   
     templates.forEach((template) => {
-      const frequencies = template.frequency.includes("all")
-        ? FREQUENCY_POOL
-        : template.frequency;
+      const base = { ...template, process: template.process };
   
-      const gains = template.gain.includes(null)
-        ? [null] // No gain needed
-        : template.gain;
+      // EQ‐style questions still use frequency + gain
+      if (Array.isArray(template.frequency) && Array.isArray(template.gain)) {
+        const freqs = template.frequency.includes("all")
+          ? FREQUENCY_POOL
+          : template.frequency;
   
-      frequencies.forEach((freq) => {
-        if (Array.isArray(template["answer format"]) && template["answer format"].includes("dB")) {
-          // Format includes gain → create for each gain
-          gains.forEach((gain) => {
-            allQuestions.push({
-              ...template,
-              correctAnswer: `${freq} @ ${gain}`
+        const gains = template.gain.includes(null) ? [null] : template.gain;
+        freqs.forEach((f) => {
+          if (
+            Array.isArray(template["answer format"]) &&
+            template["answer format"].includes("dB")
+          ) {
+            gains.forEach((g) => {
+              allQuestions.push({
+                ...base,
+                correctAnswer: `${f} @ ${g}`
+              });
             });
-          });
-        } else {
-          // Only frequency matters
-          allQuestions.push({
-            ...template,
-            correctAnswer: freq
+          } else {
+            allQuestions.push({ ...base, correctAnswer: f });
+          }
+        });
+        return;
+      }
+  
+      // Generic case: one parameter per template (Compression, Reverb, Saturation)
+      // Find all keys that hold an array of options
+      Object.entries(template).forEach(([key, opts]) => {
+        if (
+          !["question", "instruments", "parts", "answer format", "process"].includes(key) &&
+          Array.isArray(opts)
+        ) {
+          opts.forEach((val) => {
+            allQuestions.push({
+              ...base,
+              correctAnswer: val
+            });
           });
         }
       });
@@ -38,4 +55,3 @@ const FREQUENCY_POOL = [
   
     return allQuestions;
   }
-  

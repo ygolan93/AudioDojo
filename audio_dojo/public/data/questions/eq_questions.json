@@ -3,7 +3,7 @@
     "questions": [
         {
             "question": "Which frequency was boosted in the kick sound?",
-            "instruments": ["Drumset"],
+            "instruments": ["Kick"],
             "parts": ["Kick"],
             "frequency": ["60Hz"],
             "shape": ["Bell"],
@@ -12,7 +12,7 @@
         },
         {
             "question": "Which frequency was boosted in the snare sound?",
-            "instruments": ["Drumset"],
+            "instruments": ["Kick"],
             "parts": ["Snare"],
             "frequency": ["200Hz"],
             "shape": ["Bell"],
@@ -21,7 +21,7 @@
         },
         {
             "question": "Which frequency was cut in the kick sound?",
-            "instruments": ["Drumset"],
+            "instruments": ["Kick"],
             "parts": ["Kick"],
             "frequency": ["60Hz"],
             "shape": ["Bell"],
@@ -30,7 +30,7 @@
         },
         {
             "question": "Which frequency was cut in the snare sound?",
-            "instruments": ["Drumset"],
+            "instruments": ["Kick"],
             "parts": ["Snare"],
             "frequency": ["200Hz"],
             "shape": ["Bell"],
@@ -39,7 +39,7 @@
         },
         {
             "question": "Which low shelf was applied in the kick sound?",
-            "instruments": ["Drumset"],
+            "instruments": ["Kick"],
             "parts": ["Kick"],
             "frequency": ["120Hz","250Hz"],
             "shape": ["Low Shelf"],
@@ -48,7 +48,7 @@
         },
         {
             "question": "Which low shelf was applied in the snare sound?",
-            "instruments": ["Drumset"],
+            "instruments": ["Kick"],
             "parts": ["Snare"],
             "frequency": ["120Hz","250Hz"],
             "shape": ["Low Shelf"],
@@ -57,7 +57,7 @@
         },
         {
             "question": "Which high shelf was applied in the kick sound?",
-            "instruments": ["Drumset"],
+            "instruments": ["Kick"],
             "parts": ["Kick"],
             "frequency": ["4KHz","8KHz"],
             "shape": ["High Shelf"],
@@ -66,7 +66,7 @@
         },
         {
             "question": "Which high shelf was applied in the snare sound?",
-            "instruments": ["Drumset"],
+            "instruments": ["Kick"],
             "parts": ["Snare"],
             "frequency": ["4KHz","8KHz"],
             "shape": ["High Shelf"],
@@ -75,7 +75,7 @@
         },
         {
             "question": "Which low cut was applied in the kick sound?",
-            "instruments": ["Drumset"],
+            "instruments": ["Kick"],
             "parts": ["Kick"],
             "frequency": ["120Hz","250Hz"],
             "shape": ["Low Cut"],
@@ -84,11 +84,191 @@
         },
         {
             "question": "Which high cut was applied in the snare sound?",
-            "instruments": ["Drumset"],
+            "instruments": ["Kick"],
             "parts": ["Snare"],
             "frequency": ["1KHz","2KHz"],
             "shape": ["High Cut"],
             "gain": [null],
+            "answer format": ["Hz"]
+        },
+        {
+            "question": "Which frequency was boosted in the male sound?",
+            "instruments": ["Male Vocal"],
+            "parts": ["Male Vocal"],
+            "frequency": ["120Hz"],
+            "shape": ["Bell"],
+            "gain": ["+3dB", "+6dB", "+12dB"],
+            "answer format": ["Hz"]
+        },
+        {
+            "question": "Which frequency was cut in the male sound?",
+            "instruments": ["Male Vocal"],
+            "parts": ["Male Vocal"],
+            "frequency": ["120Hz"],
+            "shape": ["Bell"],
+            "gain": ["-3dB", "-6dB", "-12dB"],
+            "answer format": ["Hz"]
+        },
+        {
+            "question": "Which frequency was boosted in the female sound?",
+            "instruments": ["Female Vocal"],
+            "parts": ["Female Vocal"],
+            "frequency": ["220Hz"],
+            "shape": ["Bell"],
+            "gain": ["+3dB", "+6dB", "+12dB"],
+            "answer format": ["Hz"]
+        },
+        {
+            "question": "Which frequency was cut in the female sound?",
+            "instruments": ["Female Vocal"],
+            "parts": ["Female Vocal"],
+            "frequency": ["220Hz"],
+            "shape": ["Bell"],
+            "gain": ["-3dB", "-6dB", "-12dB"],
+            "answer format": ["Hz"]
+        },
+        {
+            "question": "Which frequency was boosted in the piano sound?",
+            "instruments": ["Piano"],
+            "parts": ["Piano"],
+            "frequency": ["262Hz"],
+            "shape": ["Bell"],
+            "gain": ["+3dB", "+6dB", "+12dB"],
+            "answer format": ["Hz"]
+        },
+        {
+            "question": "Which frequency was cut in the piano sound?",
+            "instruments": ["Piano"],
+            "parts": ["Piano"],
+            "frequency": ["262Hz"],
+            "shape": ["Bell"],
+            "gain": ["-3dB", "-6dB", "-12dB"],
+            "answer format": ["Hz"]
+        },
+        {
+            "question": "Which frequency was boosted in the acoustic guitar sound?",
+            "instruments": ["Acoustic Guitar"],
+            "parts": ["Acoustic Guitar"],
+            "frequency": ["330Hz"],
+            "shape": ["Bell"],
+            "gain": ["+3dB", "+6dB", "+12dB"],
+            "answer format": ["Hz"]
+        },
+        {
+            "question": "Which frequency was cut in the acoustic guitar sound?",
+            "instruments": ["Acoustic Guitar"],
+            "parts": ["Acoustic Guitar"],
+            "frequency": ["330Hz"],
+            "shape": ["Bell"],
+            "gain": ["-3dB", "-6dB", "-12dB"],
+            "answer format": ["Hz"]
+        },
+        {
+            "question": "Which frequency was boosted in the electric guitar sound?",
+            "instruments": ["Electric Guitar"],
+            "parts": ["Electric Guitar"],
+            "frequency": ["440Hz"],
+            "shape": ["Bell"],
+            "gain": ["+3dB", "+6dB", "+12dB"],
+            "answer format": ["Hz"]
+        },
+        {
+            "question": "Which frequency was cut in the electric guitar sound?",
+            "instruments": ["Electric Guitar"],
+            "parts": ["Electric Guitar"],
+            "frequency": ["440Hz"],
+            "shape": ["Bell"],
+            "gain": ["-3dB", "-6dB", "-12dB"],
+            "answer format": ["Hz"]
+        },
+        {
+            "question": "Which frequency was boosted in the bass guitar sound?",
+            "instruments": ["Bass Guitar"],
+            "parts": ["Bass Guitar"],
+            "frequency": ["100Hz"],
+            "shape": ["Bell"],
+            "gain": ["+3dB", "+6dB", "+12dB"],
+            "answer format": ["Hz"]
+        },
+        {
+            "question": "Which frequency was cut in the bass guitar sound?",
+            "instruments": ["Bass Guitar"],
+            "parts": ["Bass Guitar"],
+            "frequency": ["100Hz"],
+            "shape": ["Bell"],
+            "gain": ["-3dB", "-6dB", "-12dB"],
+            "answer format": ["Hz"]
+        },
+        {
+            "question": "Which frequency was boosted in the synth sound?",
+            "instruments": ["Synth"],
+            "parts": ["Synth"],
+            "frequency": ["440Hz"],
+            "shape": ["Bell"],
+            "gain": ["+3dB", "+6dB", "+12dB"],
+            "answer format": ["Hz"]
+        },
+        {
+            "question": "Which frequency was cut in the synth sound?",
+            "instruments": ["Synth"],
+            "parts": ["Synth"],
+            "frequency": ["440Hz"],
+            "shape": ["Bell"],
+            "gain": ["-3dB", "-6dB", "-12dB"],
+            "answer format": ["Hz"]
+        },
+        {
+            "question": "Which frequency was boosted in the woodwind sound?",
+            "instruments": ["Woodwind"],
+            "parts": ["Woodwind"],
+            "frequency": ["500Hz"],
+            "shape": ["Bell"],
+            "gain": ["+3dB", "+6dB", "+12dB"],
+            "answer format": ["Hz"]
+        },
+        {
+            "question": "Which frequency was cut in the woodwind sound?",
+            "instruments": ["Woodwind"],
+            "parts": ["Woodwind"],
+            "frequency": ["500Hz"],
+            "shape": ["Bell"],
+            "gain": ["-3dB", "-6dB", "-12dB"],
+            "answer format": ["Hz"]
+        },
+        {
+            "question": "Which frequency was boosted in the strings sound?",
+            "instruments": ["Strings"],
+            "parts": ["Strings"],
+            "frequency": ["550Hz"],
+            "shape": ["Bell"],
+            "gain": ["+3dB", "+6dB", "+12dB"],
+            "answer format": ["Hz"]
+        },
+        {
+            "question": "Which frequency was cut in the strings sound?",
+            "instruments": ["Strings"],
+            "parts": ["Strings"],
+            "frequency": ["550Hz"],
+            "shape": ["Bell"],
+            "gain": ["-3dB", "-6dB", "-12dB"],
+            "answer format": ["Hz"]
+        },
+        {
+            "question": "Which frequency was boosted in the brass sound?",
+            "instruments": ["Brass"],
+            "parts": ["Brass"],
+            "frequency": ["600Hz"],
+            "shape": ["Bell"],
+            "gain": ["+3dB", "+6dB", "+12dB"],
+            "answer format": ["Hz"]
+        },
+        {
+            "question": "Which frequency was cut in the brass sound?",
+            "instruments": ["Brass"],
+            "parts": ["Brass"],
+            "frequency": ["600Hz"],
+            "shape": ["Bell"],
+            "gain": ["-3dB", "-6dB", "-12dB"],
             "answer format": ["Hz"]
         }
     ]

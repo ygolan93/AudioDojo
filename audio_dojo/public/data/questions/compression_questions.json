@@ -1,0 +1,737 @@
+{
+  "category": "Compression",
+  "questions": [
+    {
+      "question": "Which attack time was set in the Kick sound?",
+      "instruments": [
+        "Kick"
+      ],
+      "parts": [
+        "Kick"
+      ],
+      "attack": [
+        "0.1ms",
+        "1ms",
+        "5ms",
+        "10ms",
+        "15ms",
+        "30ms",
+        "100ms"
+      ],
+      "answer format": [
+        "ms"
+      ]
+    },
+    {
+      "question": "Which release time was set in the Kick sound?",
+      "instruments": [
+        "Kick"
+      ],
+      "parts": [
+        "Kick"
+      ],
+      "release": [
+        "1ms",
+        "20ms",
+        "50ms",
+        "80ms",
+        "100ms",
+        "200ms"
+      ],
+      "answer format": [
+        "ms"
+      ]
+    },
+    {
+      "question": "Which gain reduction was applied in the Kick sound?",
+      "instruments": [
+        "Kick"
+      ],
+      "parts": [
+        "Kick"
+      ],
+      "gr": [
+        "+12db",
+        "-12db",
+        "+6db",
+        "-6db",
+        "+3db",
+        "-3db"
+      ],
+      "answer format": [
+        "dB"
+      ]
+    },
+    {
+      "question": "Which attack time was set in the Snare sound?",
+      "instruments": [
+        "Snare"
+      ],
+      "parts": [
+        "Snare"
+      ],
+      "attack": [
+        "0.1ms",
+        "1ms",
+        "5ms",
+        "10ms",
+        "15ms",
+        "30ms",
+        "100ms"
+      ],
+      "answer format": [
+        "ms"
+      ]
+    },
+    {
+      "question": "Which release time was set in the Snare sound?",
+      "instruments": [
+        "Snare"
+      ],
+      "parts": [
+        "Snare"
+      ],
+      "release": [
+        "1ms",
+        "20ms",
+        "50ms",
+        "80ms",
+        "100ms",
+        "200ms"
+      ],
+      "answer format": [
+        "ms"
+      ]
+    },
+    {
+      "question": "Which gain reduction was applied in the Snare sound?",
+      "instruments": [
+        "Snare"
+      ],
+      "parts": [
+        "Snare"
+      ],
+      "gr": [
+        "+12db",
+        "-12db",
+        "+6db",
+        "-6db",
+        "+3db",
+        "-3db"
+      ],
+      "answer format": [
+        "dB"
+      ]
+    },
+    {
+      "question": "Which attack time was set in the Brass sound?",
+      "instruments": [
+        "Brass"
+      ],
+      "parts": [
+        "Brass"
+      ],
+      "attack": [
+        "0.1ms",
+        "1ms",
+        "5ms",
+        "10ms",
+        "15ms",
+        "30ms",
+        "100ms"
+      ],
+      "answer format": [
+        "ms"
+      ]
+    },
+    {
+      "question": "Which release time was set in the Brass sound?",
+      "instruments": [
+        "Brass"
+      ],
+      "parts": [
+        "Brass"
+      ],
+      "release": [
+        "1ms",
+        "20ms",
+        "50ms",
+        "80ms",
+        "100ms",
+        "200ms"
+      ],
+      "answer format": [
+        "ms"
+      ]
+    },
+    {
+      "question": "Which gain reduction was applied in the Brass sound?",
+      "instruments": [
+        "Brass"
+      ],
+      "parts": [
+        "Brass"
+      ],
+      "gr": [
+        "+12db",
+        "-12db",
+        "+6db",
+        "-6db",
+        "+3db",
+        "-3db"
+      ],
+      "answer format": [
+        "dB"
+      ]
+    },
+    {
+      "question": "Which attack time was set in the Electric Guitar sound?",
+      "instruments": [
+        "Electric Guitar"
+      ],
+      "parts": [
+        "Electric Guitar"
+      ],
+      "attack": [
+        "0.1ms",
+        "1ms",
+        "5ms",
+        "10ms",
+        "15ms",
+        "30ms",
+        "100ms"
+      ],
+      "answer format": [
+        "ms"
+      ]
+    },
+    {
+      "question": "Which release time was set in the Electric Guitar sound?",
+      "instruments": [
+        "Electric Guitar"
+      ],
+      "parts": [
+        "Electric Guitar"
+      ],
+      "release": [
+        "1ms",
+        "20ms",
+        "50ms",
+        "80ms",
+        "100ms",
+        "200ms"
+      ],
+      "answer format": [
+        "ms"
+      ]
+    },
+    {
+      "question": "Which gain reduction was applied in the Electric Guitar sound?",
+      "instruments": [
+        "Electric Guitar"
+      ],
+      "parts": [
+        "Electric Guitar"
+      ],
+      "gr": [
+        "+12db",
+        "-12db",
+        "+6db",
+        "-6db",
+        "+3db",
+        "-3db"
+      ],
+      "answer format": [
+        "dB"
+      ]
+    },
+    {
+      "question": "Which attack time was set in the Acoustic Guitar sound?",
+      "instruments": [
+        "Acoustic Guitar"
+      ],
+      "parts": [
+        "Acoustic Guitar"
+      ],
+      "attack": [
+        "0.1ms",
+        "1ms",
+        "5ms",
+        "10ms",
+        "15ms",
+        "30ms",
+        "100ms"
+      ],
+      "answer format": [
+        "ms"
+      ]
+    },
+    {
+      "question": "Which release time was set in the Acoustic Guitar sound?",
+      "instruments": [
+        "Acoustic Guitar"
+      ],
+      "parts": [
+        "Acoustic Guitar"
+      ],
+      "release": [
+        "1ms",
+        "20ms",
+        "50ms",
+        "80ms",
+        "100ms",
+        "200ms"
+      ],
+      "answer format": [
+        "ms"
+      ]
+    },
+    {
+      "question": "Which gain reduction was applied in the Acoustic Guitar sound?",
+      "instruments": [
+        "Acoustic Guitar"
+      ],
+      "parts": [
+        "Acoustic Guitar"
+      ],
+      "gr": [
+        "+12db",
+        "-12db",
+        "+6db",
+        "-6db",
+        "+3db",
+        "-3db"
+      ],
+      "answer format": [
+        "dB"
+      ]
+    },
+    {
+      "question": "Which attack time was set in the Bass Guitar sound?",
+      "instruments": [
+        "Bass Guitar"
+      ],
+      "parts": [
+        "Bass Guitar"
+      ],
+      "attack": [
+        "0.1ms",
+        "1ms",
+        "5ms",
+        "10ms",
+        "15ms",
+        "30ms",
+        "100ms"
+      ],
+      "answer format": [
+        "ms"
+      ]
+    },
+    {
+      "question": "Which release time was set in the Bass Guitar sound?",
+      "instruments": [
+        "Bass Guitar"
+      ],
+      "parts": [
+        "Bass Guitar"
+      ],
+      "release": [
+        "1ms",
+        "20ms",
+        "50ms",
+        "80ms",
+        "100ms",
+        "200ms"
+      ],
+      "answer format": [
+        "ms"
+      ]
+    },
+    {
+      "question": "Which gain reduction was applied in the Bass Guitar sound?",
+      "instruments": [
+        "Bass Guitar"
+      ],
+      "parts": [
+        "Bass Guitar"
+      ],
+      "gr": [
+        "+12db",
+        "-12db",
+        "+6db",
+        "-6db",
+        "+3db",
+        "-3db"
+      ],
+      "answer format": [
+        "dB"
+      ]
+    },
+    {
+      "question": "Which attack time was set in the Strings sound?",
+      "instruments": [
+        "Strings"
+      ],
+      "parts": [
+        "Strings"
+      ],
+      "attack": [
+        "0.1ms",
+        "1ms",
+        "5ms",
+        "10ms",
+        "15ms",
+        "30ms",
+        "100ms"
+      ],
+      "answer format": [
+        "ms"
+      ]
+    },
+    {
+      "question": "Which release time was set in the Strings sound?",
+      "instruments": [
+        "Strings"
+      ],
+      "parts": [
+        "Strings"
+      ],
+      "release": [
+        "1ms",
+        "20ms",
+        "50ms",
+        "80ms",
+        "100ms",
+        "200ms"
+      ],
+      "answer format": [
+        "ms"
+      ]
+    },
+    {
+      "question": "Which gain reduction was applied in the Strings sound?",
+      "instruments": [
+        "Strings"
+      ],
+      "parts": [
+        "Strings"
+      ],
+      "gr": [
+        "+12db",
+        "-12db",
+        "+6db",
+        "-6db",
+        "+3db",
+        "-3db"
+      ],
+      "answer format": [
+        "dB"
+      ]
+    },
+    {
+      "question": "Which attack time was set in the Male sound?",
+      "instruments": [
+        "Male Vocal"
+      ],
+      "parts": [
+        "Male Vocal"
+      ],
+      "attack": [
+        "0.1ms",
+        "1ms",
+        "5ms",
+        "10ms",
+        "15ms",
+        "30ms",
+        "100ms"
+      ],
+      "answer format": [
+        "ms"
+      ]
+    },
+    {
+      "question": "Which release time was set in the Male sound?",
+      "instruments": [
+        "Male Vocal"
+      ],
+      "parts": [
+        "Male Vocal"
+      ],
+      "release": [
+        "1ms",
+        "20ms",
+        "50ms",
+        "80ms",
+        "100ms",
+        "200ms"
+      ],
+      "answer format": [
+        "ms"
+      ]
+    },
+    {
+      "question": "Which gain reduction was applied in the Male sound?",
+      "instruments": [
+        "Male Vocal"
+      ],
+      "parts": [
+        "Male Vocal"
+      ],
+      "gr": [
+        "+12db",
+        "-12db",
+        "+6db",
+        "-6db",
+        "+3db",
+        "-3db"
+      ],
+      "answer format": [
+        "dB"
+      ]
+    },
+    {
+      "question": "Which attack time was set in the Female sound?",
+      "instruments": [
+        "Female Vocal"
+      ],
+      "parts": [
+        "Female Vocal"
+      ],
+      "attack": [
+        "0.1ms",
+        "1ms",
+        "5ms",
+        "10ms",
+        "15ms",
+        "30ms",
+        "100ms"
+      ],
+      "answer format": [
+        "ms"
+      ]
+    },
+    {
+      "question": "Which release time was set in the Female sound?",
+      "instruments": [
+        "Female Vocal"
+      ],
+      "parts": [
+        "Female Vocal"
+      ],
+      "release": [
+        "1ms",
+        "20ms",
+        "50ms",
+        "80ms",
+        "100ms",
+        "200ms"
+      ],
+      "answer format": [
+        "ms"
+      ]
+    },
+    {
+      "question": "Which gain reduction was applied in the Female sound?",
+      "instruments": [
+        "Female Vocal"
+      ],
+      "parts": [
+        "Female Vocal"
+      ],
+      "gr": [
+        "+12db",
+        "-12db",
+        "+6db",
+        "-6db",
+        "+3db",
+        "-3db"
+      ],
+      "answer format": [
+        "dB"
+      ]
+    },
+    {
+      "question": "Which attack time was set in the Synth sound?",
+      "instruments": [
+        "Synth"
+      ],
+      "parts": [
+        "Synth"
+      ],
+      "attack": [
+        "0.1ms",
+        "1ms",
+        "5ms",
+        "10ms",
+        "15ms",
+        "30ms",
+        "100ms"
+      ],
+      "answer format": [
+        "ms"
+      ]
+    },
+    {
+      "question": "Which release time was set in the Synth sound?",
+      "instruments": [
+        "Synth"
+      ],
+      "parts": [
+        "Synth"
+      ],
+      "release": [
+        "1ms",
+        "20ms",
+        "50ms",
+        "80ms",
+        "100ms",
+        "200ms"
+      ],
+      "answer format": [
+        "ms"
+      ]
+    },
+    {
+      "question": "Which gain reduction was applied in the Synth sound?",
+      "instruments": [
+        "Synth"
+      ],
+      "parts": [
+        "Synth"
+      ],
+      "gr": [
+        "+12db",
+        "-12db",
+        "+6db",
+        "-6db",
+        "+3db",
+        "-3db"
+      ],
+      "answer format": [
+        "dB"
+      ]
+    },
+    {
+      "question": "Which attack time was set in the Woodwind sound?",
+      "instruments": [
+        "Woodwind"
+      ],
+      "parts": [
+        "Woodwind"
+      ],
+      "attack": [
+        "0.1ms",
+        "1ms",
+        "5ms",
+        "10ms",
+        "15ms",
+        "30ms",
+        "100ms"
+      ],
+      "answer format": [
+        "ms"
+      ]
+    },
+    {
+      "question": "Which release time was set in the Woodwind sound?",
+      "instruments": [
+        "Woodwind"
+      ],
+      "parts": [
+        "Woodwind"
+      ],
+      "release": [
+        "1ms",
+        "20ms",
+        "50ms",
+        "80ms",
+        "100ms",
+        "200ms"
+      ],
+      "answer format": [
+        "ms"
+      ]
+    },
+    {
+      "question": "Which gain reduction was applied in the Woodwind sound?",
+      "instruments": [
+        "Woodwind"
+      ],
+      "parts": [
+        "Woodwind"
+      ],
+      "gr": [
+        "+12db",
+        "-12db",
+        "+6db",
+        "-6db",
+        "+3db",
+        "-3db"
+      ],
+      "answer format": [
+        "dB"
+      ]
+    },
+    {
+      "question": "Which attack time was set in the Piano sound?",
+      "instruments": [
+        "Piano"
+      ],
+      "parts": [
+        "Piano"
+      ],
+      "attack": [
+        "0.1ms",
+        "1ms",
+        "5ms",
+        "10ms",
+        "15ms",
+        "30ms",
+        "100ms"
+      ],
+      "answer format": [
+        "ms"
+      ]
+    },
+    {
+      "question": "Which release time was set in the Piano sound?",
+      "instruments": [
+        "Piano"
+      ],
+      "parts": [
+        "Piano"
+      ],
+      "release": [
+        "1ms",
+        "20ms",
+        "50ms",
+        "80ms",
+        "100ms",
+        "200ms"
+      ],
+      "answer format": [
+        "ms"
+      ]
+    },
+    {
+      "question": "Which gain reduction was applied in the Piano sound?",
+      "instruments": [
+        "Piano"
+      ],
+      "parts": [
+        "Piano"
+      ],
+      "gr": [
+        "+12db",
+        "-12db",
+        "+6db",
+        "-6db",
+        "+3db",
+        "-3db"
+      ],
+      "answer format": [
+        "dB"
+      ]
+    }
+  ]
+}

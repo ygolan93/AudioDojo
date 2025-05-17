@@ -1,0 +1,1157 @@
+{
+  "category": "Reverb",
+  "questions": [
+    {
+      "question": "Which impulse response was used for the Kick sound?",
+      "instruments": [
+        "Kick"
+      ],
+      "parts": [
+        "Kick"
+      ],
+      "impulseResponse": [
+        "Room",
+        "Hall",
+        "Plate",
+        "Spring"
+      ],
+      "answer format": [
+        "type"
+      ]
+    },
+    {
+      "question": "Which decay time was set for the Kick sound?",
+      "instruments": [
+        "Kick"
+      ],
+      "parts": [
+        "Kick"
+      ],
+      "decayTime": [
+        "1s",
+        "2s",
+        "5s",
+        "10s"
+      ],
+      "answer format": [
+        "type"
+      ]
+    },
+    {
+      "question": "Which mix ratio was applied for the Kick sound?",
+      "instruments": [
+        "Kick"
+      ],
+      "parts": [
+        "Kick"
+      ],
+      "mix": [
+        "0.0",
+        "0.25",
+        "0.5",
+        "0.75",
+        "1.0"
+      ],
+      "answer format": [
+        "type"
+      ]
+    },
+    {
+      "question": "Which attack time was set for the Kick sound?",
+      "instruments": [
+        "Kick"
+      ],
+      "parts": [
+        "Kick"
+      ],
+      "attack": [
+        "0.1ms",
+        "1ms",
+        "5ms",
+        "10ms",
+        "15ms",
+        "30ms",
+        "100ms"
+      ],
+      "answer format": [
+        "ms"
+      ]
+    },
+    {
+      "question": "Which release time was set for the Kick sound?",
+      "instruments": [
+        "Kick"
+      ],
+      "parts": [
+        "Kick"
+      ],
+      "release": [
+        "1ms",
+        "20ms",
+        "50ms",
+        "80ms",
+        "100ms",
+        "200ms"
+      ],
+      "answer format": [
+        "ms"
+      ]
+    },
+    {
+      "question": "Which impulse response was used for the Snare sound?",
+      "instruments": [
+        "Snare"
+      ],
+      "parts": [
+        "Snare"
+      ],
+      "impulseResponse": [
+        "Room",
+        "Hall",
+        "Plate",
+        "Spring"
+      ],
+      "answer format": [
+        "type"
+      ]
+    },
+    {
+      "question": "Which decay time was set for the Snare sound?",
+      "instruments": [
+        "Snare"
+      ],
+      "parts": [
+        "Snare"
+      ],
+      "decayTime": [
+        "1s",
+        "2s",
+        "5s",
+        "10s"
+      ],
+      "answer format": [
+        "type"
+      ]
+    },
+    {
+      "question": "Which mix ratio was applied for the Snare sound?",
+      "instruments": [
+        "Snare"
+      ],
+      "parts": [
+        "Snare"
+      ],
+      "mix": [
+        "0.0",
+        "0.25",
+        "0.5",
+        "0.75",
+        "1.0"
+      ],
+      "answer format": [
+        "type"
+      ]
+    },
+    {
+      "question": "Which attack time was set for the Snare sound?",
+      "instruments": [
+        "Snare"
+      ],
+      "parts": [
+        "Snare"
+      ],
+      "attack": [
+        "0.1ms",
+        "1ms",
+        "5ms",
+        "10ms",
+        "15ms",
+        "30ms",
+        "100ms"
+      ],
+      "answer format": [
+        "ms"
+      ]
+    },
+    {
+      "question": "Which release time was set for the Snare sound?",
+      "instruments": [
+        "Snare"
+      ],
+      "parts": [
+        "Snare"
+      ],
+      "release": [
+        "1ms",
+        "20ms",
+        "50ms",
+        "80ms",
+        "100ms",
+        "200ms"
+      ],
+      "answer format": [
+        "ms"
+      ]
+    },
+    {
+      "question": "Which impulse response was used for the Brass sound?",
+      "instruments": [
+        "Brass"
+      ],
+      "parts": [
+        "Brass"
+      ],
+      "impulseResponse": [
+        "Room",
+        "Hall",
+        "Plate",
+        "Spring"
+      ],
+      "answer format": [
+        "type"
+      ]
+    },
+    {
+      "question": "Which decay time was set for the Brass sound?",
+      "instruments": [
+        "Brass"
+      ],
+      "parts": [
+        "Brass"
+      ],
+      "decayTime": [
+        "1s",
+        "2s",
+        "5s",
+        "10s"
+      ],
+      "answer format": [
+        "type"
+      ]
+    },
+    {
+      "question": "Which mix ratio was applied for the Brass sound?",
+      "instruments": [
+        "Brass"
+      ],
+      "parts": [
+        "Brass"
+      ],
+      "mix": [
+        "0.0",
+        "0.25",
+        "0.5",
+        "0.75",
+        "1.0"
+      ],
+      "answer format": [
+        "type"
+      ]
+    },
+    {
+      "question": "Which attack time was set for the Brass sound?",
+      "instruments": [
+        "Brass"
+      ],
+      "parts": [
+        "Brass"
+      ],
+      "attack": [
+        "0.1ms",
+        "1ms",
+        "5ms",
+        "10ms",
+        "15ms",
+        "30ms",
+        "100ms"
+      ],
+      "answer format": [
+        "ms"
+      ]
+    },
+    {
+      "question": "Which release time was set for the Brass sound?",
+      "instruments": [
+        "Brass"
+      ],
+      "parts": [
+        "Brass"
+      ],
+      "release": [
+        "1ms",
+        "20ms",
+        "50ms",
+        "80ms",
+        "100ms",
+        "200ms"
+      ],
+      "answer format": [
+        "ms"
+      ]
+    },
+    {
+      "question": "Which impulse response was used for the Electric Guitar sound?",
+      "instruments": [
+        "Electric Guitar"
+      ],
+      "parts": [
+        "Electric Guitar"
+      ],
+      "impulseResponse": [
+        "Room",
+        "Hall",
+        "Plate",
+        "Spring"
+      ],
+      "answer format": [
+        "type"
+      ]
+    },
+    {
+      "question": "Which decay time was set for the Electric Guitar sound?",
+      "instruments": [
+        "Electric Guitar"
+      ],
+      "parts": [
+        "Electric Guitar"
+      ],
+      "decayTime": [
+        "1s",
+        "2s",
+        "5s",
+        "10s"
+      ],
+      "answer format": [
+        "type"
+      ]
+    },
+    {
+      "question": "Which mix ratio was applied for the Electric Guitar sound?",
+      "instruments": [
+        "Electric Guitar"
+      ],
+      "parts": [
+        "Electric Guitar"
+      ],
+      "mix": [
+        "0.0",
+        "0.25",
+        "0.5",
+        "0.75",
+        "1.0"
+      ],
+      "answer format": [
+        "type"
+      ]
+    },
+    {
+      "question": "Which attack time was set for the Electric Guitar sound?",
+      "instruments": [
+        "Electric Guitar"
+      ],
+      "parts": [
+        "Electric Guitar"
+      ],
+      "attack": [
+        "0.1ms",
+        "1ms",
+        "5ms",
+        "10ms",
+        "15ms",
+        "30ms",
+        "100ms"
+      ],
+      "answer format": [
+        "ms"
+      ]
+    },
+    {
+      "question": "Which release time was set for the Electric Guitar sound?",
+      "instruments": [
+        "Electric Guitar"
+      ],
+      "parts": [
+        "Electric Guitar"
+      ],
+      "release": [
+        "1ms",
+        "20ms",
+        "50ms",
+        "80ms",
+        "100ms",
+        "200ms"
+      ],
+      "answer format": [
+        "ms"
+      ]
+    },
+    {
+      "question": "Which impulse response was used for the Acoustic Guitar sound?",
+      "instruments": [
+        "Acoustic Guitar"
+      ],
+      "parts": [
+        "Acoustic Guitar"
+      ],
+      "impulseResponse": [
+        "Room",
+        "Hall",
+        "Plate",
+        "Spring"
+      ],
+      "answer format": [
+        "type"
+      ]
+    },
+    {
+      "question": "Which decay time was set for the Acoustic Guitar sound?",
+      "instruments": [
+        "Acoustic Guitar"
+      ],
+      "parts": [
+        "Acoustic Guitar"
+      ],
+      "decayTime": [
+        "1s",
+        "2s",
+        "5s",
+        "10s"
+      ],
+      "answer format": [
+        "type"
+      ]
+    },
+    {
+      "question": "Which mix ratio was applied for the Acoustic Guitar sound?",
+      "instruments": [
+        "Acoustic Guitar"
+      ],
+      "parts": [
+        "Acoustic Guitar"
+      ],
+      "mix": [
+        "0.0",
+        "0.25",
+        "0.5",
+        "0.75",
+        "1.0"
+      ],
+      "answer format": [
+        "type"
+      ]
+    },
+    {
+      "question": "Which attack time was set for the Acoustic Guitar sound?",
+      "instruments": [
+        "Acoustic Guitar"
+      ],
+      "parts": [
+        "Acoustic Guitar"
+      ],
+      "attack": [
+        "0.1ms",
+        "1ms",
+        "5ms",
+        "10ms",
+        "15ms",
+        "30ms",
+        "100ms"
+      ],
+      "answer format": [
+        "ms"
+      ]
+    },
+    {
+      "question": "Which release time was set for the Acoustic Guitar sound?",
+      "instruments": [
+        "Acoustic Guitar"
+      ],
+      "parts": [
+        "Acoustic Guitar"
+      ],
+      "release": [
+        "1ms",
+        "20ms",
+        "50ms",
+        "80ms",
+        "100ms",
+        "200ms"
+      ],
+      "answer format": [
+        "ms"
+      ]
+    },
+    {
+      "question": "Which impulse response was used for the Bass Guitar sound?",
+      "instruments": [
+        "Bass Guitar"
+      ],
+      "parts": [
+        "Bass Guitar"
+      ],
+      "impulseResponse": [
+        "Room",
+        "Hall",
+        "Plate",
+        "Spring"
+      ],
+      "answer format": [
+        "type"
+      ]
+    },
+    {
+      "question": "Which decay time was set for the Bass Guitar sound?",
+      "instruments": [
+        "Bass Guitar"
+      ],
+      "parts": [
+        "Bass Guitar"
+      ],
+      "decayTime": [
+        "1s",
+        "2s",
+        "5s",
+        "10s"
+      ],
+      "answer format": [
+        "type"
+      ]
+    },
+    {
+      "question": "Which mix ratio was applied for the Bass Guitar sound?",
+      "instruments": [
+        "Bass Guitar"
+      ],
+      "parts": [
+        "Bass Guitar"
+      ],
+      "mix": [
+        "0.0",
+        "0.25",
+        "0.5",
+        "0.75",
+        "1.0"
+      ],
+      "answer format": [
+        "type"
+      ]
+    },
+    {
+      "question": "Which attack time was set for the Bass Guitar sound?",
+      "instruments": [
+        "Bass Guitar"
+      ],
+      "parts": [
+        "Bass Guitar"
+      ],
+      "attack": [
+        "0.1ms",
+        "1ms",
+        "5ms",
+        "10ms",
+        "15ms",
+        "30ms",
+        "100ms"
+      ],
+      "answer format": [
+        "ms"
+      ]
+    },
+    {
+      "question": "Which release time was set for the Bass Guitar sound?",
+      "instruments": [
+        "Bass Guitar"
+      ],
+      "parts": [
+        "Bass Guitar"
+      ],
+      "release": [
+        "1ms",
+        "20ms",
+        "50ms",
+        "80ms",
+        "100ms",
+        "200ms"
+      ],
+      "answer format": [
+        "ms"
+      ]
+    },
+    {
+      "question": "Which impulse response was used for the Strings sound?",
+      "instruments": [
+        "Strings"
+      ],
+      "parts": [
+        "Strings"
+      ],
+      "impulseResponse": [
+        "Room",
+        "Hall",
+        "Plate",
+        "Spring"
+      ],
+      "answer format": [
+        "type"
+      ]
+    },
+    {
+      "question": "Which decay time was set for the Strings sound?",
+      "instruments": [
+        "Strings"
+      ],
+      "parts": [
+        "Strings"
+      ],
+      "decayTime": [
+        "1s",
+        "2s",
+        "5s",
+        "10s"
+      ],
+      "answer format": [
+        "type"
+      ]
+    },
+    {
+      "question": "Which mix ratio was applied for the Strings sound?",
+      "instruments": [
+        "Strings"
+      ],
+      "parts": [
+        "Strings"
+      ],
+      "mix": [
+        "0.0",
+        "0.25",
+        "0.5",
+        "0.75",
+        "1.0"
+      ],
+      "answer format": [
+        "type"
+      ]
+    },
+    {
+      "question": "Which attack time was set for the Strings sound?",
+      "instruments": [
+        "Strings"
+      ],
+      "parts": [
+        "Strings"
+      ],
+      "attack": [
+        "0.1ms",
+        "1ms",
+        "5ms",
+        "10ms",
+        "15ms",
+        "30ms",
+        "100ms"
+      ],
+      "answer format": [
+        "ms"
+      ]
+    },
+    {
+      "question": "Which release time was set for the Strings sound?",
+      "instruments": [
+        "Strings"
+      ],
+      "parts": [
+        "Strings"
+      ],
+      "release": [
+        "1ms",
+        "20ms",
+        "50ms",
+        "80ms",
+        "100ms",
+        "200ms"
+      ],
+      "answer format": [
+        "ms"
+      ]
+    },
+    {
+      "question": "Which impulse response was used for the Male sound?",
+      "instruments": [
+        "Male Vocal"
+      ],
+      "parts": [
+        "Male Vocal"
+      ],
+      "impulseResponse": [
+        "Room",
+        "Hall",
+        "Plate",
+        "Spring"
+      ],
+      "answer format": [
+        "type"
+      ]
+    },
+    {
+      "question": "Which decay time was set for the Male sound?",
+      "instruments": [
+        "Male Vocal"
+      ],
+      "parts": [
+        "Male Vocal"
+      ],
+      "decayTime": [
+        "1s",
+        "2s",
+        "5s",
+        "10s"
+      ],
+      "answer format": [
+        "type"
+      ]
+    },
+    {
+      "question": "Which mix ratio was applied for the Male sound?",
+      "instruments": [
+        "Male Vocal"
+      ],
+      "parts": [
+        "Male Vocal"
+      ],
+      "mix": [
+        "0.0",
+        "0.25",
+        "0.5",
+        "0.75",
+        "1.0"
+      ],
+      "answer format": [
+        "type"
+      ]
+    },
+    {
+      "question": "Which attack time was set for the Male sound?",
+      "instruments": [
+        "Male Vocal"
+      ],
+      "parts": [
+        "Male Vocal"
+      ],
+      "attack": [
+        "0.1ms",
+        "1ms",
+        "5ms",
+        "10ms",
+        "15ms",
+        "30ms",
+        "100ms"
+      ],
+      "answer format": [
+        "ms"
+      ]
+    },
+    {
+      "question": "Which release time was set for the Male sound?",
+      "instruments": [
+        "Male Vocal"
+      ],
+      "parts": [
+        "Male Vocal"
+      ],
+      "release": [
+        "1ms",
+        "20ms",
+        "50ms",
+        "80ms",
+        "100ms",
+        "200ms"
+      ],
+      "answer format": [
+        "ms"
+      ]
+    },
+    {
+      "question": "Which impulse response was used for the Female sound?",
+      "instruments": [
+        "Female Vocal"
+      ],
+      "parts": [
+        "Female Vocal"
+      ],
+      "impulseResponse": [
+        "Room",
+        "Hall",
+        "Plate",
+        "Spring"
+      ],
+      "answer format": [
+        "type"
+      ]
+    },
+    {
+      "question": "Which decay time was set for the Female sound?",
+      "instruments": [
+        "Female Vocal"
+      ],
+      "parts": [
+        "Female Vocal"
+      ],
+      "decayTime": [
+        "1s",
+        "2s",
+        "5s",
+        "10s"
+      ],
+      "answer format": [
+        "type"
+      ]
+    },
+    {
+      "question": "Which mix ratio was applied for the Female sound?",
+      "instruments": [
+        "Female Vocal"
+      ],
+      "parts": [
+        "Female Vocal"
+      ],
+      "mix": [
+        "0.0",
+        "0.25",
+        "0.5",
+        "0.75",
+        "1.0"
+      ],
+      "answer format": [
+        "type"
+      ]
+    },
+    {
+      "question": "Which attack time was set for the Female sound?",
+      "instruments": [
+        "Female Vocal"
+      ],
+      "parts": [
+        "Female Vocal"
+      ],
+      "attack": [
+        "0.1ms",
+        "1ms",
+        "5ms",
+        "10ms",
+        "15ms",
+        "30ms",
+        "100ms"
+      ],
+      "answer format": [
+        "ms"
+      ]
+    },
+    {
+      "question": "Which release time was set for the Female sound?",
+      "instruments": [
+        "Female Vocal"
+      ],
+      "parts": [
+        "Female Vocal"
+      ],
+      "release": [
+        "1ms",
+        "20ms",
+        "50ms",
+        "80ms",
+        "100ms",
+        "200ms"
+      ],
+      "answer format": [
+        "ms"
+      ]
+    },
+    {
+      "question": "Which impulse response was used for the Synth sound?",
+      "instruments": [
+        "Synth"
+      ],
+      "parts": [
+        "Synth"
+      ],
+      "impulseResponse": [
+        "Room",
+        "Hall",
+        "Plate",
+        "Spring"
+      ],
+      "answer format": [
+        "type"
+      ]
+    },
+    {
+      "question": "Which decay time was set for the Synth sound?",
+      "instruments": [
+        "Synth"
+      ],
+      "parts": [
+        "Synth"
+      ],
+      "decayTime": [
+        "1s",
+        "2s",
+        "5s",
+        "10s"
+      ],
+      "answer format": [
+        "type"
+      ]
+    },
+    {
+      "question": "Which mix ratio was applied for the Synth sound?",
+      "instruments": [
+        "Synth"
+      ],
+      "parts": [
+        "Synth"
+      ],
+      "mix": [
+        "0.0",
+        "0.25",
+        "0.5",
+        "0.75",
+        "1.0"
+      ],
+      "answer format": [
+        "type"
+      ]
+    },
+    {
+      "question": "Which attack time was set for the Synth sound?",
+      "instruments": [
+        "Synth"
+      ],
+      "parts": [
+        "Synth"
+      ],
+      "attack": [
+        "0.1ms",
+        "1ms",
+        "5ms",
+        "10ms",
+        "15ms",
+        "30ms",
+        "100ms"
+      ],
+      "answer format": [
+        "ms"
+      ]
+    },
+    {
+      "question": "Which release time was set for the Synth sound?",
+      "instruments": [
+        "Synth"
+      ],
+      "parts": [
+        "Synth"
+      ],
+      "release": [
+        "1ms",
+        "20ms",
+        "50ms",
+        "80ms",
+        "100ms",
+        "200ms"
+      ],
+      "answer format": [
+        "ms"
+      ]
+    },
+    {
+      "question": "Which impulse response was used for the Woodwind sound?",
+      "instruments": [
+        "Woodwind"
+      ],
+      "parts": [
+        "Woodwind"
+      ],
+      "impulseResponse": [
+        "Room",
+        "Hall",
+        "Plate",
+        "Spring"
+      ],
+      "answer format": [
+        "type"
+      ]
+    },
+    {
+      "question": "Which decay time was set for the Woodwind sound?",
+      "instruments": [
+        "Woodwind"
+      ],
+      "parts": [
+        "Woodwind"
+      ],
+      "decayTime": [
+        "1s",
+        "2s",
+        "5s",
+        "10s"
+      ],
+      "answer format": [
+        "type"
+      ]
+    },
+    {
+      "question": "Which mix ratio was applied for the Woodwind sound?",
+      "instruments": [
+        "Woodwind"
+      ],
+      "parts": [
+        "Woodwind"
+      ],
+      "mix": [
+        "0.0",
+        "0.25",
+        "0.5",
+        "0.75",
+        "1.0"
+      ],
+      "answer format": [
+        "type"
+      ]
+    },
+    {
+      "question": "Which attack time was set for the Woodwind sound?",
+      "instruments": [
+        "Woodwind"
+      ],
+      "parts": [
+        "Woodwind"
+      ],
+      "attack": [
+        "0.1ms",
+        "1ms",
+        "5ms",
+        "10ms",
+        "15ms",
+        "30ms",
+        "100ms"
+      ],
+      "answer format": [
+        "ms"
+      ]
+    },
+    {
+      "question": "Which release time was set for the Woodwind sound?",
+      "instruments": [
+        "Woodwind"
+      ],
+      "parts": [
+        "Woodwind"
+      ],
+      "release": [
+        "1ms",
+        "20ms",
+        "50ms",
+        "80ms",
+        "100ms",
+        "200ms"
+      ],
+      "answer format": [
+        "ms"
+      ]
+    },
+    {
+      "question": "Which impulse response was used for the Piano sound?",
+      "instruments": [
+        "Piano"
+      ],
+      "parts": [
+        "Piano"
+      ],
+      "impulseResponse": [
+        "Room",
+        "Hall",
+        "Plate",
+        "Spring"
+      ],
+      "answer format": [
+        "type"
+      ]
+    },
+    {
+      "question": "Which decay time was set for the Piano sound?",
+      "instruments": [
+        "Piano"
+      ],
+      "parts": [
+        "Piano"
+      ],
+      "decayTime": [
+        "1s",
+        "2s",
+        "5s",
+        "10s"
+      ],
+      "answer format": [
+        "type"
+      ]
+    },
+    {
+      "question": "Which mix ratio was applied for the Piano sound?",
+      "instruments": [
+        "Piano"
+      ],
+      "parts": [
+        "Piano"
+      ],
+      "mix": [
+        "0.0",
+        "0.25",
+        "0.5",
+        "0.75",
+        "1.0"
+      ],
+      "answer format": [
+        "type"
+      ]
+    },
+    {
+      "question": "Which attack time was set for the Piano sound?",
+      "instruments": [
+        "Piano"
+      ],
+      "parts": [
+        "Piano"
+      ],
+      "attack": [
+        "0.1ms",
+        "1ms",
+        "5ms",
+        "10ms",
+        "15ms",
+        "30ms",
+        "100ms"
+      ],
+      "answer format": [
+        "ms"
+      ]
+    },
+    {
+      "question": "Which release time was set for the Piano sound?",
+      "instruments": [
+        "Piano"
+      ],
+      "parts": [
+        "Piano"
+      ],
+      "release": [
+        "1ms",
+        "20ms",
+        "50ms",
+        "80ms",
+        "100ms",
+        "200ms"
+      ],
+      "answer format": [
+        "ms"
+      ]
+    }
+  ]
+}
