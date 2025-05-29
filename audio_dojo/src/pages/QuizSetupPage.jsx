@@ -265,19 +265,19 @@ export default function QuizSetupPage() {
             </div>
           </div>
           <div>
-            <Link to="/quiz">
+            <Link to="/summary">
               <button
                 className="page-button"
                 style={{ marginTop: "2em", marginLeft: "18em" }}
                 onClick={() => {
                   if (selectedQuestions) {
-                    navigate("/quiz", {
+                    navigate("/summary", {
                       state: { selectedQuestions, selectedProcesses },
                     });
                   }
                 }}
               >
-                START QUIZ
+                REVIEW QUIZ SETTINGS
               </button>
             </Link>
           </div>

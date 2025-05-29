@@ -953,3 +953,36 @@
     filter: drop-shadow(0 0 1em #fd1f1f);
   color: black;
 }
+
+/* SummaryPage layout */
+.summary-layout {
+  padding: 6rem 1rem 5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.summary-header {
+  margin-bottom: 2rem;
+  color: white;
+  text-align: center;
+}
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px,1fr));
+  gap: 2rem;
+  width: 100%;
+  max-width: 1200px;
+}
+.summary-card {
+  background-color: #2d2d2d;
+  padding: 2rem;
+  border-radius: 30px;
+  color: white;
+  box-sizing: border-box;
+}
+.summary-buttons {
+  margin-top: 2.5rem;
+  display: flex;
+  gap: 1.5rem;
+}
+

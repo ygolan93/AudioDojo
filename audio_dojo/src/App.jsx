@@ -15,6 +15,7 @@ import QuizModulePage from './pages/QuizModulePage';
 import QuizSetupPage from './pages/QuizSetupPage';
 import LessonsPage from './pages/LessonsPage';
 import HistoryPage from './pages/HistoryPage';
+import SummaryPage from './pages/SummaryPage.jsx';
 import Quiz from './pages/Quiz';
 import { SetupProvider } from './context/setupContext.jsx';
 import './App.css';
@@ -39,6 +40,7 @@ function App() {
             <Route path="/sound-test" element={<SoundTestPage />} />
             <Route path="/lessons" element={<LessonsPage />} />
             <Route path="/history" element={<HistoryPage />} />
+            <Route path="/summary" element={<SummaryPage />} />
             <Route path="/quiz" element={<Quiz />} />
           </Routes>
         </AnimatePresence>
