@@ -18,9 +18,9 @@ export default function QuizModulePage() {
                         <div className="quiz-module-selection">
                             <button className="page-button" onClick={()=>navigate("/quiz-setup")}> Set it up! </button>
                             <button className="page-button">Use Practice Code </button>
-                            <Link to="/quiz">
+                            {/* <Link to="/quiz">
                             <button className="page-button">START </button>
-                            </Link>
+                            </Link> */}
                         </div>
                     </div>
 
