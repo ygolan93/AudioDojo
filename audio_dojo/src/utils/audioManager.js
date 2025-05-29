@@ -2,51 +2,36 @@
 
 // create one context that lives for the life of the page:
 export const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-/**
- * Map your logical keys to the *exact* filenames in public/sounds/…
- * (case-sensitive to match what you actually have on disk)
- */
-const FILE_MAP = {
-  // originals
-  Kick:             "Kick.wav",
-  Snare:            "Snare.wav",
-  Brass:            "Brass.wav",
-  "Electric Guitar": "Electric Guitar.wav",
-  "Acoustic Guitar": "Acoustic Guitar.wav",
-  "Bass Guitar":     "Bass Guitar.wav",
-  Strings:          "Strings.wav",
-  Male:             "Male.wav",
-  Female:           "Female.wav",
-  Synth:            "Synth.wav",
-  Woodwind:         "Woodwind.wav",
 
-  // reverbs (IRs)
-  Room:             "Room.wav",
-  Plate:            "Plate.wav",
-  Hall:             "Hall.wav",
-  Spring:           "Spring.wav",
-  Custom:           "Custom.wav",
-};
+// eagerly grab every .wav under public/sounds/**:
+const modules = import.meta.glob('/public/sounds/*/*.wav', { as: 'url', eager: true });
+
+// build a map of maps: { folder: { fileKey: url } }
+const FILE_MAP = Object.entries(modules).reduce((map, [path, url]) => {
+  // path === '/public/sounds/original/kick/Kick.wav', etc.
+  const parts = path.split('/');
+  const folder = parts[3];                   // e.g. 'original' or 'reverb'
+  const filename = parts[4].replace('.wav',''); // e.g. 'Room' or 'Kick'
+  map[folder] = map[folder] || {};
+  map[folder][filename] = url;
+  return map;
+}, {});
+
+console.log('Loaded sounds:', FILE_MAP);
 
 /**
- * Fetch + decode any .wav under public/sounds/{folder}/
+ * Fetch + decode any .wav under /public/sounds/{folder}/
  */
-async function loadAudioBuffer(key, folder = "original") {
-  const fileName = FILE_MAP[key] || `${key}.wav`;
-  const url = `/sounds/${folder}/${fileName}`;
-  console.log("⤵️ fetching audio:", url);
-
+export async function loadAudioBuffer(key, folder = 'original') {
+  const folderMap = FILE_MAP[folder];
+  if (!folderMap || !folderMap[key]) {
+    throw new Error(`Unknown instrument/IR: "${key}" in folder "${folder}"`);
+  }
+  const url = folderMap[key];
   const res = await fetch(url);
   if (!res.ok) throw new Error(`Failed to fetch ${url}: ${res.status}`);
-  const ct = res.headers.get("Content-Type") || "";
-  if (!ct.includes("audio")) {
-    console.error("Wrong content-type for", url, ct);
-    throw new Error(`Invalid content-type ${ct}`);
-  }
-
   const arrayBuffer = await res.arrayBuffer();
-  const ctx = audioCtx;
-  return ctx.decodeAudioData(arrayBuffer);
+  return audioCtx.decodeAudioData(arrayBuffer);
 }
 
 let currentCtx = null;

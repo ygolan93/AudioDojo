@@ -562,6 +562,7 @@
     border-radius: 30px;
     color: white;
     font-weight: bold;
+    position: relative; /* Ensure relative positioning */
   }
 
 .audio-label {
@@ -606,6 +607,29 @@
   width: 28px;  /* הגדלת האייקון */
   height: 28px;
   /* transition: transform 0.3s ease, width 0.3s ease, height 0.3s ease; */
+}
+
+/* popup styling */
+.popup-balloon {
+  position: absolute;
+  top: -2.5em;
+  right: 0;
+  background: rgba(0, 0, 0, 0.85);
+  color: #fff;
+  padding: 0.4em 0.8em;
+  border-radius: 0.4em;
+  font-size: 0.85em;
+  white-space: nowrap;
+  pointer-events: none;
+  animation: fadeInOut 3s forwards;
+}
+
+/* fade in quick, stay visible, then fade out */
+@keyframes fadeInOut {
+  0%   { opacity: 0; }
+  10%  { opacity: 1; }
+  80%  { opacity: 1; }
+  100% { opacity: 0; }
 }
 
 

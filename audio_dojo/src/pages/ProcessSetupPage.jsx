@@ -161,10 +161,11 @@ export default function ProcessSetupPage() {
   };
 
   const handleApplyReverb = async () => {
+    const instrument = selectedSample; 
     const type      = selectedOptions.Reverb_Type[0];
     const decayTime = selectedOptions.Reverb_DecayTime[0];
     const mix       = selectedOptions.Reverb_Mix[0];
-    await applyReverb({ instrument: selectedSample, type, decayTime, mix });
+    await applyReverb({ instrument: instrument, type, decayTime, mix });
   };
 
   const handleApplySaturation = async () => {

@@ -1,4 +1,4 @@
-import { applyEQ } from './EQProcessor.js';
+import { applyEQ } from '../obselete/EQProcessor.js';
 
 /**
  * Applies audio processing based on the selected effect.

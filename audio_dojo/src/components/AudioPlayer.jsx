@@ -1,32 +1,39 @@
-import { useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { Howl } from "howler";
 
-export default function AudioPlayer({ audioFiles = [], isPlaying, selectedIndex = 0 }) {
-  const soundRef = useRef(null);
-  const soundIdRef = useRef(null);
-
+export default function AudioPlayer({ src, play }) {
+  const howlRef = useRef(null);
+// double the default pool
+Howler.html5PoolSize = 20;
+  // (Re)create Howl only on src change
   useEffect(() => {
-    if (!audioFiles.length) return;
+    // unload previous
+    if (howlRef.current) {
+      howlRef.current.stop();
+      howlRef.current.unload();
+    }
 
-    soundRef.current = new Howl({
-      src: [audioFiles[selectedIndex].file],
-      html5: true,
+    const sound = new Howl({
+      src: [src],
+      volume: 1.0,
     });
 
+    howlRef.current = sound;
+    if (play) sound.play();
+
     return () => {
-      soundRef.current.stop();
+      sound.stop();
+      sound.unload();
+      howlRef.current = null;
     };
-  }, [audioFiles, selectedIndex]);
+  }, [src]);
 
+  // toggle play/pause
   useEffect(() => {
-    if (!soundRef.current) return;
-
-    if (isPlaying) {
-      soundIdRef.current = soundRef.current.play();
-    } else {
-      soundRef.current.pause();
-    }
-  }, [isPlaying]);
+    const sound = howlRef.current;
+    if (!sound) return;
+    play ? sound.play() : sound.stop();
+  }, [play]);
 
   return null;
 }

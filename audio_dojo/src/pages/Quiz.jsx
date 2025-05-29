@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import PageWrapper from "../components/PageWrapper";
 import { useSetup } from "../context/setupContext.jsx";
 import AudioPlayer from "../components/AudioPlayer";
@@ -24,6 +24,9 @@ export default function Quiz() {
   const [isPlayingOriginal, setIsPlayingOriginal] = useState(false);
   const [isPlayingProcessed, setIsPlayingProcessed] = useState(false);
   const [shuffledOptions, setShuffledOptions] = useState([]);
+  const [showPopup, setShowPopup] = useState(false);
+  const [popupText, setPopupText] = useState("");
+  const popupTimer = useRef(null);
 
   const { quizSetup, processSetup } = useSetup();
 
@@ -185,13 +188,61 @@ const rawOriginalUrl = `/sounds/original/${encodeURIComponent(
   console.log("Looking for part:", parts[0]);
   console.log("sampleFiles state:", sampleFiles);
 
+  // helper to show & auto-hide
+  const showProcessPopup = (text) => {
+    clearTimeout(popupTimer.current);
+    setPopupText(text);
+    setShowPopup(true);
+    popupTimer.current = setTimeout(() => {
+      setShowPopup(false);
+    }, 3000); // hide after 3s
+  };
+
   // Play only the current question's process
   const handlePlayProcessed = async () => {
     stopCurrent();
     setIsPlayingProcessed(true);
 
+    // 1) grab your question’s instrument & process type
     const instrument = questions[currentQuestionIndex].parts[0];
     const proc       = questions[currentQuestionIndex].process;
+
+    // 2) show popup
+    let details = "";
+    switch (proc) {
+      case "EQ":
+        details = [
+          `shape=${processSetup.EQ.shape[0]}`,
+          `freq=${processSetup.EQ.frequency[0]}`,
+          `gain=${processSetup.EQ.gain[0]}`
+        ].join(", ");
+        break;
+      case "Compression":
+        details = [
+          `attack=${processSetup.Compression.attack[0]}`,
+          `release=${processSetup.Compression.release[0]}`,
+          `threshold=${processSetup.Compression.gr[0]}`
+        ].join(", ");
+        break;
+      case "Reverb":
+        details = [
+          `type=${processSetup.Reverb.type?.[0]}`,
+          `decay=${processSetup.Reverb.decayTime?.[0]}`,
+          `mix=${processSetup.Reverb.mix?.[0]}`
+        ].join(", ");
+        break;
+      case "Saturation":
+        details = [
+          `drive=${processSetup.Saturation.drive[0]}`,
+          `curve=${processSetup.Saturation.curveType[0]}`,
+          `bias=${processSetup.Saturation.bias[0]}`,
+          `mix=${processSetup.Saturation.mix[0]}`
+        ].join(", ");
+        break;
+      default:
+        details = "no parameters";
+    }
+    showProcessPopup(`${proc}: ${details}`);
 
     try {
       switch (proc) {
@@ -275,26 +326,27 @@ const rawOriginalUrl = `/sounds/original/${encodeURIComponent(
                     {isPlayingOriginal ? <IoMdPause /> : <IoMdPlay />}
                   </button>
                   <AudioPlayer
-                    // ALWAYS load the literal parts[0] .wav (URL-encoded)
-                    audioFiles={[{ file: rawOriginalUrl }]}
-                    isPlaying={isPlayingOriginal}
-                    selectedIndex={0}
+                    src={rawOriginalUrl}
+                    play={isPlayingOriginal}
                   />
                 </>
 
               </div>
 
               {/* Post player */}
-              <div className="audio-player">
+              <div className="audio-player" style={{ position: "relative" }}>
                 {originalFile ? (
                   <>
                     <div className="audio-label">Post</div>
                     <button
                       className="audio-button"
-                      onClick={() => {
-                        if (isPlayingOriginal) {
-                          setIsPlayingOriginal(false);
+                      onClick={async () => {
+                        // 1) unlock Web Audio if needed
+                        if (Howler.ctx && Howler.ctx.state === "suspended") {
+                          await Howler.ctx.resume();
                         }
+
+                        // 2) now do your normal play logic:
                         if (isPlayingProcessed) {
                           stopCurrent();
                           setIsPlayingProcessed(false);
@@ -305,6 +357,13 @@ const rawOriginalUrl = `/sounds/original/${encodeURIComponent(
                     >
                       {isPlayingProcessed ? <IoMdPause /> : <IoMdPlay />}
                     </button>
+
+                    {/* popup balloon */}
+                    {showPopup && (
+                      <div className="popup-balloon">
+                        {popupText}
+                      </div>
+                    )}
                   </>
                 ) : (
                   <p>Processed file not available for {parts[0]}</p>
