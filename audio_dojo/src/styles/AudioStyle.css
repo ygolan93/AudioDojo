@@ -892,6 +892,20 @@
         grid-template-columns: 1fr;
     }
   }
+
+
+/* === Loading Animation === */
+@keyframes fadeInOut {
+  0% { opacity: 0; }
+  50% { opacity: 1; }
+  100% { opacity: 0; }
+}
+.loading {
+  text-align: center;
+  font-size: 1.5rem;
+  margin-top: 2rem;
+}
+*/
 /* === Sample-dropdown styling === */
 .sample-dropdown {
   background-color: #2d2d2d;
@@ -974,11 +988,22 @@
   max-width: 1200px;
 }
 .summary-card {
-  background-color: #2d2d2d;
-  padding: 2rem;
+  background-color: #0000000c;
+  border: 2px solid #a3e635;
+  filter: brightness(1) drop-shadow(0 0 0.2em #7eff64);
+  width: 100%;
   border-radius: 30px;
   color: white;
   box-sizing: border-box;
+  padding-block: 2rem;
+}
+
+.process-summary, .quiz-summary {
+  border-style: solid;
+  border: 0;
+  background-color: #1100ff36;
+  padding-inline: 6rem;
+  padding-block: 0.3rem;
 }
 .summary-buttons {
   margin-top: 2.5rem;

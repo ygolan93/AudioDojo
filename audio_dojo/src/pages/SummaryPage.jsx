@@ -16,14 +16,16 @@ export default function SummaryPage() {
 
         <div className="summary-grid">
           <div className="summary-card">
-            <h2>Quiz Setup</h2>
-            <p className="process-summary"><strong >Processes: </strong> {processes.length ? processes.join(', ') : 'None'}</p>
-            <p className="process-summary"><strong>Sample Banks:</strong> {sampleBanks.length ? sampleBanks.join(', ') : 'None'}</p>
-            <p className="process-summary"><strong>Number of Questions:</strong> {numOfQuestions || 0}</p>
+            <center><h2>Quiz Setup</h2></center>
+            <div className="quiz-summary">
+            <p><strong >Processes: </strong> {processes.length ? processes.join(', ') : 'None'}</p>
+            <p><strong>Sample Banks:</strong> {sampleBanks.length ? sampleBanks.join(', ') : 'None'}</p>
+            <p><strong>Number of Questions:</strong> {numOfQuestions || 0}</p>
+            </div>
           </div>
 
           <div className="summary-card">
-            <h2>Process Setup</h2>
+            <center><h2>Process Setup</h2></center> 
             {processes.length > 0 ? (
               processes.map((proc) => {
                 const params = processSetup[proc] || {};
