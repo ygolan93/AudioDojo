@@ -202,6 +202,7 @@ export default function ProcessSetupPage() {
             <div className="process-setup-buttons">
               <button className="page-button">Share Setup Code</button>
               <button className="page-button">Use Setup Code</button>
+              <button className="page-button" onClick={() => navigate('/summary')}>Quiz Setup Summary</button>
             </div>
           </div>
 
