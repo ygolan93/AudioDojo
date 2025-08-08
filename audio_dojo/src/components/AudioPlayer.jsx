@@ -1,10 +1,10 @@
 import React, { useEffect, useRef } from "react";
-import { Howl } from "howler";
+import { Howl, Howler } from "howler";
 
 export default function AudioPlayer({ src, play }) {
   const howlRef = useRef(null);
-// double the default pool
-Howler.html5PoolSize = 20;
+  // double the default pool
+  Howler.html5PoolSize = 20;
   // (Re)create Howl only on src change
   useEffect(() => {
     // unload previous

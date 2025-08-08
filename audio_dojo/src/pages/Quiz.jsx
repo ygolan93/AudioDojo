@@ -205,8 +205,17 @@ export default function Quiz() {
 
   // 7) At this point loading succeeded—render the actual quiz
   const currentQuestion = questions[currentQuestionIndex];
-  const { parts } = currentQuestion;
-
+  const { parts = [], ...rest } = currentQuestion || {};
+  if (!currentQuestion || !Array.isArray(currentQuestion.parts)) {
+    return (
+      <PageWrapper className="p-4">
+        <div className="quiz-error">
+          Error: No valid question loaded. Check setup or question templates.
+        </div>
+      </PageWrapper>
+    );
+  }
+  
   // Map “parts[0]” (instrument) to what sampleFiles expects
   const partNameMap = {
     "Male Vocal": "Male",
@@ -214,7 +223,7 @@ export default function Quiz() {
     Piano: "Piano",
     Kick: "Kick",
     Snare: "Snare",
-    "Acousitc Guitar": "Acoustic Guitar",
+    "Acoustic Guitar": "Acoustic Guitar",
     "Electric Guitar": "Electric Guitar",
     "Bass Guitar": "Bass Guitar",
     Synth: "Synth",
@@ -244,7 +253,7 @@ export default function Quiz() {
     stopCurrent();
     setIsPlayingProcessed(true);
 
-    const instrument = currentQuestion.parts[0];
+    const instrument = Array.isArray(parts) ? parts[0] : "Unknown";
     const proc = currentQuestion.process;
 
     let details = "";
