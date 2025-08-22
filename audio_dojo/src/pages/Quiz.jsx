@@ -1,3 +1,6 @@
+import { doc, getDoc } from "firebase/firestore";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { db } from "../firebase";
 import { useEffect, useState, useRef } from "react";
 import PageWrapper from "../components/PageWrapper";
 import { useSetup } from "../context/setupContext.jsx";
@@ -25,6 +28,8 @@ export default function Quiz() {
   const [shuffledOptions, setShuffledOptions] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
   const [popupText, setPopupText] = useState("");
+  const [selectedAnswer, setSelectedAnswer] = useState(null);
+
 
   // NEW: Loading & error states
   const [isLoading, setIsLoading] = useState(true);
@@ -72,72 +77,71 @@ export default function Quiz() {
       }
     }, 10000);
 
-    async function loadQuestions() {
-      try {
-        let allTemplates = [];
+async function loadQuestions() {
+  try {
+    let allTemplates = [];
 
-        // Load & tag templates per effect
-        for (let proc of quizSetup.processes) {
-          const res = await fetch(
-            `/data/questions/${proc.toLowerCase()}_questions.json`
-          );
-          if (!res.ok) throw new Error(`Failed to fetch ${proc} questions`);
-          const { questions: tmpl } = await res.json();
-          allTemplates.push(...tmpl.map((t) => ({ ...t, process: proc })));
-        }
+for (let proc of quizSetup.processes) {
+  const docRef = doc(db, "questionBanks", proc);
+  const docSnap = await getDoc(docRef);
 
-        // Filter by chosen sample banks
-        const filtered = allTemplates.filter((t) =>
-          quizSetup.sampleBanks.includes(t.parts[0])
-        );
+  if (docSnap.exists()) {
+    const { questions = [] } = docSnap.data();
+    console.log(`🔥 Loaded ${questions.length} from Firebase [${proc}]`);
+    allTemplates.push(...questions.map((q) => ({ ...q, process: proc })));
+  } else {
+    console.warn(`⚠ No questions found for process: ${proc}`);
+  }
+}
 
-        // Expand into concrete questions
-        const expanded = generateQuestionsFromTemplates(filtered);
+const filtered = allTemplates.filter((t) =>
+  quizSetup.sampleBanks.includes(t.parts?.[0])
+);
+console.log("🔍 After filtering by sampleBank:", filtered);
 
-        // Interleave logic so each instrument appears before repeats
-        const banks = quizSetup.sampleBanks;
-        const numQ = quizSetup.numOfQuestions;
-        const groups = banks.reduce((acc, inst) => {
-          acc[inst] = expanded.filter((q) => q.parts[0] === inst);
-          return acc;
-        }, {});
-        const shuffle = (arr) => {
-          for (let i = arr.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [arr[i], arr[j]] = [arr[j], arr[i]];
-          }
-          return arr;
-        };
-        let instrumentOrder = [];
-        const fullCycles = Math.floor(numQ / banks.length);
-        const remainder = numQ % banks.length;
-        for (let i = 0; i < fullCycles; i++) {
-          instrumentOrder.push(...shuffle([...banks]));
-        }
-        instrumentOrder.push(
-          ...shuffle([...banks]).slice(0, remainder)
-        );
-        const pointers = {};
-        const finalQs = instrumentOrder
-          .map((inst) => {
-            const bucket = groups[inst] || [];
-            if (!bucket.length) return null;
-            pointers[inst] = (pointers[inst] || 0) + 1;
-            return bucket[(pointers[inst] - 1) % bucket.length];
-          })
-          .filter(Boolean);
 
-        if (!didCancel) {
-          setQuestions(finalQs.slice(0, numQ));
-          finishLoading(false);
-        }
-      } catch (err) {
-        console.error("Error loading questions:", err);
-        if (!didCancel) {
-          finishLoading(true);
-        }
+    const expanded = generateQuestionsFromTemplates(filtered);
+
+    // בניית סדר הופעה מאוזן בין sample banks
+    const banks = quizSetup.sampleBanks;
+    const numQ = quizSetup.numOfQuestions;
+    const groups = banks.reduce((acc, inst) => {
+      acc[inst] = expanded.filter((q) => q.parts[0] === inst);
+      return acc;
+    }, {});
+    const shuffle = (arr) => {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
       }
+      return arr;
+    };
+    let instrumentOrder = [];
+    const fullCycles = Math.floor(numQ / banks.length);
+    const remainder = numQ % banks.length;
+    for (let i = 0; i < fullCycles; i++) {
+      instrumentOrder.push(...shuffle([...banks]));
     }
+    instrumentOrder.push(...shuffle([...banks]).slice(0, remainder));
+
+    const pointers = {};
+    const finalQs = instrumentOrder
+      .map((inst) => {
+        const bucket = groups[inst] || [];
+        if (!bucket.length) return null;
+        pointers[inst] = (pointers[inst] || 0) + 1;
+        return bucket[(pointers[inst] - 1) % bucket.length];
+      })
+      .filter(Boolean);
+
+    setQuestions(finalQs.slice(0, numQ));
+    finishLoading(false);
+  } catch (err) {
+    console.error("Error loading questions from Firebase:", err);
+    finishLoading(true);
+  }
+}
+
 
     loadQuestions();
     return () => {
@@ -147,23 +151,23 @@ export default function Quiz() {
   }, [quizSetup, questions.length]);
 
   // 3) Once questions exist, shuffle options for the current question
-  useEffect(() => {
-    if (questions.length > 0) {
-      const currentQuestion = questions[currentQuestionIndex];
-      const correct = currentQuestion.correctAnswer;
-      const dummyAnswers = ["Dummy A", "Dummy B", "Dummy C"];
-      const options = [];
-      const correctIndex = Math.floor(Math.random() * 4);
-      for (let i = 0; i < 4; i++) {
-        if (i === correctIndex) {
-          options.push(correct);
-        } else {
-          options.push(dummyAnswers.shift());
-        }
-      }
-      setShuffledOptions(options);
-    }
-  }, [currentQuestionIndex, questions]);
+useEffect(() => {
+  if (questions.length === 0) return;
+  const current = questions[currentQuestionIndex];
+  if (!current || !current.correctAnswer) return;
+
+  const correct = current.correctAnswer; // כבר מחרוזת בפורמט "2KHz @ +3dB"
+  const dummyAnswers = ["Dummy A", "Dummy B", "Dummy C"];
+  const options = [
+    { text: correct, isCorrect: true },
+    ...dummyAnswers.map((d) => ({ text: d, isCorrect: false })),
+  ];
+
+  const shuffled = options.sort(() => Math.random() - 0.5);
+  setShuffledOptions(shuffled);
+}, [currentQuestionIndex, questions]);
+
+
 
   // 4) Answer click handler
   const handleAnswerOptionClick = (isCorrect) => {
@@ -295,39 +299,67 @@ export default function Quiz() {
     try {
       switch (proc) {
         case "EQ":
+          // שליפת תשובה נכונה מהשאלה הנוכחית
+          const [freqStr, gainStr] = currentQuestion.correctAnswer.split(" ");
+          const freq = parseFloat(freqStr); // מסיר "Hz"
+          const gain = parseFloat(gainStr); // מסיר "dB" / "+"
+
+          details = `freq=${freqStr}, gain=${gainStr}`;
+          showProcessPopup(`EQ: ${details}`);
+
           await applyEQ({
             instrument,
-            shape: processSetup.EQ.shape[0],
-            frequency: parseFloat(processSetup.EQ.frequency[0]),
-            gain: parseFloat(processSetup.EQ.gain[0]),
+            shape: processSetup.EQ.shape[0], // נשאר מה־setup
+            frequency: freq,
+            gain: gain,
           });
           break;
-        case "Compression":
-          await applyCompression({
-            instrument,
-            attack: processSetup.Compression.attack[0],
-            release: processSetup.Compression.release[0],
-            threshold: processSetup.Compression.gr[0],
-          });
+
           break;
-        case "Reverb":
-          await applyReverb({
-            instrument,
-            type:
-              processSetup.Reverb.type?.[0] ??
-              processSetup.Reverb.impulseResponse?.[0],
-            decayTime: processSetup.Reverb.decayTime?.[0],
-            mix: processSetup.Reverb.mix?.[0],
-          });
+          case "Compression": {
+            const [attackStr, gainStr] = currentQuestion.correctAnswer.split(" ");
+            const attack = parseFloat(attackStr);
+            const gain = parseFloat(gainStr);
+
+            details = `attack=${attackStr}, gain=${gainStr}`;
+            showProcessPopup(`Compression: ${details}`);
+
+            await applyCompression({
+              instrument,
+              attack,
+              gain,
+            });
+            break;
+          }
+
           break;
-        case "Saturation":
-          await applySaturation({
-            instrument,
-            drive: parseFloat(processSetup.Saturation.drive[0]),
-            curveType: processSetup.Saturation.curveType[0],
-            bias: parseFloat(processSetup.Saturation.bias[0]),
-            mix: parseFloat(processSetup.Saturation.mix[0]),
-          });
+          case "Reverb": {
+            const decayTime = parseFloat(currentQuestion.correctAnswer.replace("s", ""));
+
+            details = `decay=${decayTime}s`;
+            showProcessPopup(`Reverb: ${details}`);
+
+            await applyReverb({
+              instrument,
+              decayTime,
+            });
+            break;
+          }
+          break;
+          case "Saturation": {
+            const [curveType, gainStr] = currentQuestion.correctAnswer.split(" ");
+            const gain = parseFloat(gainStr);
+
+            details = `curveType=${curveType}, gain=${gainStr}`;
+            showProcessPopup(`Saturation: ${details}`);
+
+            await applySaturation({
+              instrument,
+              curveType,
+              gain,
+            });
+            break;
+          }
           break;
         default:
           console.warn("Unknown process type:", proc);
@@ -336,7 +368,6 @@ export default function Quiz() {
       console.error("Error during processed playback:", proc, err);
     }
   };
-
   return (
     <PageWrapper className="p-4">
       <div className="quiz-setup-container">
@@ -399,22 +430,22 @@ export default function Quiz() {
               </div>
             </div>
             <div className="quiz-options">
-              {shuffledOptions.map((answer, index) => (
+              {shuffledOptions.map((option, index) => (
                 <button
                   key={index}
-                  onClick={() =>
-                    handleAnswerOptionClick(
-                      answer === currentQuestion.correctAnswer
-                    )
-                  }
-                  className="quiz-option-button"
+                  onClick={() => {setSelectedAnswer(option.text); handleAnswerOptionClick(option.isCorrect);}}
+                  className={`quiz-option-button ${
+                    selectedAnswer === option.text ? "selected" : ""
+                  }`}
                 >
                   <span className="quiz-option-label">
                     {String.fromCharCode(65 + index)}
                   </span>
-                  {answer}
+                  {option.text}
                 </button>
               ))}
+
+
             </div>
           </div>
         )}

@@ -10,7 +10,7 @@ const FREQUENCY_POOL = [
   
     templates.forEach((template) => {
       const base = { ...template, process: template.process };
-  
+
       // EQ‐style questions still use frequency + gain
       if (Array.isArray(template.frequency) && Array.isArray(template.gain)) {
         const freqs = template.frequency.includes("all")
@@ -26,7 +26,7 @@ const FREQUENCY_POOL = [
             gains.forEach((g) => {
               allQuestions.push({
                 ...base,
-                correctAnswer: `${f} @ ${g}`
+                correctAnswer: `${f}Hz ${g}`
               });
             });
           } else {
