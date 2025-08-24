@@ -29,6 +29,7 @@ export default function Quiz() {
   const [showPopup, setShowPopup] = useState(false);
   const [popupText, setPopupText] = useState("");
   const [selectedAnswer, setSelectedAnswer] = useState(null);
+  const [answerRevealed, setAnswerRevealed] = useState(false);
 
 
   // NEW: Loading & error states
@@ -150,37 +151,36 @@ console.log("🔍 After filtering by sampleBank:", filtered);
     };
   }, [quizSetup, questions.length]);
 
-  // 3) Once questions exist, shuffle options for the current question
+// 3) Once questions exist, use pre-generated answers
 useEffect(() => {
   if (questions.length === 0) return;
   const current = questions[currentQuestionIndex];
-  if (!current || !current.correctAnswer) return;
+  if (!current || !Array.isArray(current.answers)) return;
 
-  const correct = current.correctAnswer; // כבר מחרוזת בפורמט "2KHz @ +3dB"
-  const dummyAnswers = ["Dummy A", "Dummy B", "Dummy C"];
-  const options = [
-    { text: correct, isCorrect: true },
-    ...dummyAnswers.map((d) => ({ text: d, isCorrect: false })),
-  ];
-
-  const shuffled = options.sort(() => Math.random() - 0.5);
-  setShuffledOptions(shuffled);
+  setShuffledOptions(current.answers);
 }, [currentQuestionIndex, questions]);
 
 
 
   // 4) Answer click handler
-  const handleAnswerOptionClick = (isCorrect) => {
-    if (isCorrect) {
-      setScore((s) => s + 1);
-    }
+const handleAnswerOptionClick = (isCorrect) => {
+  if (isCorrect) {
+    setScore((s) => s + 1);
+  }
+  setAnswerRevealed(true);
+
+  setTimeout(() => {
     const nextQuestion = currentQuestionIndex + 1;
     if (nextQuestion < questions.length) {
       setCurrentQuestionIndex(nextQuestion);
+      setSelectedAnswer(null);
+      setAnswerRevealed(false);
     } else {
       setShowScore(true);
     }
-  };
+  }, 1500);
+};
+
 
   // 5) Show loading spinner/animation if still loading
   if (isLoading) {
@@ -431,18 +431,29 @@ useEffect(() => {
             </div>
             <div className="quiz-options">
               {shuffledOptions.map((option, index) => (
-                <button
-                  key={index}
-                  onClick={() => {setSelectedAnswer(option.text); handleAnswerOptionClick(option.isCorrect);}}
-                  className={`quiz-option-button ${
-                    selectedAnswer === option.text ? "selected" : ""
-                  }`}
-                >
-                  <span className="quiz-option-label">
-                    {String.fromCharCode(65 + index)}
-                  </span>
-                  {option.text}
-                </button>
+              <button
+                key={index}
+                onClick={() => {
+                  if (!answerRevealed) {
+                  stopCurrent();
+                  setIsPlayingOriginal(false);
+                  setIsPlayingProcessed(false);
+                  setSelectedAnswer(option.text);
+                  handleAnswerOptionClick(option.isCorrect);
+                  }
+                }}
+                className={`quiz-option-button
+                  ${selectedAnswer === option.text ? "selected" : ""}
+                  ${answerRevealed && option.isCorrect ? "correct" : ""}
+                  ${answerRevealed && selectedAnswer === option.text && !option.isCorrect ? "wrong" : ""}
+                `}
+              >
+                <span className="quiz-option-label">
+                  {String.fromCharCode(65 + index)}
+                </span>
+                {option.text}
+              </button>
+
               ))}
 
 

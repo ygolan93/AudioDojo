@@ -1006,3 +1006,14 @@
   gap: 1.5rem;
 }
 
+.quiz-option-button.correct {
+  background-color: #4CAF50; /* ירוק */
+  color: white;
+  border: 2px solid #3e8e41;
+}
+
+.quiz-option-button.wrong {
+  background-color: #f44336; /* אדום */
+  color: white;
+  border: 2px solid #d32f2f;
+}
