@@ -15,6 +15,7 @@ import {
   applySaturation,
   stopCurrent,
 } from "../utils/audioManager.js";
+import { Howl } from "howler";
 
 export default function Quiz() {
   // Track current question index, loaded questions, etc.
@@ -164,9 +165,23 @@ useEffect(() => {
 
   // 4) Answer click handler
 const handleAnswerOptionClick = (isCorrect) => {
+  stopCurrent();
+  setIsPlayingOriginal(false);
+  setIsPlayingProcessed(false);
+
+  const feedbackSound = new Howl({
+    src: [
+      isCorrect
+        ? "/sounds/ui/Correct Answer.wav"
+        : "/sounds/ui/Wrong Answer.wav",
+    ],
+  });
+  feedbackSound.play();
+
   if (isCorrect) {
     setScore((s) => s + 1);
   }
+
   setAnswerRevealed(true);
 
   setTimeout(() => {

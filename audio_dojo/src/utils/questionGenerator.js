@@ -1,3 +1,4 @@
+
 // Static frequency pool
 const FREQUENCY_POOL = [
   "60Hz", "120Hz", "250Hz", "500Hz",
