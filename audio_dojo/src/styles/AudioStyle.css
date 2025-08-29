@@ -1007,15 +1007,17 @@
 }
 
 .quiz-option-button.correct {
-  background-color: #4CAF50; /* ירוק */
+  background-color: #4CAF50;
   color: white;
   border: 2px solid #3e8e41;
+  filter: brightness(1) drop-shadow(0 0 0.2em #3e8e41);
 }
 
 .quiz-option-button.wrong {
   background-color: #f44336; /* אדום */
   color: white;
   border: 2px solid #d32f2f;
+  filter: brightness(1) drop-shadow(0 0 0.2em #ff1a1a);
 }
 .results-container {
   background-color: #2d2d2d;
