@@ -8,12 +8,19 @@ const modules = import.meta.glob('/public/sounds/*/*.wav', { as: 'url', eager: t
 
 // build a map of maps: { folder: { fileKey: url } }
 const FILE_MAP = Object.entries(modules).reduce((map, [path, url]) => {
-  // path === '/public/sounds/original/kick/Kick.wav', etc.
   const parts = path.split('/');
+
+  if (parts.length < 5) {
+    console.warn("⚠️ Skipping invalid path:", path);
+    return map;
+  }
+
   const folder = parts[3];                   // e.g. 'original' or 'reverb'
   const filename = parts[4].replace('.wav',''); // e.g. 'Room' or 'Kick'
+
   map[folder] = map[folder] || {};
   map[folder][filename] = url;
+
   return map;
 }, {});
 
@@ -49,15 +56,12 @@ export function stopCurrent() {
 
 /** 1) apply EQ only */
 export async function applyEQ({ instrument, shape, frequency, gain }) {
-  // stop any existing
   stopCurrent();
-
   const buffer = await loadAudioBuffer(instrument, "original");
-  // reuse or create one AudioContext
-  const ctx = currentCtx ||= new (window.AudioContext||window.webkitAudioContext)();
+  const ctx = currentCtx ||= new (window.AudioContext || window.webkitAudioContext)();
   const src = ctx.createBufferSource();
-  currentSrc = src;               // remember it!
-  src.buffer   = buffer;
+  currentSrc = src;
+  src.buffer = buffer;
 
   const EQ_TYPE_MAP = {
     Bell:        "peaking",
@@ -67,9 +71,9 @@ export async function applyEQ({ instrument, shape, frequency, gain }) {
     "High Cut":  "lowpass",
   };
   const eq = ctx.createBiquadFilter();
-  eq.type            = EQ_TYPE_MAP[shape]    || "peaking";
+  eq.type = EQ_TYPE_MAP[shape] || "peaking";
   eq.frequency.value = frequency;
-  eq.gain.value      = gain;
+  eq.gain.value = gain;
 
   src.connect(eq).connect(ctx.destination);
   src.start();
@@ -79,15 +83,20 @@ export async function applyEQ({ instrument, shape, frequency, gain }) {
 export async function applyCompression({ instrument, attack, release, threshold }) {
   stopCurrent();
   const buffer = await loadAudioBuffer(instrument, "original");
-  const ctx = currentCtx ||= new (window.AudioContext||window.webkitAudioContext)();
+  const ctx = currentCtx ||= new (window.AudioContext || window.webkitAudioContext)();
   const src = ctx.createBufferSource();
   currentSrc = src;
   src.buffer = buffer;
 
   const comp = ctx.createDynamicsCompressor();
-  comp.attack.value    = parseFloat(attack)  / 1000;  // ms→s
-  comp.release.value   = parseFloat(release) / 1000;
-  comp.threshold.value = parseFloat(threshold);      // dB
+
+  const a = parseFloat(attack);
+  const r = parseFloat(release);
+  const t = parseFloat(threshold);
+
+  if (isFinite(a)) comp.attack.value = a / 1000;
+  if (isFinite(r)) comp.release.value = r / 1000;
+  if (isFinite(t)) comp.threshold.value = t;
 
   src.connect(comp).connect(ctx.destination);
   src.start();
@@ -97,18 +106,28 @@ export async function applyCompression({ instrument, attack, release, threshold 
 export async function applyReverb({ instrument, type, decayTime, mix }) {
   stopCurrent();
   const buffer = await loadAudioBuffer(instrument, "original");
-  const ctx = currentCtx ||= new (window.AudioContext||window.webkitAudioContext)();
+  const ctx = currentCtx ||= new (window.AudioContext || window.webkitAudioContext)();
   const src = ctx.createBufferSource();
   currentSrc = src;
   src.buffer = buffer;
 
-  const dryGain = ctx.createGain();
-  dryGain.gain.value = 1 - parseFloat(mix);
-  const wetGain = ctx.createGain();
-  wetGain.gain.value = parseFloat(mix);
+  const irType = type || "Room";
+  if (!FILE_MAP["reverb"]?.[irType]) {
+    console.warn("Invalid or missing reverb type:", irType);
+    return;
+  }
 
-  const conv  = ctx.createConvolver();
-  conv.buffer = await loadAudioBuffer(type, "reverb");
+  const parsedMix = parseFloat(mix);
+  const validMix = isFinite(parsedMix) ? parsedMix : 0.5;
+
+  const dryGain = ctx.createGain();
+  dryGain.gain.value = 1 - validMix;
+
+  const wetGain = ctx.createGain();
+  wetGain.gain.value = validMix;
+
+  const conv = ctx.createConvolver();
+  conv.buffer = await loadAudioBuffer(irType, "reverb");
 
   src.connect(dryGain).connect(ctx.destination);
   src.connect(conv).connect(wetGain).connect(ctx.destination);
@@ -116,32 +135,42 @@ export async function applyReverb({ instrument, type, decayTime, mix }) {
   src.start();
 }
 
+
+
 /** 4) apply Saturation only (waveshaper + dry/wet mix) */
 export async function applySaturation({ instrument, drive, curveType, bias, mix }) {
   stopCurrent();
   const buffer = await loadAudioBuffer(instrument, "original");
-  const ctx = currentCtx ||= new (window.AudioContext||window.webkitAudioContext)();
+  const ctx = currentCtx ||= new (window.AudioContext || window.webkitAudioContext)();
   const src = ctx.createBufferSource();
   currentSrc = src;
   src.buffer = buffer;
 
-  // build curve
+  const d = parseFloat(drive);
+  const b = parseFloat(bias);
+  const m = parseFloat(mix);
+
+  const validDrive = isFinite(d) ? d : 1;
+  const validBias = isFinite(b) ? b : 0;
+  const validMix = isFinite(m) ? m : 0.5;
+
   const samples = 44100;
-  const curve   = new Float32Array(samples);
-  const d = parseFloat(drive), b = parseFloat(bias);
+  const curve = new Float32Array(samples);
   for (let i = 0; i < samples; i++) {
-    let x = (i/(samples-1)) * 2 - 1 + b;
-    if (curveType === "hard")       curve[i] = Math.tanh(x * d);
-    else if (curveType === "medium") curve[i] = (Math.atan(x * d)/Math.PI)*2;
-    else                             curve[i] = x/(1 + Math.abs(x)*d);
+    let x = (i / (samples - 1)) * 2 - 1 + validBias;
+    if (curveType === "hard")       curve[i] = Math.tanh(x * validDrive);
+    else if (curveType === "medium") curve[i] = (Math.atan(x * validDrive) / Math.PI) * 2;
+    else                             curve[i] = x / (1 + Math.abs(x) * validDrive);
   }
+
   const shaper = ctx.createWaveShaper();
   shaper.curve = curve;
 
   const dryGain = ctx.createGain();
-  dryGain.gain.value = 1 - parseFloat(mix);
+  dryGain.gain.value = 1 - validMix;
+
   const wetGain = ctx.createGain();
-  wetGain.gain.value = parseFloat(mix);
+  wetGain.gain.value = validMix;
 
   src.connect(dryGain).connect(ctx.destination);
   src.connect(shaper).connect(wetGain).connect(ctx.destination);
@@ -151,11 +180,8 @@ export async function applySaturation({ instrument, drive, curveType, bias, mix 
 
 /**
  * Inspect a convolution IR by key (e.g. "Room", "Plate", etc.).
- * Fetches /sounds/{folder}/{key}.wav, decodes it, logs sampleRate,
- * channels and duration, and returns the AudioBuffer.
  */
 export async function inspectIR(key, folder = "reverb") {
-  // build the URL exactly as your loadAudioBuffer does
   const url = `/sounds/${folder}/${key}.wav`;
   console.log(`🔍 Inspecting IR at ${url}…`);
 
@@ -167,16 +193,16 @@ export async function inspectIR(key, folder = "reverb") {
   }
 
   const arrayBuffer = await res.arrayBuffer();
-  const ctx         = new (window.AudioContext || window.webkitAudioContext)();
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
   const audioBuffer = await ctx.decodeAudioData(arrayBuffer);
 
   console.table({
     key,
     folder,
     sampleRate: audioBuffer.sampleRate,
-    channels:   audioBuffer.numberOfChannels,
-    length:     audioBuffer.length,
-    duration:   audioBuffer.duration.toFixed(3) + " s"
+    channels: audioBuffer.numberOfChannels,
+    length: audioBuffer.length,
+    duration: audioBuffer.duration.toFixed(3) + " s"
   });
 
   return audioBuffer;
@@ -184,13 +210,11 @@ export async function inspectIR(key, folder = "reverb") {
 
 /**
  * Loads and plays the raw sample for the given instrument.
- * @param {{ instrument: string }} opts
  */
 export async function playOriginal({ instrument }) {
   try {
-    // build path from instrument name (must match your public folder)
     const filePath = `/sounds/original/${instrument.toLowerCase()}/${instrument.toLowerCase()}1.wav`;
-    const ac = new (window.AudioContext||window.webkitAudioContext)();
+    const ac = new (window.AudioContext || window.webkitAudioContext)();
     const buffer = await loadAudioBuffer(ac, filePath);
     const src = ac.createBufferSource();
     src.buffer = buffer;
