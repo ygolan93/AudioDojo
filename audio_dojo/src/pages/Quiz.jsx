@@ -167,7 +167,7 @@ useEffect(() => {
 
 
   // 4) Answer click handler
-const handleAnswerOptionClick = (isCorrect) => {
+const handleAnswerOptionClick = (isCorrect, selectedText) => {
   stopCurrent();
   setIsPlayingOriginal(false);
   setIsPlayingProcessed(false);
@@ -181,16 +181,16 @@ const handleAnswerOptionClick = (isCorrect) => {
   });
   feedbackSound.play();
 
-  // ⬇️ הוספת התשובה של המשתמש לרשימה
-  setUserAnswers((prev) => [
-    ...prev,
+  // ⬇️ מוסיפים את התשובה שנבחרה ישירות (לא דרך state שעדיין לא עודכן)
+  const updatedAnswers = [
+    ...userAnswers,
     {
       question: questions[currentQuestionIndex].question,
-      selected: selectedAnswer,
+      selected: selectedText,
       correct: questions[currentQuestionIndex].correctAnswer,
       isCorrect,
     },
-  ]);
+  ];
 
   if (isCorrect) {
     setScore((s) => s + 1);
@@ -198,46 +198,36 @@ const handleAnswerOptionClick = (isCorrect) => {
 
   setAnswerRevealed(true);
 
-setTimeout(() => {
-  const nextQuestion = currentQuestionIndex + 1;
+  setTimeout(() => {
+    const nextQuestion = currentQuestionIndex + 1;
 
-  const updatedAnswers = [
-    ...userAnswers,
-    {
-      question: questions[currentQuestionIndex].question,
-      selected: selectedAnswer,
-      correct: questions[currentQuestionIndex].correctAnswer,
-      isCorrect,
-    },
-  ];
+    if (nextQuestion >= questions.length) {
+      const finalResults = questions.map((q, idx) => ({
+        question: q.question,
+        correctAnswer: q.correctAnswer,
+        userAnswer: updatedAnswers[idx]?.selected || null,
+        isCorrect: updatedAnswers[idx]?.isCorrect || false,
+      }));
 
-  if (nextQuestion >= questions.length) {
-    const finalResults = questions.map((q, idx) => ({
-      question: q.question,
-      correctAnswer: q.correctAnswer,
-      userAnswer: updatedAnswers[idx]?.selected || null,
-      isCorrect: updatedAnswers[idx]?.isCorrect || false,
-    }));
+      localStorage.setItem("quizResults", JSON.stringify(finalResults));
+      localStorage.setItem(
+        "quizScore",
+        JSON.stringify({
+          score: isCorrect ? score + 1 : score,
+          total: questions.length,
+        })
+      );
 
-    localStorage.setItem("quizResults", JSON.stringify(finalResults));
-    localStorage.setItem(
-      "quizScore",
-      JSON.stringify({
-        score: isCorrect ? score + 1 : score,
-        total: questions.length,
-      })
-    );
-
-    navigate("/results");
-  } else {
-    setUserAnswers(updatedAnswers);
-    setCurrentQuestionIndex(nextQuestion);
-    setSelectedAnswer(null);
-    setAnswerRevealed(false);
-  }
-}, 1500);
-
+      navigate("/results");
+    } else {
+      setUserAnswers(updatedAnswers);
+      setCurrentQuestionIndex(nextQuestion);
+      setSelectedAnswer(null);
+      setAnswerRevealed(false);
+    }
+  }, 1500);
 };
+
 
   // 5) Show loading spinner/animation if still loading
   if (isLoading) {
@@ -492,13 +482,14 @@ setTimeout(() => {
                 key={index}
                 onClick={() => {
                   if (!answerRevealed) {
-                  stopCurrent();
-                  setIsPlayingOriginal(false);
-                  setIsPlayingProcessed(false);
-                  setSelectedAnswer(option.text);
-                  handleAnswerOptionClick(option.isCorrect);
+                    stopCurrent();
+                    setIsPlayingOriginal(false);
+                    setIsPlayingProcessed(false);
+                    setSelectedAnswer(option.text);          // נשאר בשביל ההיילייט
+                    handleAnswerOptionClick(option.isCorrect, option.text); // ← מעבירים טקסט
                   }
                 }}
+
                 className={`quiz-option-button
                   ${selectedAnswer === option.text ? "selected" : ""}
                   ${answerRevealed && option.isCorrect ? "correct" : ""}
