@@ -8,6 +8,7 @@ import AudioPlayer from "../components/AudioPlayer";
 import "../styles/AudioStyle.css";
 import { generateQuestionsFromTemplates } from "../utils/questionGenerator";
 import { IoMdPlay, IoMdPause } from "react-icons/io";
+import { useNavigate } from "react-router-dom";
 import {
   applyEQ,
   applyCompression,
@@ -31,6 +32,8 @@ export default function Quiz() {
   const [popupText, setPopupText] = useState("");
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [answerRevealed, setAnswerRevealed] = useState(false);
+  const [userAnswers, setUserAnswers] = useState([]);
+  const navigate = useNavigate();
 
 
   // NEW: Loading & error states
@@ -178,24 +181,63 @@ const handleAnswerOptionClick = (isCorrect) => {
   });
   feedbackSound.play();
 
+  // ⬇️ הוספת התשובה של המשתמש לרשימה
+  setUserAnswers((prev) => [
+    ...prev,
+    {
+      question: questions[currentQuestionIndex].question,
+      selected: selectedAnswer,
+      correct: questions[currentQuestionIndex].correctAnswer,
+      isCorrect,
+    },
+  ]);
+
   if (isCorrect) {
     setScore((s) => s + 1);
   }
 
   setAnswerRevealed(true);
 
-  setTimeout(() => {
-    const nextQuestion = currentQuestionIndex + 1;
-    if (nextQuestion < questions.length) {
-      setCurrentQuestionIndex(nextQuestion);
-      setSelectedAnswer(null);
-      setAnswerRevealed(false);
-    } else {
-      setShowScore(true);
-    }
-  }, 1500);
-};
+setTimeout(() => {
+  const nextQuestion = currentQuestionIndex + 1;
 
+  const updatedAnswers = [
+    ...userAnswers,
+    {
+      question: questions[currentQuestionIndex].question,
+      selected: selectedAnswer,
+      correct: questions[currentQuestionIndex].correctAnswer,
+      isCorrect,
+    },
+  ];
+
+  if (nextQuestion >= questions.length) {
+    const finalResults = questions.map((q, idx) => ({
+      question: q.question,
+      correctAnswer: q.correctAnswer,
+      userAnswer: updatedAnswers[idx]?.selected || null,
+      isCorrect: updatedAnswers[idx]?.isCorrect || false,
+    }));
+
+    localStorage.setItem("quizResults", JSON.stringify(finalResults));
+    localStorage.setItem(
+      "quizScore",
+      JSON.stringify({
+        score: isCorrect ? score + 1 : score,
+        total: questions.length,
+      })
+    );
+
+    navigate("/results");
+  } else {
+    setUserAnswers(updatedAnswers);
+    setCurrentQuestionIndex(nextQuestion);
+    setSelectedAnswer(null);
+    setAnswerRevealed(false);
+  }
+}, 1500);
+
+};
 
   // 5) Show loading spinner/animation if still loading
   if (isLoading) {

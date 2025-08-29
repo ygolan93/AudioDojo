@@ -16,6 +16,7 @@ import QuizSetupPage from './pages/QuizSetupPage';
 import LessonsPage from './pages/LessonsPage';
 import HistoryPage from './pages/HistoryPage';
 import SummaryPage from './pages/SummaryPage.jsx';
+import ResultsPage from './pages/ResultsPage.jsx';
 import Quiz from './pages/Quiz';
 import { SetupProvider } from './context/setupContext.jsx';
 import './App.css';
@@ -42,6 +43,7 @@ function App() {
             <Route path="/history" element={<HistoryPage />} />
             <Route path="/summary" element={<SummaryPage />} />
             <Route path="/quiz" element={<Quiz />} />
+            <Route path="/results" element={<ResultsPage />} />
           </Routes>
         </AnimatePresence>
       </div>
