@@ -5,7 +5,6 @@ import { useSetup } from '../context/setupContext.jsx';
 import { generateQuestionsFromTemplates } from '../utils/questionGenerator';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../firebase';
-import '../styles/AudioStyle.css';
 
 export default function SummaryPage() {
   const navigate = useNavigate();

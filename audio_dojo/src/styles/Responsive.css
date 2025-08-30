@@ -1,0 +1,466 @@
+@media (max-width: 480px) {
+    :root { --page-side-pad: 2vw; }
+
+    .navbar {
+        height: 18vw;
+        min-height: 2.5rem;
+        width: 100%;
+        position: fixed;
+        z-index: 100;
+    }
+
+    .nav-links {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        gap: 2vw;
+        width: 100%;
+    }
+    .nav-link {
+        width: 100%;
+        padding: 1vw 0.5vw;
+    }
+
+    .nav-links li a {
+        color: white;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 5vw;
+          bottom: -1rem;
+        position: relative;
+        transition: all 0.3s ease;
+    }
+
+    .settings-icon {
+        width: 3vw;
+        height: 3vw;
+        min-width: 1rem;
+        min-height: 1rem;
+    }
+
+    .page-wrapper {
+        height: auto;
+        width: auto;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        padding: 10vw 0 2vw 0;
+        gap: 2vw;
+        margin-top: 18vw; /* Adjust for navbar height */
+    }
+    .page-left,
+    .page-right {
+        width: 100%;
+        padding-left: 2vw;
+        padding-right: 2vw;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .home-page-logo {
+        width: 80vw;
+        max-width: 300px;
+        height: auto;
+        filter: drop-shadow(0.5rem 1rem 0.3rem black);
+    }
+
+    #homePage_header {
+        font-weight: 600;
+        color: white;
+        margin: 0;
+        text-align: left;
+        margin-left: 4vw;
+        font-size: 6vw;
+        line-height: 1.1;
+    }
+
+    .modules-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        margin: 0 auto;
+        width: 100%;
+        max-width: 100vw;
+        font-size: clamp(1rem, 4vw, 1.25rem);
+        box-sizing: border-box;
+        padding: 2vw 0;
+        gap: 2vw;
+    }
+
+    .module-selection {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: clamp(8px, 3vw, 24px);
+        width: 100%;
+        max-width: 100vw;
+        box-sizing: border-box;
+        padding: 2vw 0;
+    }
+    .module-button {
+        width: clamp(56px, 18vw, 90px);
+        height: clamp(56px, 18vw, 90px);
+        font-size: clamp(1rem, 4vw, 1.2rem);
+        border-width: 2px;
+        box-sizing: border-box;
+        transition: all 0.2s ease;
+    }
+
+        #module-quiz,
+        #module-match,
+        #module-flatten,
+        #module-free-for-all {
+            margin: -15vw 0 0 0;
+            scale: 0.8;
+            transition: scale 0.2s;
+            gap: 3rem;
+        }
+
+    .module-description {
+        font-size: clamp(0.9rem, 3vw, 1.1rem);
+        text-align: center;
+        margin-top: 2vw;
+        margin-inline: auto;
+        color: white;
+        font-weight: 500;
+        max-width: 90vw;
+        line-height: 1.3;
+        word-break: break-word;
+    }
+
+    #quiz-header {
+        font-weight: 600;
+        font-size: clamp(1.5rem, 3vw, 2rem);
+        max-width: 40vw;
+        margin: 0 auto 0 6rem;
+        text-align: center;
+        line-height: 1.1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+    }
+
+    .quiz-module-square { scale: 0; margin-right: 0;}
+
+    .quiz-question-container {
+        padding: 2vw;
+        border-radius: 12px;
+        font-size: 2.5vw;
+    }
+    .quiz-option-button {
+        height: auto;
+        padding: 2vw;
+        font-size: 2vw;
+    }
+
+    .quiz-module-selection {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5vw;
+        width: 100%;
+        max-width: 100vw;
+        box-sizing: border-box;
+        padding: 0;
+    }
+
+    .quiz-module-selection>.page-button {
+        font-size: clamp(1rem, 3vw, 1.5rem);
+        width: 100%;
+        box-sizing: border-box;
+        border-radius: 8px;
+        line-height: 1;
+        margin-left: 0;
+    }
+
+    .quiz-module-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        width: 100%;
+        max-width: 100vw;
+        margin: 0 auto;
+        gap: 2vw;
+        box-sizing: border-box;
+    }
+
+
+    .quiz-setup-container {
+        margin-top: 30vw;
+        padding: 6vw var(--page-side-pad);
+        max-width: 100%;
+    }
+
+    .quiz-options {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        flex-direction: column;
+        gap: 2vw;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .quiz-option-button {
+        width: 100%;
+        padding: 2vw;
+        font-size: 2vw;
+        border-radius: 12px;
+    }
+    .quiz-setup-grid {
+        display: grid;
+        grid-template-columns: repeat(1, 1fr);
+        flex-direction: column;
+        justify-content: center;
+        gap: 3vw;
+        width: 100%;
+        padding: 0;
+        box-sizing: border-box;
+        align-items: stretch;
+    }
+
+    .quiz-grid-item{
+        margin: auto;
+        width: 100%;
+        border-radius: 12px;
+    }
+    #sample-banks{
+        width: 100%;
+        height: auto;
+        border-radius: 12px;
+    }
+    .sample-banks{
+        display: flex;
+        flex-direction: column;
+        gap: 1vw;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    .effect-list {
+        display: flex;
+        border-left: 1px solid #444;
+    }
+
+    .quiz-setup-buttons {
+        margin: 0 auto;
+        flex-direction: column;
+        gap: 1vw;
+    }
+    .quiz-setup-buttons > .page-button {
+        text-align: center;
+        font-size: clamp(1rem, 2.5vw, 1.8vw);
+        min-width: 36px;
+        min-height: 2rem;
+        width: 100%;
+        box-sizing: border-box;
+        border-radius: 8px;
+        line-height: 1.2;
+        margin-left: 0;
+  }
+    .processing-setup-header {
+        display: flex;
+        font-size: 1rem;
+        text-align: center;
+        margin-top: 2rem;
+    }
+    .process-heading {
+        grid-column: 1 / -1;
+        margin: 0;
+        font-size: 2.5vw;
+        padding: 1vw 0;
+    }
+    .process-setup-buttons {
+        flex-direction: column;
+        gap: 1vw;
+    }
+    .process-setup-buttons > .page-button {
+        text-align: center;
+        font-size: clamp(1rem, 2.5vw, 1.8vw);
+        min-width: 36px;
+        min-height: 2rem;
+        width: 100%;
+        box-sizing: border-box;
+        border-radius: 8px;
+        line-height: 1.2;
+        margin-left: 0;
+    }
+    .process-setup-container {
+        padding: 6vw var(--page-side-pad);
+        max-width: 100%;
+    }
+    .processing-grid {
+        display: grid;
+        gap: 2vw;
+        grid-template-columns: 1fr;
+        width: 100%;
+    }
+
+    .processing-option { 
+        border-radius: 12px; 
+        padding: 2vw; 
+        font-size: 1rem;
+    }
+    
+    .processing-wrapper {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        grid-auto-flow: row;
+        column-gap: 2vw;
+        row-gap: 2vw;
+        padding: 0;
+        background: #2d2d2d;
+        box-sizing: border-box;
+    }
+
+    .selectedProcess {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1vw 0;
+        border-bottom: 1px solid #444;
+        font-size: 2vw;
+    }
+
+    .effect-list {
+        padding: 0;
+        font-weight: 600;
+        color: white;
+        max-height: 30vw;
+        border-left: 1px solid #444;
+        overflow-y: auto;
+    }
+
+    .effect-item {
+        max-width: fit-content;
+        min-width: 2.5rem;
+        display: flex;
+        align-items: center;
+        width: 100%;
+        padding: 0.1vw 0;
+        border-bottom: 1px solid #444;
+        word-break: break-word;
+        font-size: 0.5rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .summary-buttons { 
+        flex-direction: column; 
+        gap: 1vw; 
+        display: flex; 
+        align-items: center;
+    }
+    .summary-buttons > .page-button { 
+        font-size: clamp(1rem, 2.5vw, 1.8vw); 
+        width: 130%; 
+        box-sizing: border-box; 
+        border-radius: 8px; 
+        line-height: 1.2; 
+        margin-left: 0; 
+    }
+
+
+    .summary-card {
+        padding: 2vw;
+        border-radius: 12px;
+        font-size: 3vw;
+    }
+    .summary-card>p{
+        text-align: center;
+        font-size: 3vw;
+    }
+
+    .results-container { 
+        padding: 2vw;
+     }
+    .results-title { 
+        font-size: 3rem; 
+    }
+    .score-box { font-size: 1rem; }
+
+
+
+    .results-table {
+        width: 100%;
+        font-size: 2.5vw;
+    }
+
+    .results-table th,
+.results-table td {
+  padding: 1rem;
+  text-align: center;
+  font-size: 0.7rem;
+  color: white;
+  border-bottom: 1px solid #444;
+}
+
+.results-table th {
+  background-color: #333;
+  text-transform: uppercase;
+  font-size: 0.65rem;
+  letter-spacing: 0.05em;
+}
+
+.results-table td:last-child {
+  font-size: 1.5rem;
+}
+
+.results-table td:nth-child(2) { 
+  max-width: 300px;
+  text-align: left;
+  word-break: break-word;
+}
+
+.results-table tr:nth-child(even) {
+  background-color: #2d2d2d;
+}
+
+.results-table tr:nth-child(odd) {
+  background-color: #1c1c1c;
+}
+
+}
+
+.navbar, .page-wrapper, .page-left, .page-right {
+  width: 100%;
+  max-width: 100vw;
+  box-sizing: border-box;
+}
+
+
+
+
+
+
+
+
+
+@media (max-width: 360px) {
+    .audio-button { width: 9vw; height: 9vw; min-width: 32px; min-height: 32px; }
+    .audio-button svg { width: 4vw; height: 4vw; scale: 2.2; }
+    .quiz-option-label { left: 0.5vw; font-size: 2vw; }
+    .quiz-question-text { font-size: 2.5vw; }
+    .summary-card { padding-block: 2vw; }
+}
+@media (max-width: 480px) {
+  .navbar,
+  .page-wrapper,
+  .page-left,
+  .page-right {
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow-x: hidden;
+  }
+
+  body {
+    overflow-x: hidden;
+  }
+}

@@ -19,6 +19,9 @@ import SummaryPage from './pages/SummaryPage.jsx';
 import ResultsPage from './pages/ResultsPage.jsx';
 import Quiz from './pages/Quiz';
 import { SetupProvider } from './context/setupContext.jsx';
+import './styles/AudioStyle.css';
+import './styles/NavBarStyle.css';
+import './styles/Responsive.css';
 import './App.css';
 
 function App() {
@@ -29,7 +32,7 @@ function App() {
   return (
     <>
       <SetupProvider>
-      <Navbar />
+        <Navbar />
       <div className="App" id="root">
         <AnimatePresence mode="wait">
           <Routes location={location} key={location.pathname}>

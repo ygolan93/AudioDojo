@@ -8,7 +8,7 @@
     width: 100%;
     height: 92vh;
     box-sizing: border-box;
-    padding: 0 2rem;
+    padding: 0 10rem;
     gap: 2rem;
     position: relative; /* Ensure positioning is relative */
 }
@@ -17,7 +17,6 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    /* padding: 2rem; */
     min-height: 100%;
     width: auto;
     max-width: none;
@@ -86,7 +85,6 @@
     font-size: 1rem;
     transition: all 0.3s ease;
     width: fit-content;
-    margin-left: 1rem;
 }
 
 .page-button:hover {
@@ -131,9 +129,16 @@
   }
   
 /* === Modules page Elements === */
+.modules-container{
+    justify-content: center;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    font-size: large;
+  }
 .module-selection{
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: flex-start;
     width: 100%;
     top: 0;
@@ -200,42 +205,68 @@
 
 
 /* === Quiz Module page elements === */
+
+.quiz-module-container {
+    justify-content: flex-start;
+    margin: auto;
+    display: flex;
+    grid-template-rows: auto 1fr;
+  }
+  .quiz-module-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 0 2rem;
+    box-sizing: border-box;
+  }
+
+
 .quiz-module-description {
     /* background-color: #2d2d2d; */
-    padding: 2rem;
+    padding: 1rem;
     border-radius: 30px;
     font-weight: 600;
     color: white;
     box-sizing: border-box;
-    margin-right: auto;
-    width: 600px;
-    height: 100%;
+    width: auto;
+    height: auto;
     max-width: none; /* Allow it to grow with the screen size */
 }
+
+#quiz-header{
+  font-weight: 600;
+  scale: 2; 
+  width: 45%;
+  margin-left: 10rem;
+}
+
+
 
 .quiz-module-square{
     background-color: #000;
     filter: brightness(1.2) drop-shadow(0 0 0.15em #7eff64);
     color: white;
     font-weight: bold;
-    font-size: 1rem;
+    font-size: 2rem;
+    margin-right: 20rem;
     border-radius: 5px;
     border: 3px solid #a3e635;
-    width: 135px;
-    height: 135px;
+    width: 180px;
+    height: 180px;
     transform: rotate(45deg);
     display: flex;
     justify-content: center;
     align-items: center;
     text-align: center;
-    scale: 3;
+    scale: 2;
 }
 
 .quiz-module-selection{
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    width: 55%;
+    width: auto;
     top: 0;
     box-sizing: border-box;
     position: relative; /* Ensure positioning is relative */
@@ -268,7 +299,6 @@
     max-width: 1200px;
     margin: 0 auto;
   }
-
   .quiz-processing-grid {
     display: grid;
     gap: 1rem;
@@ -325,9 +355,17 @@
         padding-bottom: 2rem;
     }
 
+
+    #review-button {
+    margin-top: 2rem;
+    width: 100%;
+    border-radius: 5px;
+  } 
+
+
+
     .process-option-subtitle {
         font-size: 0.85rem;
-
     }
 
     .quiz-setup-option:hover, .quiz-setup-option.selected:hover {
@@ -697,9 +735,13 @@
   height: var(--navbar-h);
   z-index: 1000;
 }
-.process-setup-container{
-  padding: 7rem 7rem;   /* ↑↓ 1rem, ←→ 2rem */
+.process-setup-container {
+  padding: 3rem 2rem;     /* פחות padding עליון */
+  max-width: 1200px;      /* מגבלת רוחב כמו Quiz/Summary */
+  margin: 0 auto;         /* למרכז */
+  box-sizing: border-box; /* שלא יחרוג */
 }
+
 .processing-container {
     height: 100%;
     display: grid;
@@ -749,15 +791,10 @@
     max-width: none; /* Allow it to grow with the screen size */
 }
 
-@media (max-width: 900px) {
-    .processing-grid {
-        grid-template-columns: 1fr;
-    }
-}
 
 .processing-wrapper {
     display: grid;
-  grid-template-columns: 180px repeat(3,minmax(120px,1fr));
+  grid-template-columns: 100px repeat(3,minmax(130px,7fr));
   grid-auto-flow: row;
   column-gap: 1rem;
   row-gap: 0.75rem;
@@ -783,13 +820,7 @@
 }
 
 .effect-item {
-    width: 3.8rem;
-}
-
-@media (max-width: 768px) {
-    .processing-grid {
-        grid-template-columns: 1fr;
-    }
+    width: 1.8rem;
 }
 
 .selectedProcess{
@@ -800,14 +831,14 @@
     border-bottom: 1px solid #444;
 }
 .effect-list{
-    padding: 0.1rem;
+    padding: 0.3rem;
     font-weight: 600;
     color: white;
     max-height: 200px;
     border-left: 1px solid #444;
 }
 .effect-item{
-    font-size: 0.8rem;
+    font-size: 0.7rem;
     display: flex;
     justify-content: left;
     align-items: center;
@@ -822,76 +853,21 @@
     filter: brightness(1.2) drop-shadow(0 0 0.1em #7eff64);
 }
 
-/* Responsive tweaks for all mentioned screen widths */
-@media screen and (max-width: 384px) {
-    .page-wrapper {
-        display: grid;
-        gap: 5rem;
-        grid-template-columns: 1fr; 
-        margin-left: 0; 
-    }
-    .page-right {
-        margin-left: 0; 
-        width: 100%; 
-        max-width: 1600px; 
-    }
-    .home-page-logo {
-        width: 100%;
-        max-width: 300px; 
-    }
+#processToSummary{
+  border-color: rgb(93, 180, 238);
 }
-
-/* For screens up to 614px (80% of 768px) */
-@media (max-width: 614px) {
-    .page-wrapper {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        padding: 1rem;
-    }
-
-    .page-left, .page-right {
-        width: 100%;
-        text-align: center;
-    }
+#processToSummary:hover{
+  background-color: #5db4ee;
+  color: black;
+  filter: brightness(1.2) drop-shadow(0 0 0.5em #64c1ff);
 }
-
-@media (max-width: 900px) {
-    .page-wrapper {
-      display: flex;
-      flex-direction: column;
-      padding: 2rem 1rem;
-      gap: 2rem;
-    }
-  
-    .page-left, .page-right {
-      align-items: center !important;
-      text-align: center !important;
-    }
-  }
-  
-  @media (max-width: 768px) {
-    .page-wrapper {
-      flex-direction: column;
-      align-items: center;
-      gap: 3rem;
-    }
-  
-    .page-left,
-    .page-right {
-      width: 90%;
-      max-width: 600px;
-    }
-  
-    .home-page-sessions {
-      margin-left: 0;
-    }
-
-    .processing-grid {
-        grid-template-columns: 1fr;
-    }
-  }
-
+#processToSummary:active{
+  transition: all 0.1s ease;
+  color: white;
+  background-color: #54ad42;
+  border-color: #7eff64;
+  filter: brightness(0.8) drop-shadow(0 0 0.2em #7eff64);
+}
 /* === Sample-dropdown styling === */
 .sample-dropdown {
   background-color: #2d2d2d;
@@ -1091,3 +1067,6 @@
 .results-table tr:nth-child(odd) {
   background-color: #1c1c1c;
 }
+
+
+

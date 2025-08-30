@@ -1,5 +1,4 @@
 import { useNavigate } from "react-router-dom";
-import "../styles/AudioStyle.css";
 import AudioLogo from "../assets/AudioLogo.png";
 import { motion } from 'framer-motion';
 import PageWrapper from "../components/PageWrapper";

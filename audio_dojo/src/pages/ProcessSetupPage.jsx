@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import "../styles/AudioStyle.css";
 import PageWrapper from "../components/PageWrapper";
 import { useSetup } from "../context/setupContext.jsx";
 import {
@@ -200,9 +199,8 @@ export default function ProcessSetupPage() {
               ))}
             </select>
             <div className="process-setup-buttons">
-              <button className="page-button">Share Setup Code</button>
-              <button className="page-button">Use Setup Code</button>
-              <button className="page-button" onClick={() => navigate('/summary')}>Quiz Setup Summary</button>
+            {/* <button className="page-button">Share Setup Code</button> */}
+              {/* <button className="page-button">Use Setup Code</button> */}
             </div>
           </div>
 
@@ -256,6 +254,7 @@ export default function ProcessSetupPage() {
             <button onClick={stopCurrent} className="page-button stop-button">
               Stop
             </button>
+              <button className="page-button" id="processToSummary" onClick={() => navigate('/summary')}>Quiz Setup Summary</button>
           </div>
         </div>
       </div>

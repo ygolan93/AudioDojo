@@ -5,7 +5,6 @@ import { useEffect, useState, useRef } from "react";
 import PageWrapper from "../components/PageWrapper";
 import { useSetup } from "../context/setupContext.jsx";
 import AudioPlayer from "../components/AudioPlayer";
-import "../styles/AudioStyle.css";
 import { generateQuestionsFromTemplates } from "../utils/questionGenerator";
 import { IoMdPlay, IoMdPause } from "react-icons/io";
 import { useNavigate } from "react-router-dom";

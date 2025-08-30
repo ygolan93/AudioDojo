@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "../styles/AudioStyle.css";
 import PageWrapper from "../components/PageWrapper";
 
 export default function ModulesPage() {
