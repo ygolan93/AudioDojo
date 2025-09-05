@@ -19,6 +19,7 @@ import SummaryPage from './pages/SummaryPage.jsx';
 import ResultsPage from './pages/ResultsPage.jsx';
 import Quiz from './pages/Quiz';
 import { SetupProvider } from './context/setupContext.jsx';
+import './index.css';
 import './styles/AudioStyle.css';
 import './styles/NavBarStyle.css';
 import './styles/Responsive.css';

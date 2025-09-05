@@ -1,6 +1,10 @@
 @media (max-width: 480px) {
     :root { --page-side-pad: 2vw; }
 
+      body, html {
+    overflow-x: hidden !important;
+  }
+
     .navbar {
         height: 18vw;
         min-height: 2.5rem;
