@@ -1,9 +1,16 @@
 @media (max-width: 480px) {
     :root { --page-side-pad: 2vw; }
 
-      body, html {
-    overflow-x: hidden !important;
-  }
+        body {
+        background-image: url("./assets/bg1.png");
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-attachment: scroll; /* שים לב: 'fixed' לא עובד טוב במובייל */
+        background-color: #242424;
+        background-blend-mode: overlay;
+        }
+
 
     .navbar {
         height: 18vw;
