@@ -3,8 +3,10 @@ import React from "react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import PageWrapper from "../components/PageWrapper";
-import jsPDF from "jspdf";
-import "jspdf-autotable";
+import jsPDF from 'jspdf';
+import 'jspdf/dist/polyfills.es.js';
+import autoTable from 'jspdf-autotable';
+import 'jspdf-autotable';
 import * as XLSX from "xlsx";
 
 export default function HistoryPage() {
@@ -37,7 +39,7 @@ export default function HistoryPage() {
   };
 
   const handleExportPDF = (entry) => {
-    const doc = new jsPDF();
+    const doc = new jsPDF({ orientation: "portrait", unit: "pt", format: "a4" });
     const date = new Date(entry.timestamp);
 
     doc.text(
@@ -46,7 +48,7 @@ export default function HistoryPage() {
       10
     );
 
-    doc.autoTable({
+    autoTable(doc, {
       head: [["Question", "Picked", "Correct", "Result"]],
       body: entry.results.map((r) => [
         r.questionText,

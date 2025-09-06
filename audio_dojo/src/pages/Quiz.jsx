@@ -216,20 +216,20 @@ const handleAnswerOptionClick = (isCorrect, selectedText) => {
 
       
 // שמירה להיסטוריה לפני ניווט
-const existing = JSON.parse(localStorage.getItem("quizHistory")) || [];
-const newEntry = {
-  id: crypto.randomUUID(),
-  timestamp: new Date().toISOString(),
-  score: finalScore,
-  results: finalResults.map(r => ({
-    questionText: r.question,
-    pickedAnswer: r.userAnswer,
-    correctAnswer: r.correctAnswer,
-    isCorrect: r.isCorrect
-  }))
-};
-const updated = [newEntry, ...existing].slice(0, 10);
-localStorage.setItem("quizHistory", JSON.stringify(updated));
+// const existing = JSON.parse(localStorage.getItem("quizHistory")) || [];
+// const newEntry = {
+//   id: crypto.randomUUID(),
+//   timestamp: new Date().toISOString(),
+//   score: finalScore,
+//   results: finalResults.map(r => ({
+//     questionText: r.question,
+//     pickedAnswer: r.userAnswer,
+//     correctAnswer: r.correctAnswer,
+//     isCorrect: r.isCorrect
+//   }))
+// };
+// const updated = [newEntry, ...existing].slice(0, 10);
+// localStorage.setItem("quizHistory", JSON.stringify(updated));
 
 navigate("/results");
 

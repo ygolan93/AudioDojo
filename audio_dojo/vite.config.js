@@ -20,6 +20,7 @@ export default defineConfig({
     }
   },
   optimizeDeps: {
+      include: ['jspdf-autotable'],
     // Don’t pre-bundle these (they’re just empty shims in the client)
     exclude: [
       'fs',
