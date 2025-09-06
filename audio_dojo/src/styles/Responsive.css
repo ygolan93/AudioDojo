@@ -462,7 +462,7 @@
   .history-table-wrapper {
     padding: 1rem;
     border-radius: 15px;
-    width: 95vw;
+    width: 90vw;
     margin: 0 auto;
   }
 
@@ -472,7 +472,9 @@
     padding: 0.5rem;
     text-align: center;
   }
-
+  .expand-wrapper.open{
+    margin: -0.5rem  -0.5rem  -0.5rem  -0.5rem;
+}
   .history-action-buttons {
     flex-direction: row;
     flex-wrap: wrap;

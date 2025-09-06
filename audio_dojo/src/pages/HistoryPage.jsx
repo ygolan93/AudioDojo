@@ -145,35 +145,36 @@ export default function HistoryPage() {
                         </td>
                       </tr>
 
-                      {isExpanded && (
-                      <tr className="history-expand-row">
-                        <td colSpan={4}>
-                          <div className={`expand-wrapper ${isExpanded ? "open" : ""}`}>
-                            <table className="results-subtable">
-                              <thead>
-                                <tr>
-                                  <th>Question</th>
-                                  <th>Picked Answer</th>
-                                  <th>Correct Answer</th>
-                                  <th>Result</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                {entry.results?.map((res, i) => (
-                                  <tr key={i} className={res.isCorrect ? "bg-green-950" : "bg-red-950"}>
-                                    <td>{res.questionText}</td>
-                                    <td>{res.pickedAnswer}</td>
-                                    <td>{res.correctAnswer}</td>
-                                    <td className="text-center">{res.isCorrect ? "✅" : "❌"}</td>
-                                  </tr>
-                                ))}
-                              </tbody>
-                            </table>
-                          </div>
-                        </td>
-                      </tr>
+              <tr className="history-expand-row">
+                <td colSpan={4}>
+                  <div
+                    className={`expand-wrapper ${isExpanded ? "open" : ""}`}
+                    aria-hidden={!isExpanded}
+                  >
+                    <table className="results-subtable">
+                      <thead>
+                        <tr>
+                          <th>Question</th>
+                          <th>Picked Answer</th>
+                          <th>Correct Answer</th>
+                          <th>Result</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {entry.results?.map((res, i) => (
+                          <tr key={i} className={res.isCorrect ? "bg-green-950" : "bg-red-950"}>
+                            <td>{res.questionText}</td>
+                            <td>{res.pickedAnswer}</td>
+                            <td>{res.correctAnswer}</td>
+                            <td className="text-center">{res.isCorrect ? "✅" : "❌"}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </td>
+              </tr>
 
-                      )}
                     </React.Fragment>
                   );
                 })}
