@@ -160,9 +160,10 @@
     .quiz-module-square { scale: 0; margin-right: 0;}
 
     .quiz-question-container {
-        padding: 2vw;
+        padding: 4vw;
         border-radius: 12px;
         font-size: 2.5vw;
+        height: 100vw;
     }
     .quiz-option-button {
         height: auto;
@@ -214,13 +215,14 @@
         flex-direction: column;
         gap: 2vw;
         width: 100%;
+        height: 50%;
         box-sizing: border-box;
     }
 
     .quiz-option-button {
         width: 100%;
-        padding: 2vw;
-        font-size: 2vw;
+        padding-left: 10vw;
+        font-size: 3.5vw;
         border-radius: 12px;
     }
     .quiz-setup-grid {
@@ -234,7 +236,6 @@
         box-sizing: border-box;
         align-items: stretch;
     }
-
     .quiz-grid-item{
         margin: auto;
         width: 100%;
@@ -489,9 +490,9 @@
 
 @media (max-width: 360px) {
     .audio-button { width: 9vw; height: 9vw; min-width: 32px; min-height: 32px; }
-    .audio-button svg { width: 4vw; height: 4vw; scale: 2.2; }
-    .quiz-option-label { left: 0.5vw; font-size: 2vw; }
-    .quiz-question-text { font-size: 2.5vw; }
+    .audio-button svg { scale: 1.2; }
+    .quiz-option-label { left: 0.9vw; font-size: 4vw; }
+    .quiz-question-text { font-size: 3vw; }
     .summary-card { padding-block: 2vw; }
 }
 @media (max-width: 480px) {
