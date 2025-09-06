@@ -90,8 +90,8 @@ useEffect(() => {
               <p><strong>Sample Banks:</strong> {sampleBanks.length ? sampleBanks.join(', ') : 'None'}</p>
               <p><strong>Number of Questions picked:</strong> {numOfQuestions || 0}</p>
                 {actualQuestions !== null && actualQuestions < numOfQuestions && (
-                  <p style={{ color: 'red', fontWeight: 'bold' }}>
-                    ⚠️ Warning: Only {actualQuestions} questions could be generated out of the requested {numOfQuestions}. Try adjusting processes or sample banks for more.
+                  <p style={{ color: 'yellow', fontWeight: 'bold' }}>
+                    NOTE: Only {actualQuestions} questions could be generated out of the requested {numOfQuestions}. Try adjusting processes or sample banks for more.
                   </p>
                 )}
 
