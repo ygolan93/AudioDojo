@@ -7,13 +7,40 @@ export default function ResultsPage() {
   const [score, setScore] = useState(null);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const storedResults = localStorage.getItem("quizResults");
-    const storedScore = localStorage.getItem("quizScore");
+useEffect(() => {
+  const storedResults = localStorage.getItem("quizResults");
+  const storedScore = localStorage.getItem("quizScore");
 
-    if (storedResults) setResults(JSON.parse(storedResults));
-    if (storedScore) setScore(JSON.parse(storedScore));
-  }, []);
+  if (storedResults) {
+    setResults(JSON.parse(storedResults));
+  }
+
+  if (storedScore) {
+    setScore(JSON.parse(storedScore));
+  }
+
+  if (storedResults && storedScore) {
+    const parsedResults = JSON.parse(storedResults);
+    const parsedScore = JSON.parse(storedScore);
+
+    const existing = JSON.parse(localStorage.getItem("quizHistory")) || [];
+    const newEntry = {
+      id: crypto.randomUUID(),
+      timestamp: new Date().toISOString(),
+      score: parsedScore.score,
+      results: parsedResults.map(r => ({
+        questionText: r.question,
+        pickedAnswer: r.userAnswer || "—",
+        correctAnswer: r.correctAnswer,
+        isCorrect: r.isCorrect
+      }))
+    };
+
+    const updated = [newEntry, ...existing].slice(0, 10);
+    localStorage.setItem("quizHistory", JSON.stringify(updated));
+  }
+}, []);
+
 
   if (!results.length || score === null) {
     return (
@@ -33,9 +60,9 @@ export default function ResultsPage() {
         <div className="score-box">
           {/* FINAL GRADE: 
           <br /> */}
-          {score.score} / {score.total} Answered Correctly
+          {score ? `${score.score} / ${score.total}` : "No score"} Answered Correctly
           <br/>
-          ({Math.round((score.score / score.total) * 100)}%)
+          {score ? `(${Math.round((score.score / score.total) * 100)}%)` : ""}
         </div>
 
         <table className="results-table">

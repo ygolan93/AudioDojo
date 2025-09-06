@@ -208,16 +208,31 @@ const handleAnswerOptionClick = (isCorrect, selectedText) => {
         isCorrect: updatedAnswers[idx]?.isCorrect || false,
       }));
 
-      localStorage.setItem("quizResults", JSON.stringify(finalResults));
-      localStorage.setItem(
-        "quizScore",
-        JSON.stringify({
-          score: isCorrect ? score + 1 : score,
-          total: questions.length,
-        })
-      );
+    const finalScore = isCorrect ? score + 1 : score;
 
-      navigate("/results");
+    localStorage.setItem("quizResults", JSON.stringify(finalResults));
+    localStorage.setItem("quizScore", JSON.stringify({ score: finalScore, total: questions.length }));
+
+
+      
+// שמירה להיסטוריה לפני ניווט
+const existing = JSON.parse(localStorage.getItem("quizHistory")) || [];
+const newEntry = {
+  id: crypto.randomUUID(),
+  timestamp: new Date().toISOString(),
+  score: finalScore,
+  results: finalResults.map(r => ({
+    questionText: r.question,
+    pickedAnswer: r.userAnswer,
+    correctAnswer: r.correctAnswer,
+    isCorrect: r.isCorrect
+  }))
+};
+const updated = [newEntry, ...existing].slice(0, 10);
+localStorage.setItem("quizHistory", JSON.stringify(updated));
+
+navigate("/results");
+
     } else {
       setUserAnswers(updatedAnswers);
       setCurrentQuestionIndex(nextQuestion);

@@ -457,10 +457,34 @@
 
 
 
+@media (max-width: 480px) {
+  .history-table-wrapper {
+    padding: 1rem;
+    border-radius: 15px;
+    width: 95vw;
+    margin: 0 auto;
+  }
 
+  .history-table th,
+  .history-table td {
+    font-size: 0.7rem;
+    padding: 0.5rem;
+    text-align: center;
+  }
 
+  .history-action-buttons {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.25rem;
+  }
 
-
+  .history-action-buttons button {
+    font-size: 0.65rem;
+    padding: 0.4rem 0.6rem;
+    min-width: 50px;
+  }
+}
 
 
 @media (max-width: 360px) {

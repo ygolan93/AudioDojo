@@ -6,11 +6,12 @@
     align-items: flex-start;
     margin-top: var(--navbar-h);
     width: 100%;
-    height: 92vh;
+    min-height: 100vh;
     box-sizing: border-box;
     padding: 0 10rem;
     gap: 2rem;
     position: relative; /* Ensure positioning is relative */
+    padding-top: 5rem;
 }
 
 .page-left, .page-right {
@@ -1070,3 +1071,96 @@
 
 
 
+.history-table-wrapper {
+  background-color: #00000022;
+  padding: 2rem;
+  border-radius: 30px;
+  color: white;
+  width: 100%;
+  overflow-x: auto;
+  max-width: 1000px;
+}
+
+.history-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 1rem;
+  text-align: left;
+  background-color: #00000055;
+}
+
+.history-table th,
+.history-table td {
+  padding: 1rem;
+  border-bottom: 1px solid #444;
+  color: white;
+}
+
+.history-table th {
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  background-color: #333;
+  letter-spacing: 0.05em;
+}
+
+.history-expand-row td {
+  background-color: #1a1a1a;
+  padding: 0;
+}
+
+.expand-wrapper {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-height 1.7s ease, opacity 0.35s ease;
+  will-change: max-height, opacity;
+  pointer-events: none; /* לא נגיש כשהוא סגור */
+}
+
+.expand-wrapper.open {
+  max-height: 1000px;   /* מספיק גבוה גם לטבלאות ארוכות */
+  opacity: 1;
+  pointer-events: auto;
+}
+
+
+
+.results-subtable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.results-subtable th,
+.results-subtable td {
+  padding: 0.75rem;
+  border-bottom: 1px solid #444;
+}
+
+.results-subtable tr:nth-child(even) {
+  background-color: #2d2d2d;
+}
+
+.results-subtable tr:nth-child(odd) {
+  background-color: #1c1c1c;
+}
+.results-subtable th {
+  background-color: #444;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+}
+
+.history-action-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.history-action-buttons button {
+  padding: 0.5rem 1rem;
+  font-size: 0.75rem;
+  border-radius: 20px;
+  min-width: 60px;
+}
