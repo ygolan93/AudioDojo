@@ -3,6 +3,13 @@
 // create one context that lives for the life of the page:
 export const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
+// iOS requires a user interaction to unlock the AudioContext
+document.addEventListener("touchstart", () => {
+  if (audioCtx.state === "suspended") {
+    audioCtx.resume();
+  }
+}, { once: true });
+
 // eagerly grab every .wav under public/sounds/**:
 const modules = import.meta.glob('/public/sounds/*/*.wav', { as: 'url', eager: true });
 
