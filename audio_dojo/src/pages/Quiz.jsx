@@ -176,7 +176,7 @@ const handleAnswerOptionClick = (isCorrect, selectedText) => {
       isCorrect
         ? "/sounds/ui/Correct Answer.wav"
         : "/sounds/ui/Wrong Answer.wav",
-    ],
+    ],volume: 0.8,
   });
   feedbackSound.play();
 
@@ -316,6 +316,7 @@ navigate("/results");
   // Play “post-processed” audio based on current question’s process
   const handlePlayProcessed = async () => {
     stopCurrent();
+    setIsPlayingOriginal(false); 
     setIsPlayingProcessed(true);
 
     const instrument = Array.isArray(parts) ? parts[0] : "Unknown";
@@ -373,6 +374,7 @@ navigate("/results");
             shape: processSetup.EQ.shape[0], // נשאר מה־setup
             frequency: freq,
             gain: gain,
+            onEnd: () => setIsPlayingProcessed(false),
           });
           break;
 
@@ -389,6 +391,7 @@ navigate("/results");
               instrument,
               attack,
               gain,
+              onEnd: () => setIsPlayingProcessed(false),
             });
             break;
           }
@@ -403,6 +406,7 @@ navigate("/results");
             await applyReverb({
               instrument,
               decayTime,
+              onEnd: () => setIsPlayingProcessed(false),
             });
             break;
           }
@@ -418,6 +422,7 @@ navigate("/results");
               instrument,
               curveType,
               gain,
+              onEnd: () => setIsPlayingProcessed(false),
             });
             break;
           }
@@ -455,12 +460,15 @@ navigate("/results");
                       stopCurrent();
                       setIsPlayingProcessed(false);
                     }
+                    stopCurrent(); 
+                    setIsPlayingProcessed(false); 
                     setIsPlayingOriginal((p) => !p);
+
                   }}
                 >
                   {isPlayingOriginal ? <IoMdPause /> : <IoMdPlay />}
                 </button>
-                <AudioPlayer src={rawOriginalUrl} play={isPlayingOriginal} />
+                <AudioPlayer src={rawOriginalUrl} play={isPlayingOriginal}  onEnd={() => setIsPlayingOriginal(false)}/>
               </div>
 
               {/* Post (processed) player */}

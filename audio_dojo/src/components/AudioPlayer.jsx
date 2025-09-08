@@ -1,13 +1,12 @@
 import React, { useEffect, useRef } from "react";
 import { Howl, Howler } from "howler";
 
-export default function AudioPlayer({ src, play }) {
+export default function AudioPlayer({ src, play, onEnd }) {
   const howlRef = useRef(null);
-  // double the default pool
+
   Howler.html5PoolSize = 20;
-  // (Re)create Howl only on src change
+
   useEffect(() => {
-    // unload previous
     if (howlRef.current) {
       howlRef.current.stop();
       howlRef.current.unload();
@@ -16,10 +15,15 @@ export default function AudioPlayer({ src, play }) {
     const sound = new Howl({
       src: [src],
       volume: 1.0,
+      html5: true,
+      onend: () => {
+        if (typeof onEnd === "function") {
+          onEnd();
+        }
+      },
     });
 
     howlRef.current = sound;
-    if (play) sound.play();
 
     return () => {
       sound.stop();
@@ -28,12 +32,18 @@ export default function AudioPlayer({ src, play }) {
     };
   }, [src]);
 
-  // toggle play/pause
   useEffect(() => {
     const sound = howlRef.current;
     if (!sound) return;
-    play ? sound.play() : sound.stop();
+
+    if (play) {
+      sound.stop(); // ← תמיד עצור לפני שמנגן מחדש
+      sound.play();
+    } else {
+      sound.stop();
+    }
   }, [play]);
 
   return null;
 }
+

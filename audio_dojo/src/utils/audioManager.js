@@ -55,7 +55,7 @@ export function stopCurrent() {
 }
 
 /** 1) apply EQ only */
-export async function applyEQ({ instrument, shape, frequency, gain }) {
+export async function applyEQ({ instrument, shape, frequency, gain, onEnd }) {
   stopCurrent();
   const buffer = await loadAudioBuffer(instrument, "original");
   const ctx = currentCtx ||= new (window.AudioContext || window.webkitAudioContext)();
@@ -74,13 +74,13 @@ export async function applyEQ({ instrument, shape, frequency, gain }) {
   eq.type = EQ_TYPE_MAP[shape] || "peaking";
   eq.frequency.value = frequency;
   eq.gain.value = gain;
-
   src.connect(eq).connect(ctx.destination);
   src.start();
+  src.onended = () => { if (typeof onEnd === "function") onEnd(); };
 }
 
 /** 2) apply Compression only */
-export async function applyCompression({ instrument, attack, release, threshold }) {
+export async function applyCompression({ instrument, attack, release, threshold, onEnd }) {
   stopCurrent();
   const buffer = await loadAudioBuffer(instrument, "original");
   const ctx = currentCtx ||= new (window.AudioContext || window.webkitAudioContext)();
@@ -100,10 +100,11 @@ export async function applyCompression({ instrument, attack, release, threshold 
 
   src.connect(comp).connect(ctx.destination);
   src.start();
+  src.onended = () => { if (typeof onEnd === "function") onEnd(); };
 }
 
 /** 3) apply Reverb only (dry/wet mix) */
-export async function applyReverb({ instrument, type, decayTime, mix }) {
+export async function applyReverb({ instrument, type, decayTime, mix, onEnd }) {
   stopCurrent();
   const buffer = await loadAudioBuffer(instrument, "original");
   const ctx = currentCtx ||= new (window.AudioContext || window.webkitAudioContext)();
@@ -131,14 +132,14 @@ export async function applyReverb({ instrument, type, decayTime, mix }) {
 
   src.connect(dryGain).connect(ctx.destination);
   src.connect(conv).connect(wetGain).connect(ctx.destination);
-
   src.start();
+  src.onended = () => { if (typeof onEnd === "function") onEnd(); };
 }
 
 
 
 /** 4) apply Saturation only (waveshaper + dry/wet mix) */
-export async function applySaturation({ instrument, drive, curveType, bias, mix }) {
+export async function applySaturation({ instrument, drive, curveType, bias, mix, onEnd }) {
   stopCurrent();
   const buffer = await loadAudioBuffer(instrument, "original");
   const ctx = currentCtx ||= new (window.AudioContext || window.webkitAudioContext)();
@@ -174,8 +175,8 @@ export async function applySaturation({ instrument, drive, curveType, bias, mix 
 
   src.connect(dryGain).connect(ctx.destination);
   src.connect(shaper).connect(wetGain).connect(ctx.destination);
-
   src.start();
+  src.onended = () => { if (typeof onEnd === "function") onEnd(); };
 }
 
 /**
