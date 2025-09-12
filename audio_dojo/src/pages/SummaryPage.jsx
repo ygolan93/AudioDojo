@@ -58,16 +58,34 @@ useEffect(() => {
       instrumentOrder.push(...shuffle([...banks]).slice(0, remainder));
 
       const pointers = {};
-      const finalQs = instrumentOrder
-        .map((inst) => {
-          const bucket = groups[inst] || [];
-          if (!bucket.length) return null;
-          pointers[inst] = (pointers[inst] || 0) + 1;
-          return bucket[(pointers[inst] - 1) % bucket.length];
-        })
-        .filter(Boolean);
+      const totalAvailable = Object.values(groups).reduce((sum, arr) => sum + arr.length, 0);
+      const finalQs = [];
+
+      for (let inst of instrumentOrder) {
+        if (finalQs.length >= totalAvailable) break;
+
+        const bucket = groups[inst] || [];
+        const index = pointers[inst] || 0;
+
+        if (index < bucket.length) {
+          finalQs.push(bucket[index]);
+          pointers[inst] = index + 1;
+        } else {
+          const fallback = banks.find(
+            b => (pointers[b] || 0) < (groups[b]?.length || 0)
+          );
+          if (fallback) {
+            const fbIndex = pointers[fallback] || 0;
+            finalQs.push(groups[fallback][fbIndex]);
+            pointers[fallback] = fbIndex + 1;
+          }
+        }
+
+        if (finalQs.length >= numQ) break;
+      }
 
       setActualQuestions(finalQs.length);
+
     } catch (err) {
       console.error("Failed to calculate question count:", err);
     }
@@ -108,11 +126,16 @@ useEffect(() => {
                   <div key={proc} className="process-summary">
                     <h3>{proc}</h3>
                     <ul>
-                      {Object.entries(params).map(([param, value]) => (
-                        <li key={param}>
-                          <strong>{param}:</strong> {Array.isArray(value) && value.length > 0 ? value.join(', ') : 'None'}
-                        </li>
-                      ))}
+                      {Object.keys(params).length > 0 ? (
+                        Object.entries(params).map(([param, value]) => (
+                          <li key={param}>
+                            <strong>{param}:</strong> {Array.isArray(value) && value.length > 0 ? value.join(', ') : 'None'}
+                          </li>
+                        ))
+                      ) : (
+                        <li>No settings defined</li>
+                      )}
+
                     </ul>
                   </div>
                 );

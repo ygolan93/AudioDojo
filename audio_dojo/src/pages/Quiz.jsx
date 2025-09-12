@@ -129,14 +129,33 @@ console.log("🔍 After filtering by sampleBank:", filtered);
     instrumentOrder.push(...shuffle([...banks]).slice(0, remainder));
 
     const pointers = {};
-    const finalQs = instrumentOrder
-      .map((inst) => {
-        const bucket = groups[inst] || [];
-        if (!bucket.length) return null;
-        pointers[inst] = (pointers[inst] || 0) + 1;
-        return bucket[(pointers[inst] - 1) % bucket.length];
-      })
-      .filter(Boolean);
+    const totalAvailable = Object.values(groups).reduce((sum, arr) => sum + arr.length, 0);
+    const finalQs = [];
+
+    for (let inst of instrumentOrder) {
+      if (finalQs.length >= totalAvailable) break; // אין יותר שאלות זמינות
+
+      const bucket = groups[inst] || [];
+      const index = pointers[inst] || 0;
+
+      if (index < bucket.length) {
+        finalQs.push(bucket[index]);
+        pointers[inst] = index + 1;
+      } else {
+        // חפש bank אחר שעדיין נשארו לו שאלות
+        const fallback = banks.find(
+          b => (pointers[b] || 0) < (groups[b]?.length || 0)
+        );
+        if (fallback) {
+          const fbIndex = pointers[fallback] || 0;
+          finalQs.push(groups[fallback][fbIndex]);
+          pointers[fallback] = fbIndex + 1;
+        }
+      }
+
+      if (finalQs.length >= numQ) break;
+    }
+
 
     setQuestions(finalQs.slice(0, numQ));
     finishLoading(false);

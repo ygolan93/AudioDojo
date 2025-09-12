@@ -1,4 +1,3 @@
-
 // Static frequency pool
 const FREQUENCY_POOL = [
   "60Hz", "120Hz", "250Hz", "500Hz",
@@ -63,76 +62,100 @@ export function generateQuestionsFromTemplates(templates) {
   templates.forEach((template) => {
     const base = { ...template, process: template.process };
     const answerFormat = template["answer format"] || [];
+    let countBefore = allQuestions.length;
 
-    // EQ: frequency + gain
-    if (Array.isArray(template.frequency) && Array.isArray(template.gain)) {
-      const freqs = template.frequency.includes("all")
+    // EQ – frequency + gain + shape
+    if (Array.isArray(template.frequency) && Array.isArray(template.shape)) {
+      const freqsRaw = template.frequency.includes("all")
         ? FREQUENCY_POOL
         : template.frequency;
 
-      const gains = template.gain.includes(null) ? [null] : template.gain;
+      const gainsRaw = Array.isArray(template.gain)
+        ? (template.gain.includes(null) ? [null] : template.gain)
+        : [];
 
-      freqs.forEach((f) => {
-        if (answerFormat.includes("dB")) {
-          gains.forEach((g) => {
-            const formattedFreq = addUnitIfNeeded(f, answerFormat);
-            const formattedGain = addUnitIfNeeded(g, answerFormat);
-            const correct = `${formattedFreq} ${formattedGain}`;
-            const answers = generateAnswerOptions(correct, freqs, gains, answerFormat);
+      const shapesRaw = template.shape;
+      const freqs = freqsRaw.map((f) => addUnitIfNeeded(f, answerFormat));
+      const gains = gainsRaw.map((g) => addUnitIfNeeded(g, answerFormat));
+
+      shapesRaw.forEach((shape) => {
+        if (gains.length > 0) {
+          // שאלות שמשלבות frequency × gain × shape
+          freqs.forEach((f) => {
+            if (answerFormat.includes("dB")) {
+              gains.forEach((g) => {
+                const correct = `${f} ${g}`;
+                const answers = generateAnswerOptions(correct, freqs, gains, answerFormat);
+
+                allQuestions.push({
+                  ...base,
+                  correctAnswer: correct,
+                  answers,
+                  id: `${template.question}-${template.parts?.[0] || "unknown"}-${shape}-${f}-${g}`,
+                });
+              });
+            }
+          });
+        } else {
+          // שאלות ללא gain (למשל Low Cut / High Cut)
+          freqs.forEach((f) => {
+            const correct = f;
+            const incorrectFreqs = freqs
+              .filter((item) => item !== f)
+              .slice(0, 3)
+              .map((item) => ({ text: item, isCorrect: false }));
+
+            const answers = shuffleArray([
+              { text: correct, isCorrect: true },
+              ...incorrectFreqs,
+            ]);
 
             allQuestions.push({
               ...base,
               correctAnswer: correct,
-              answers
+              answers,
+              id: `${template.question}-${template.parts?.[0] || "unknown"}-${shape}-${f}`,
             });
-          });
-        } else {
-          const formattedFreq = addUnitIfNeeded(f, answerFormat);
-          const incorrectFreqs = freqs
-            .filter(item => item !== f)
-            .slice(0, 3)
-            .map(item => ({ text: addUnitIfNeeded(item, answerFormat), isCorrect: false }));
-
-          const answers = shuffleArray([
-            { text: formattedFreq, isCorrect: true },
-            ...incorrectFreqs
-          ]);
-
-          allQuestions.push({
-            ...base,
-            correctAnswer: formattedFreq,
-            answers
           });
         }
       });
-      return;
     }
 
-    // Other types (Reverb, Compression, etc)
-    Object.entries(template).forEach(([key, opts]) => {
-      if (
-        !["question", "instruments", "parts", "answer format", "process"].includes(key) &&
-        Array.isArray(opts)
-      ) {
-        opts.forEach((val) => {
-          const formattedVal = addUnitIfNeeded(val, answerFormat);
-          const incorrect = opts.filter(item => item !== val).slice(0, 3);
-          const answers = shuffleArray([
-            { text: formattedVal, isCorrect: true },
-            ...incorrect.map(item => ({
-              text: addUnitIfNeeded(item, answerFormat),
-              isCorrect: false
-            }))
-          ]);
+    // Compression / Reverb / Saturation / others
+    else {
+      Object.entries(template).forEach(([key, opts]) => {
+        if (
+          !["question", "instruments", "parts", "answer format", "process"].includes(key) &&
+          Array.isArray(opts)
+        ) {
+          opts.forEach((val) => {
+            const formattedVal = addUnitIfNeeded(val, answerFormat);
+            const incorrect = opts.filter((item) => item !== val).slice(0, 3);
+            const answers = shuffleArray([
+              { text: formattedVal, isCorrect: true },
+              ...incorrect.map((item) => ({
+                text: addUnitIfNeeded(item, answerFormat),
+                isCorrect: false,
+              })),
+            ]);
 
-          allQuestions.push({
-            ...base,
-            correctAnswer: formattedVal,
-            answers
+            allQuestions.push({
+              ...base,
+              correctAnswer: formattedVal,
+              answers,
+              id: `${template.question}-${template.parts?.[0] || "unknown"}-${key}-${val}`,
+            });
           });
-        });
-      }
-    });
+        }
+      });
+    }
+
+    console.log(
+      "✅ Created",
+      allQuestions.length - countBefore,
+      "questions for:",
+      template.question
+    );
   });
 
   return allQuestions;
