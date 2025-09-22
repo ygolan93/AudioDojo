@@ -107,29 +107,33 @@ export default function ProcessSetupPage() {
   };
 
   // Render checkboxes in two columns
-  const renderOptions = (category, options = []) => {
-    const columns = options.reduce((acc, opt, i) => {
-      const colIdx = Math.floor(i / Math.ceil(options.length / 2));
-      (acc[colIdx] ||= []).push(opt);
-      return acc;
-    }, []);
+const renderOptions = (category, options = []) => {
+  const isMobile = window.innerWidth <= 480;
+  const columns = isMobile
+    ? [options] // רק עמודה אחת
+    : options.reduce((acc, opt, i) => {
+        const colIdx = Math.floor(i / Math.ceil(options.length / 2));
+        (acc[colIdx] ||= []).push(opt);
+        return acc;
+      }, []);
 
-    return columns.map((col, idx) => (
-      <div key={idx} className="effect-list">
-        {col.map(opt => (
-          <label key={opt} className="effect-item">
-            <input
-              type="checkbox"
-              className="checkbox"
-              checked={selectedOptions[category]?.includes(opt) || false}
-              onChange={() => toggleOption(category, opt)}
-            />
-            {opt}
-          </label>
-        ))}
-      </div>
-    ));
-  };
+  return columns.map((col, idx) => (
+    <div key={idx} className="effect-list">
+      {col.map(opt => (
+        <label key={opt} className="effect-item">
+          <input
+            type="checkbox"
+            className="checkbox"
+            checked={selectedOptions[category]?.includes(opt) || false}
+            onChange={() => toggleOption(category, opt)}
+          />
+          <span>{opt}</span>
+        </label>
+      ))}
+    </div>
+  ));
+};
+
 
   if (!processBanks || sampleBanks.instruments.length === 0) {
     return (
