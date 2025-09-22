@@ -1,5 +1,7 @@
 @media (max-width: 480px) {
-    :root { --page-side-pad: 2vw; }
+    :root { --page-side-pad: 2vw;     
+        --navbar-h: 15px;
+    }
 
         body {
         background-image: url("./assets/bg1.png");
@@ -13,8 +15,8 @@
 
 
     .navbar {
-        height: 18vw;
-        min-height: 2.5rem;
+        height: var(--navbar-h);
+        min-height: 1.7rem;
         width: 100%;
         position: fixed;
         z-index: 100;
@@ -25,7 +27,7 @@
         flex-direction: row;
         justify-content: center;
         align-items: center;
-        gap: 2vw;
+        gap: 3vw;
         width: 100%;
     }
     .nav-link {
@@ -36,16 +38,17 @@
     .nav-links li a {
         color: white;
         text-decoration: none;
-        font-weight: 600;
-        font-size: 5vw;
+        font-weight: 650;
+        font-size: clamp(0.9rem, 3.8vw, 1.4rem);
+        line-height: 1.2;
           bottom: -1rem;
-        position: relative;
+        position: static;
         transition: all 0.3s ease;
     }
 
     .settings-icon {
-        width: 3vw;
-        height: 3vw;
+        width: 1.5vw;
+        height: 1.5vw;
         min-width: 1rem;
         min-height: 1rem;
     }
@@ -57,9 +60,9 @@
         display: flex;
         flex-direction: column;
         align-items: stretch;
-        padding: 10vw 0 2vw 0;
+        padding: calc(var(--navbar-h) + 12px) 0 2vw 0;
         gap: 2vw;
-        margin-top: 18vw; /* Adjust for navbar height */
+        margin-top: var(--navbar-h); /* Adjust for navbar height */
     }
     .page-left,
     .page-right {

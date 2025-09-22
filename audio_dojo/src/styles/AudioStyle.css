@@ -11,7 +11,7 @@
     padding: 0 10rem;
     gap: 2rem;
     position: relative; /* Ensure positioning is relative */
-    padding-top: 15rem;
+    padding-top: 5rem;
 }
 
 .page-left, .page-right {
@@ -721,7 +721,7 @@
 /* === Processing Setup page elements === */
 :root {
   --process-header-h: 140px;
-  --navbar-h: 64px;
+  --navbar-h: 40px;
 }
 
 .navbar {

@@ -3,7 +3,7 @@
   position: fixed;
   top: 0;
   width: 100vw;
-  height: 8rem;
+  height: 3.5rem;
   background-color: rgba(30, 30, 30, 0.5);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
@@ -23,8 +23,8 @@
 }
 
 .settings-icon{
-  width: 2rem;
-  height: 2rem;
+  width: 1.5rem;
+  height: 1.5rem;
   filter: drop-shadow(0 0 0.6rem black);
 }
 
@@ -42,8 +42,7 @@
   color: white;
   text-decoration: none;
   font-weight: 650;
-  font-size: 1.8rem;
-  bottom: -0.5rem;
+  font-size: 1.4rem;
   position: relative;
   transition: all 0.3s ease;
 }
