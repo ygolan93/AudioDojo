@@ -11,6 +11,7 @@
         background-attachment: scroll; /* שים לב: 'fixed' לא עובד טוב במובייל */
         background-color: #44444444;
         background-blend-mode: overlay;
+        overflow-x: hidden;
         }
 
 
@@ -250,15 +251,11 @@
         border-radius: 12px;
     }
     .sample-banks{
-        display: flex;
-        flex-direction: column;
-        gap: 1vw;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
         width: 100%;
         box-sizing: border-box;
-    }
-    .effect-list {
-        display: flex;
-        border-left: 1px solid #444;
     }
 
     .quiz-setup-buttons {
@@ -352,29 +349,40 @@
         padding: 0;
         font-weight: 600;
         color: white;
-        max-height: 30vw;
         border-left: 1px solid #444;
         display: grid;
         grid-template-columns: repeat(1, 1fr);
         grid-auto-flow: row;
         column-gap: 2vw;
         overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        height: auto;
+        gap: 8px;
+        padding: 0;
+        border-left: none;
+        max-height: none;   /* ביטול מגבלת הגובה */
+        overflow: visible;  /* ביטול גלילה פנימית */
     }
 
-    .effect-item {
-        max-width: fit-content;
-        min-width: 2.5rem;
+    .effect-item{
         display: flex;
         align-items: center;
+        justify-content: flex-start;
+        gap: 8px;
         width: 100%;
-        padding: 0.1vw 0;
+        padding: 6px 0;
         border-bottom: 1px solid #444;
+        font-size: 0.9rem;   /* קריא במובייל */
+        max-width: 100%;
         word-break: break-word;
-        font-size: 0.5rem;
-        display: flex;
-        justify-content: center;
-        align-items: center;
     }
+      .effect-item input[type="checkbox"]{
+    width: 18px;
+    height: 18px;
+    flex: 0 0 auto;
+  }
+
 
     .summary-buttons { 
         flex-direction: column; 
@@ -451,45 +459,49 @@
   background-color: #1c1c1c;
 }
 
-}
-
 .navbar, .page-wrapper, .page-left, .page-right {
-  width: 100%;
-  max-width: 100vw;
-  box-sizing: border-box;
+width: 100%;
+max-width: 100vw;
+box-sizing: border-box;
 }
+    .history-table-wrapper {
+        padding: 1rem;
+        border-radius: 15px;
+        width: 90vw;
+        margin: 0 auto;
+    }
 
+    .history-table th,
+    .history-table td {
+        font-size: 0.7rem;
+        padding: 0.5rem;
+        text-align: center;
+    }
+    .expand-wrapper.open{
+        margin: -0.5rem  -0.5rem  -0.5rem  -0.5rem;
+    }
+    .history-action-buttons {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.25rem;
+    }
 
+    .history-action-buttons button {
+        font-size: 0.65rem;
+        padding: 0.4rem 0.6rem;
+        min-width: 50px;
+    }
 
-@media (max-width: 480px) {
-  .history-table-wrapper {
-    padding: 1rem;
-    border-radius: 15px;
-    width: 90vw;
-    margin: 0 auto;
-  }
-
-  .history-table th,
-  .history-table td {
-    font-size: 0.7rem;
-    padding: 0.5rem;
-    text-align: center;
-  }
-  .expand-wrapper.open{
-    margin: -0.5rem  -0.5rem  -0.5rem  -0.5rem;
-}
-  .history-action-buttons {
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 0.25rem;
-  }
-
-  .history-action-buttons button {
-    font-size: 0.65rem;
-    padding: 0.4rem 0.6rem;
-    min-width: 50px;
-  }
+        .navbar,
+    .page-wrapper,
+    .page-left,
+    .page-right {
+        width: 100%;
+        max-width: 100vw;
+        box-sizing: border-box;
+        overflow-x: hidden;
+    }
 }
 
 
@@ -499,19 +511,6 @@
     .quiz-option-label { left: 0.9vw; font-size: 4vw; }
     .quiz-question-text { font-size: 3vw; }
     .summary-card { padding-block: 2vw; }
-}
-@media (max-width: 480px) {
-  .navbar,
-  .page-wrapper,
-  .page-left,
-  .page-right {
-    width: 100%;
-    max-width: 100vw;
-    box-sizing: border-box;
-    overflow-x: hidden;
-  }
-
-  body {
-    overflow-x: hidden;
-  }
+      .sample-banks{ grid-template-columns: 1fr; }
+  .effect-list{  grid-template-columns: 1fr; }
 }
