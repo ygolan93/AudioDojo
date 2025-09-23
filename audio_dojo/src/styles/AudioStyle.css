@@ -4,7 +4,6 @@
     display: flex;
     justify-content: center;
     align-items: flex-start;
-    /* margin-top: var(--navbar-h); */
     width: 100%;
     min-height: 100vh;
     box-sizing: border-box;
@@ -15,6 +14,7 @@
 }
 
 .page-left, .page-right {
+    margin-top: calc(5rem + 20px); /* Adjust for navbar height and gap */
     display: flex;
     flex-direction: column;
     justify-content: center;

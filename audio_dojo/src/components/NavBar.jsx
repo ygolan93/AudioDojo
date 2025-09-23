@@ -54,6 +54,7 @@ const Navbar = () => {
               onChange={(e) => setVolume(parseFloat(e.target.value))}
               aria-label="Global Volume"
             />
+            <span className="volume-icon"><IoMdVolumeHigh /></span>
           </div>
         )}
       </nav>
