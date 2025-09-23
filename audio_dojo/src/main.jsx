@@ -6,7 +6,7 @@ import './index.css';
 import '@fontsource/assistant';
 import '@fontsource/assistant/700.css'; 
 import { Howler } from "howler";
-
+import { VolumeProvider } from "./context/VolumeContext";
 function Root() {
   useEffect(() => {
     function unlock() {
@@ -20,7 +20,9 @@ function Root() {
 
   return (
     <BrowserRouter>
+      <VolumeProvider>
       <App />
+      </VolumeProvider>
     </BrowserRouter>
   );
 }

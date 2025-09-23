@@ -1,156 +1,188 @@
 // src/utils/audioManager.js
 
-// create one context that lives for the life of the page:
+// === One shared AudioContext for the whole app ===
 export const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
-// iOS requires a user interaction to unlock the AudioContext
-document.addEventListener("touchstart", () => {
-  if (audioCtx.state === "suspended") {
-    audioCtx.resume();
-  }
-}, { once: true });
+// iOS/מובייל – לפתוח את ההקשר בנגיעה ראשונה
+document.addEventListener(
+  "touchstart",
+  () => {
+    if (audioCtx.state === "suspended") audioCtx.resume();
+  },
+  { once: true }
+);
 
-// eagerly grab every .wav under public/sounds/**:
-const modules = import.meta.glob('/public/sounds/*/*.wav', { as: 'url', eager: true });
+// === Master gain (global volume) ===
+export const masterGain = audioCtx.createGain();
+masterGain.gain.value = 1; // 100% by default
+masterGain.connect(audioCtx.destination);
 
-// build a map of maps: { folder: { fileKey: url } }
+// Allow external code (VolumeContext) to update global volume
+export function setGlobalVolume(vol) {
+  const v = Number.isFinite(vol) ? Math.max(0, Math.min(1, vol)) : 1;
+  masterGain.gain.value = v;
+}
+
+// === Preload all /public/sounds/*/*.wav eagerly ===
+const modules = import.meta.glob("/public/sounds/*/*.wav", {
+  as: "url",
+  eager: true,
+});
+
+// Map: { folder: { filename: url } }
 const FILE_MAP = Object.entries(modules).reduce((map, [path, url]) => {
-  const parts = path.split('/');
-
-  if (parts.length < 5) {
-    console.warn("⚠️ Skipping invalid path:", path);
-    return map;
-  }
-
-  const folder = parts[3];                   // e.g. 'original' or 'reverb'
-  const filename = parts[4].replace('.wav',''); // e.g. 'Room' or 'Kick'
-
-  map[folder] = map[folder] || {};
+  const parts = path.split("/");
+  if (parts.length < 5) return map;
+  const folder = parts[3]; // e.g., 'original', 'reverb', ...
+  const filename = parts[4].replace(".wav", ""); // e.g., 'Kick', 'Room'
+  map[folder] ||= {};
   map[folder][filename] = url;
-
   return map;
 }, {});
 
-console.log('Loaded sounds:', FILE_MAP);
-
-/**
- * Fetch + decode any .wav under /public/sounds/{folder}/
- */
-export async function loadAudioBuffer(key, folder = 'original') {
+// Fetch+decode by key from FILE_MAP
+export async function loadAudioBuffer(key, folder = "original") {
   const folderMap = FILE_MAP[folder];
   if (!folderMap || !folderMap[key]) {
-    throw new Error(`Unknown instrument/IR: "${key}" in folder "${folder}"`);
+    throw new Error(`Unknown key "${key}" in folder "${folder}"`);
   }
   const url = folderMap[key];
   const res = await fetch(url);
   if (!res.ok) throw new Error(`Failed to fetch ${url}: ${res.status}`);
-  const arrayBuffer = await res.arrayBuffer();
-  return audioCtx.decodeAudioData(arrayBuffer);
+  const ab = await res.arrayBuffer();
+  return audioCtx.decodeAudioData(ab);
 }
 
-let currentCtx = null;
 let currentSrc = null;
 
 export function stopCurrent() {
   if (currentSrc) {
-    try { currentSrc.stop(); }
-    catch {}
-    currentSrc.disconnect?.();
+    try {
+      currentSrc.stop();
+    } catch {}
+    try {
+      currentSrc.disconnect();
+    } catch {}
     currentSrc = null;
   }
-  // don’t close the context; reuse it
 }
 
-/** 1) apply EQ only */
+/** 1) EQ */
 export async function applyEQ({ instrument, shape, frequency, gain, onEnd }) {
   stopCurrent();
   const buffer = await loadAudioBuffer(instrument, "original");
-  const ctx = currentCtx ||= new (window.AudioContext || window.webkitAudioContext)();
-  const src = ctx.createBufferSource();
+
+  const src = audioCtx.createBufferSource();
   currentSrc = src;
   src.buffer = buffer;
 
   const EQ_TYPE_MAP = {
-    Bell:        "peaking",
+    Bell: "peaking",
     "Low Shelf": "lowshelf",
-    "High Shelf":"highshelf",
-    "Low Cut":   "highpass",
-    "High Cut":  "lowpass",
+    "High Shelf": "highshelf",
+    "Low Cut": "highpass",
+    "High Cut": "lowpass",
   };
-  const eq = ctx.createBiquadFilter();
+
+  const eq = audioCtx.createBiquadFilter();
   eq.type = EQ_TYPE_MAP[shape] || "peaking";
-  eq.frequency.value = frequency;
-  eq.gain.value = gain;
-  src.connect(eq).connect(ctx.destination);
+  eq.frequency.value = Number(frequency) || 1000;
+  eq.gain.value = Number(gain) || 0;
+
+  src.connect(eq).connect(masterGain);
   src.start();
-  src.onended = () => { if (typeof onEnd === "function") onEnd(); };
+  src.onended = () => {
+    if (typeof onEnd === "function") onEnd();
+  };
 }
 
-/** 2) apply Compression only */
-export async function applyCompression({ instrument, attack, release, threshold, onEnd }) {
+/** 2) Compression */
+export async function applyCompression({
+  instrument,
+  attack,
+  release,
+  threshold,
+  onEnd,
+}) {
   stopCurrent();
   const buffer = await loadAudioBuffer(instrument, "original");
-  const ctx = currentCtx ||= new (window.AudioContext || window.webkitAudioContext)();
-  const src = ctx.createBufferSource();
+
+  const src = audioCtx.createBufferSource();
   currentSrc = src;
   src.buffer = buffer;
 
-  const comp = ctx.createDynamicsCompressor();
-
+  const comp = audioCtx.createDynamicsCompressor();
   const a = parseFloat(attack);
   const r = parseFloat(release);
   const t = parseFloat(threshold);
 
-  if (isFinite(a)) comp.attack.value = a / 1000;
-  if (isFinite(r)) comp.release.value = r / 1000;
-  if (isFinite(t)) comp.threshold.value = t;
+  if (Number.isFinite(a)) comp.attack.value = a / 1000; // ms → sec
+  if (Number.isFinite(r)) comp.release.value = r / 1000; // ms → sec
+  if (Number.isFinite(t)) comp.threshold.value = t;
 
-  src.connect(comp).connect(ctx.destination);
+  src.connect(comp).connect(masterGain);
   src.start();
-  src.onended = () => { if (typeof onEnd === "function") onEnd(); };
+  src.onended = () => {
+    if (typeof onEnd === "function") onEnd();
+  };
 }
 
-/** 3) apply Reverb only (dry/wet mix) */
-export async function applyReverb({ instrument, type, decayTime, mix, onEnd }) {
+/** 3) Reverb (dry/wet) */
+export async function applyReverb({
+  instrument,
+  type,
+  decayTime, // currently unused here; IR carries the space
+  mix,
+  onEnd,
+}) {
   stopCurrent();
   const buffer = await loadAudioBuffer(instrument, "original");
-  const ctx = currentCtx ||= new (window.AudioContext || window.webkitAudioContext)();
-  const src = ctx.createBufferSource();
+
+  const src = audioCtx.createBufferSource();
   currentSrc = src;
   src.buffer = buffer;
 
   const irType = type || "Room";
   if (!FILE_MAP["reverb"]?.[irType]) {
-    console.warn("Invalid or missing reverb type:", irType);
+    console.warn("Invalid/missing IR type:", irType);
     return;
   }
 
-  const parsedMix = parseFloat(mix);
-  const validMix = isFinite(parsedMix) ? parsedMix : 0.5;
+  const m = parseFloat(mix);
+  const wetAmount = Number.isFinite(m) ? Math.max(0, Math.min(1, m)) : 0.5;
 
-  const dryGain = ctx.createGain();
-  dryGain.gain.value = 1 - validMix;
+  const dryGain = audioCtx.createGain();
+  dryGain.gain.value = 1 - wetAmount;
 
-  const wetGain = ctx.createGain();
-  wetGain.gain.value = validMix;
+  const wetGain = audioCtx.createGain();
+  wetGain.gain.value = wetAmount;
 
-  const conv = ctx.createConvolver();
+  const conv = audioCtx.createConvolver();
   conv.buffer = await loadAudioBuffer(irType, "reverb");
 
-  src.connect(dryGain).connect(ctx.destination);
-  src.connect(conv).connect(wetGain).connect(ctx.destination);
+  // Routing
+  src.connect(dryGain).connect(masterGain);
+  src.connect(conv).connect(wetGain).connect(masterGain);
+
   src.start();
-  src.onended = () => { if (typeof onEnd === "function") onEnd(); };
+  src.onended = () => {
+    if (typeof onEnd === "function") onEnd();
+  };
 }
 
-
-
-/** 4) apply Saturation only (waveshaper + dry/wet mix) */
-export async function applySaturation({ instrument, drive, curveType, bias, mix, onEnd }) {
+/** 4) Saturation (waveshaper + dry/wet) */
+export async function applySaturation({
+  instrument,
+  drive,
+  curveType,
+  bias,
+  mix,
+  onEnd,
+}) {
   stopCurrent();
   const buffer = await loadAudioBuffer(instrument, "original");
-  const ctx = currentCtx ||= new (window.AudioContext || window.webkitAudioContext)();
-  const src = ctx.createBufferSource();
+
+  const src = audioCtx.createBufferSource();
   currentSrc = src;
   src.buffer = buffer;
 
@@ -158,77 +190,51 @@ export async function applySaturation({ instrument, drive, curveType, bias, mix,
   const b = parseFloat(bias);
   const m = parseFloat(mix);
 
-  const validDrive = isFinite(d) ? d : 1;
-  const validBias = isFinite(b) ? b : 0;
-  const validMix = isFinite(m) ? m : 0.5;
+  const validDrive = Number.isFinite(d) ? d : 1;
+  const validBias = Number.isFinite(b) ? b : 0;
+  const wetAmount = Number.isFinite(m) ? Math.max(0, Math.min(1, m)) : 0.5;
 
+  // Build curve
   const samples = 44100;
   const curve = new Float32Array(samples);
   for (let i = 0; i < samples; i++) {
     let x = (i / (samples - 1)) * 2 - 1 + validBias;
-    if (curveType === "hard")       curve[i] = Math.tanh(x * validDrive);
-    else if (curveType === "medium") curve[i] = (Math.atan(x * validDrive) / Math.PI) * 2;
-    else                             curve[i] = x / (1 + Math.abs(x) * validDrive);
+    if (curveType === "hard") curve[i] = Math.tanh(x * validDrive);
+    else if (curveType === "medium")
+      curve[i] = (Math.atan(x * validDrive) / Math.PI) * 2;
+    else curve[i] = x / (1 + Math.abs(x) * validDrive);
   }
 
-  const shaper = ctx.createWaveShaper();
+  const shaper = audioCtx.createWaveShaper();
   shaper.curve = curve;
 
-  const dryGain = ctx.createGain();
-  dryGain.gain.value = 1 - validMix;
+  const dryGain = audioCtx.createGain();
+  dryGain.gain.value = 1 - wetAmount;
 
-  const wetGain = ctx.createGain();
-  wetGain.gain.value = validMix;
+  const wetGain = audioCtx.createGain();
+  wetGain.gain.value = wetAmount;
 
-  src.connect(dryGain).connect(ctx.destination);
-  src.connect(shaper).connect(wetGain).connect(ctx.destination);
+  // Routing
+  src.connect(dryGain).connect(masterGain);
+  src.connect(shaper).connect(wetGain).connect(masterGain);
+
   src.start();
-  src.onended = () => { if (typeof onEnd === "function") onEnd(); };
+  src.onended = () => {
+    if (typeof onEnd === "function") onEnd();
+  };
 }
 
-/**
- * Inspect a convolution IR by key (e.g. "Room", "Plate", etc.).
- */
-export async function inspectIR(key, folder = "reverb") {
-  const url = `/sounds/${folder}/${key}.wav`;
-  console.log(`🔍 Inspecting IR at ${url}…`);
+/** 5) Play original (raw) */
+export async function playOriginal({ instrument, onEnd }) {
+  stopCurrent();
+  const buffer = await loadAudioBuffer(instrument, "original");
 
-  const res = await fetch(url);
-  if (!res.ok) throw new Error(`Failed to fetch ${url}: ${res.status}`);
-  const ct = res.headers.get("Content-Type") || "";
-  if (!ct.includes("audio")) {
-    throw new Error(`Invalid content-type ${ct} for ${url}`);
-  }
-
-  const arrayBuffer = await res.arrayBuffer();
-  const ctx = new (window.AudioContext || window.webkitAudioContext)();
-  const audioBuffer = await ctx.decodeAudioData(arrayBuffer);
-
-  console.table({
-    key,
-    folder,
-    sampleRate: audioBuffer.sampleRate,
-    channels: audioBuffer.numberOfChannels,
-    length: audioBuffer.length,
-    duration: audioBuffer.duration.toFixed(3) + " s"
-  });
-
-  return audioBuffer;
-}
-
-/**
- * Loads and plays the raw sample for the given instrument.
- */
-export async function playOriginal({ instrument }) {
-  try {
-    const filePath = `/sounds/original/${instrument.toLowerCase()}/${instrument.toLowerCase()}1.wav`;
-    const ac = new (window.AudioContext || window.webkitAudioContext)();
-    const buffer = await loadAudioBuffer(ac, filePath);
-    const src = ac.createBufferSource();
-    src.buffer = buffer;
-    src.connect(ac.destination);
-    src.start();
-  } catch (err) {
-    console.error("playOriginal error:", err);
-  }
+  const src = audioCtx.createBufferSource();
+  currentSrc = src;
+  src.buffer = buffer;
+  src.connect(masterGain);
+  src.start();
+  src.onended = () => {
+    if (typeof onEnd === "function") onEnd();
+  };
 }
