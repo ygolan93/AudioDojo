@@ -8,11 +8,13 @@ import 'jspdf/dist/polyfills.es.js';
 import autoTable from 'jspdf-autotable';
 import 'jspdf-autotable';
 import * as XLSX from "xlsx";
+import EQCurveCanvas from "../components/EQCurveCanvas";
 
 export default function HistoryPage() {
   const navigate = useNavigate();
   const [historyData, setHistoryData] = useState([]);
   const [expandedRow, setExpandedRow] = useState(null);
+  const [selectedQuestionMap, setSelectedQuestionMap] = useState({});
 
   useEffect(() => {
     const storedData = JSON.parse(localStorage.getItem("quizHistory")) || [];
@@ -38,40 +40,50 @@ export default function HistoryPage() {
     localStorage.setItem("quizHistory", JSON.stringify(updated));
   };
 
-  const handleExportPDF = (entry) => {
-    const doc = new jsPDF({ orientation: "portrait", unit: "pt", format: "a4" });
-    const date = new Date(entry.timestamp);
+const handleExportPDF = async (entry) => {
+  const doc = new jsPDF({ orientation: "portrait", unit: "pt", format: "a4" });
+  const date = new Date(entry.timestamp);
 
-    doc.text(
-      `Quiz Summary - ${date.toLocaleDateString()} ${date.toLocaleTimeString()}`,
-      10,
-      10
-    );
+  doc.text(
+    `Quiz Summary - ${date.toLocaleDateString()} ${date.toLocaleTimeString()}`,
+    10,
+    20
+  );
 
+  let y = 30;
+
+  entry.results.forEach((r) => {
     autoTable(doc, {
       head: [["Question", "Picked", "Correct", "Result"]],
-      body: entry.results.map((r) => [
-        r.questionText,
-        r.pickedAnswer,
-        r.correctAnswer,
-        r.isCorrect ? "✅" : "❌",
-      ]),
-      startY: 20,
+      body: [[
+        r.questionText || r.question || "",
+        r.pickedAnswer || r.userAnswer || "",
+        r.correctAnswer || "",
+        r.isCorrect ? "Correct" : "Wrong"
+      ]],
+      startY: y,
+      didDrawPage: (data) => {
+        y = data.cursor.y + 10;
+      }
     });
+  });
 
-    doc.save(`quiz_${date.toISOString()}.pdf`);
-  };
+  doc.save(`quiz_${date.toISOString()}.pdf`);
+};
+
+
 
   const handleExportExcel = (entry) => {
-    const wsData = [
-      ["Question", "Picked", "Correct", "Result"],
-      ...entry.results.map((r) => [
-        r.questionText,
-        r.pickedAnswer,
-        r.correctAnswer,
-        r.isCorrect ? "Correct" : "Wrong",
-      ]),
-    ];
+  const wsData = [
+    ["Question", "Picked", "Correct", "Result"],
+    ...entry.results.map((r) => [
+      r.questionText || r.question || "",
+      r.pickedAnswer || r.userAnswer || "",
+      r.correctAnswer || "",
+      r.isCorrect ? "Correct" : "Wrong",
+    ]),
+  ];
+
 
     const ws = XLSX.utils.aoa_to_sheet(wsData);
     const wb = XLSX.utils.book_new();
@@ -84,7 +96,7 @@ export default function HistoryPage() {
   const calculatePercentage = (entry) => {
     if (!entry?.results?.length) return "0%";
     const correct = entry.results.filter((r) => r.isCorrect).length;
-    return `${Math.round((correct / entry.results.length) * 100)}%`;
+    return (`${Math.round((correct / entry.results.length) * 100)}%`);
   };
 
   return (
@@ -145,36 +157,70 @@ export default function HistoryPage() {
                         </td>
                       </tr>
 
-              <tr className="history-expand-row">
-                <td colSpan={4}>
-                  <div
-                    className={`expand-wrapper ${isExpanded ? "open" : ""}`}
-                    aria-hidden={!isExpanded}
-                  >
-                    <table className="results-subtable">
-                      <thead>
-                        <tr>
-                          <th>Question</th>
-                          <th>Picked Answer</th>
-                          <th>Correct Answer</th>
-                          <th>Result</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {entry.results?.map((res, i) => (
-                          <tr key={i} className={res.isCorrect ? "bg-green-950" : "bg-red-950"}>
-                            <td>{res.questionText}</td>
-                            <td>{res.pickedAnswer}</td>
-                            <td>{res.correctAnswer}</td>
-                            <td className="text-center">{res.isCorrect ? "✅" : "❌"}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </td>
-              </tr>
-
+                      <tr className="history-expand-row">
+                        <td colSpan={4}>
+                          <div
+                            className={`expand-wrapper ${isExpanded ? "open" : ""}`}
+                            aria-hidden={!isExpanded}
+                          >
+                            <table className="results-subtable">
+                              <thead>
+                                <tr>
+                                  <th>Question</th>
+                                  <th>Picked Answer</th>
+                                  <th>Correct Answer</th>
+                                  <th>Result</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {entry.results?.map((res, i) => (
+                                  <tr key={i}
+                                    className={selectedQuestionMap[idx] === i ? "selected" : ""}
+                                    onClick={() => {
+                                      setSelectedQuestionMap(prev => ({
+                                        ...prev,
+                                        [idx]: prev[idx] === i ? null : i
+                                      }));
+                                    }}
+                                  >
+                                    <td>{res.question}</td>
+                                    <td>{res.userAnswer || "—"}</td>
+                                    <td>{res.correctAnswer}</td>
+                                    <td className="text-center">
+                                      {res.isCorrect ? "✅" : "❌"}
+                                    </td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                            {typeof selectedQuestionMap[idx] === "number" && (() => {
+                              const res = entry.results[selectedQuestionMap[idx]];
+                              return (
+                                <div className="eq-audio-wrapper" style={{ marginTop: "1rem" }}>
+                                  {res.process === "EQ" && (
+                                    <>
+                                      <h4>Question {selectedQuestionMap[idx] + 1}: EQ Curve</h4>
+                                      <EQCurveCanvas
+                                        shape={res.shape}
+                                        frequency={res.frequency}
+                                        gain={res.gain}
+                                        q={1.0}
+                                      />
+                                    </>
+                                  )}
+                                  {/* {res.rawUrl && (
+                                    <div style={{ marginTop: "1rem" }}>
+                                      <p style={{ fontSize: "0.9rem", color: "#aaa" }}>Audio Samples:</p>
+                                      <audio controls src={res.rawUrl} style={{ marginRight: "1rem" }} />
+                                      {res.processedUrl && <audio controls src={res.processedUrl} />}
+                                    </div>
+                                  )} */}
+                                </div>
+                              );
+                            })()}
+                          </div>
+                        </td>
+                      </tr>
                     </React.Fragment>
                   );
                 })}

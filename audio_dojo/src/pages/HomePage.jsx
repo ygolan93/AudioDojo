@@ -19,7 +19,8 @@ return (
                 />
                 <p style={{ fontSize: "1.7rem"}}>
                     <span style={{paddingRight:"1rem", filter:"brightness(1.1) drop-shadow(0 0 0.1em #00c921)",
-  color:"yellowgreen", fontSize:"2rem", fontWeight:"700"}}>|</span>Your one stop shop for technical ear training.
+                     color:"yellowgreen", fontSize:"2rem", fontWeight:"700"}}>|</span>Your one stop shop for technical ear training.
+                    <br/><br/>
                     <button
                         className="page-button"
                         onClick={() => navigate("/modules")}

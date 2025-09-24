@@ -68,6 +68,8 @@ export function stopCurrent() {
 }
 
 /** 1) EQ */
+// BiquadFilterNode default Q is 1.0 — not explicitly set here
+// Ref: https://developer.mozilla.org/en-US/docs/Web/API/BiquadFilterNode/Q
 export async function applyEQ({ instrument, shape, frequency, gain, onEnd }) {
   stopCurrent();
   const buffer = await loadAudioBuffer(instrument, "original");

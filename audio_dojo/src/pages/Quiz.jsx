@@ -16,6 +16,7 @@ import {
   stopCurrent,
 } from "../utils/audioManager.js";
 import { Howl } from "howler";
+import EQCurveCanvas from "../components/EQCurveCanvas";
 
 export default function Quiz() {
   // Track current question index, loaded questions, etc.
@@ -220,12 +221,30 @@ const handleAnswerOptionClick = (isCorrect, selectedText) => {
     const nextQuestion = currentQuestionIndex + 1;
 
     if (nextQuestion >= questions.length) {
-      const finalResults = questions.map((q, idx) => ({
+    const finalResults = questions.map((q, idx) => {
+      const isEQ = q.process === "EQ";
+      const base = {
         question: q.question,
         correctAnswer: q.correctAnswer,
         userAnswer: updatedAnswers[idx]?.selected || null,
         isCorrect: updatedAnswers[idx]?.isCorrect || false,
-      }));
+        process: q.process,
+        instrument: q.parts?.[0] || null,
+        rawUrl: `/sounds/original/${encodeURIComponent(q.parts?.[0])}.wav`,
+        processedUrl: null // אפשר להשלים אם תיצור ייצוא לקובץ מעובד
+      };
+
+      if (isEQ) {
+        return {
+          ...base,
+          shape: q.shape,
+          frequency: q.frequency,
+          gain: q.gain
+        };
+      }
+
+      return base;
+    });
 
     const finalScore = isCorrect ? score + 1 : score;
 
@@ -547,6 +566,21 @@ navigate("/results");
 
 
             </div>
+              {answerRevealed && currentQuestion.process === "EQ" && (
+                <div className="eq-curve-wrapper">
+                  <h4 style={{ color: "#a3e635", marginBottom: "0.5rem" }}>
+                    EQ Curve Visualization
+                  </h4>
+                  <EQCurveCanvas
+                    shape={currentQuestion.shape}
+                    frequency={currentQuestion.frequency}
+                    gain={currentQuestion.gain}
+                    q={1.0}
+                  />
+                </div>
+              )}
+
+
           </div>
         )}
       </div>

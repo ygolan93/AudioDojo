@@ -591,6 +591,11 @@ box-sizing: border-box;
     border-radius: 50%;
     box-shadow: 0 0 0.25rem rgba(163, 230, 53, 0.75);
   }
+
+  .eq-curve-wrapper {
+    margin-top: 4rem;
+  }
+
     
 }
 
@@ -640,3 +645,6 @@ box-sizing: border-box;
   .nav-links { gap: clamp(0.6rem, 3vw, 1.2rem); }
   .volume-slider { width: 120px; }
 }
+
+
+

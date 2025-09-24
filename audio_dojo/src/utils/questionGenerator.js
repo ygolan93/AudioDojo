@@ -92,6 +92,9 @@ export function generateQuestionsFromTemplates(templates) {
                   correctAnswer: correct,
                   answers,
                   id: `${template.question}-${template.parts?.[0] || "unknown"}-${shape}-${f}-${g}`,
+                  shape,
+                  frequency: parseFloat(f),
+                  gain: parseFloat(g),
                 });
               });
             }
