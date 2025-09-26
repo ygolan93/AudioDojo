@@ -277,17 +277,13 @@
         margin-left: 0;
   }
   .param-block{
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-column: 1 / -1;
+    grid-template-columns: 1fr 1fr;
+    gap: 1vw;
     width: 100%;
+    border-top: 1px solid #444;
   }
-
-  .process-heading {
-        grid-column: 1;
-        margin: 0;
-        font-size: 2.5vw;
-        padding: 1vw 0;
-    }
 
     .processing-setup-header {
         display: flex;
@@ -385,7 +381,8 @@
   gap: 10px;
   width: 100%;
   padding: 0.6rem 0;
-  border-bottom: 1px solid #444;
+  border-top: 1px solid #444;
+  border-bottom: 0;
   font-size: 1.1rem;
   color: white;
   line-height: 1.4;

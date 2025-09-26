@@ -78,9 +78,10 @@
 .page-button {
     background-color: #00000000;
     filter: brightness(1.2) drop-shadow(0 0 0.15em #7eff64);
-    border-radius: 30px;
+    border-radius: 15px;
     border-color: #a3e635;
-    padding: 1rem 3rem;
+    padding: 1rem 1rem;
+    margin: auto;
     border: 2px solid #a3e635;
     color: white;
     font-weight: bold;
@@ -933,7 +934,7 @@
 
 /* match your neon theme, but in red to signal “stop” */
 .stop-button {
-  background-color: #661010;
+  /* background-color: #661010; */
   border-color: #ff4d4d;
   color: white;
   filter: drop-shadow(0 0 0.2em #ff4d4d);
