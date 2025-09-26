@@ -10,7 +10,7 @@ export default function ModulesPage() {
       <div className="modules-container">
         <div className="page-wrapper">
           <div className="page-left">
-            <h1 style={{ fontSize: "6rem" }}>Modules</h1>
+            <h1 style={{ fontSize: "5rem" }}>Modules</h1>
             <div className="module-selection">
               <button
                 className="module-button"

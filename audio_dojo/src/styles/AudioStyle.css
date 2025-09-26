@@ -18,9 +18,9 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    min-height: 100%;
+    min-height: 70%;
     width: auto;
-    max-width: none;
+    max-width: 70%;
 }
 
 .page-left {
@@ -74,6 +74,7 @@
 
 
 
+
 .page-button {
     background-color: #00000000;
     filter: brightness(1.2) drop-shadow(0 0 0.15em #7eff64);
@@ -104,6 +105,7 @@
 .home-page-sessions {
     width: 400px;
     background-color: #535353a6;
+    border: 1px solid #555;
     box-shadow: 0.5rem 0.5rem 1rem rgba(0, 0, 0, 0.5);
     padding: 2rem;
     border-radius: 30px;
@@ -114,6 +116,7 @@
   }
   .module-description{
     background-color: #21303d;
+    border: 1px solid #2a405c;
     box-shadow: 0.5rem 0.5rem 1rem rgba(0, 0, 0, 0.5);
     padding: 1rem;
     padding-right: 7rem;
@@ -250,7 +253,7 @@
     color: white;
     font-weight: bold;
     font-size: 2rem;
-    margin-right: 20rem;
+    margin-right: 3rem;
     border-radius: 5px;
     border: 3px solid #a3e635;
     width: 180px;
@@ -260,7 +263,7 @@
     justify-content: center;
     align-items: center;
     text-align: center;
-    scale: 2;
+    scale: 1.5;
 }
 
 .quiz-module-selection{
@@ -786,6 +789,7 @@
 
 .processing-option{
     background-color: #2d2d2d;
+      border: 1px solid #55555563;
     box-shadow: #2d2d2d 0.5rem 0.5rem 1rem rgba(0, 0, 0, 0.5);
     flex: 1 1 48%;
     display: flex;
@@ -1086,7 +1090,34 @@
 }
 
 
+.history-container {
+  display: flex;
+  justify-content: center;   /* מרכז את כל התוכן האופקי */
+  width: 100%;
+}
+
+
+
+.history-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  margin: 0 auto;
+  max-width: 1000px;
+  width: 100%;
+  padding: 2rem;
+  box-sizing: border-box;
+}
+.history-center h1 {
+  margin-bottom: 1.5rem;
+  color: white;
+  text-align: center;
+}
+
+
 .history-table-wrapper {
+      border: 1px solid #555;
   background-color: #333;
   padding: 2rem;
   border-radius: 30px;
@@ -1094,6 +1125,7 @@
   width: 100%;
   overflow-x: auto;
   max-width: 1000px;
+  margin: 0 auto; 
     filter: drop-shadow(0 0 0.3em #000000a4);
 }
 

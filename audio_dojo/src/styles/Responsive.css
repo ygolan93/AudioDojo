@@ -123,7 +123,7 @@
     .module-button {
         width: clamp(56px, 18vw, 90px);
         height: clamp(56px, 18vw, 90px);
-        font-size: clamp(1rem, 4vw, 1.2rem);
+        font-size: clamp(0.1rem, 4vw, 1.2rem);
         border-width: 2px;
         box-sizing: border-box;
         transition: all 0.2s ease;
@@ -142,7 +142,6 @@
     .module-description {
         font-size: clamp(0.9rem, 3vw, 1.1rem);
         text-align: center;
-        margin-top: 2vw;
         margin-inline: auto;
         color: white;
         font-weight: 500;
@@ -330,7 +329,6 @@
 
     .processing-option {
     border: 1px solid #555;
-    background-color: #1f1f1f;
     margin-bottom: 3vw;
     padding: 3vw;
     border-radius: 12px;
@@ -489,11 +487,30 @@ width: 100%;
 max-width: 100vw;
 box-sizing: border-box;
 }
+.history-container {
+    padding: 1rem 0;
+    width: auto;
+    box-sizing: border-box;
+  }
+
+  .history-center {
+    width: 95vw;
+    padding: 1rem;
+    margin: 0 auto;
+    align-items: center;
+  }
+
+  .history-center h1 {
+    font-size: 1.5rem;
+    text-align: center;
+  }
+
     .history-table-wrapper {
+        border: 1px solid #555;
         padding: 1rem;
         border-radius: 15px;
-        width: 90vw;
-        margin: 0 auto;
+        width: auto;
+        margin: 0 1rem;
     }
 
     .history-table th,
@@ -502,12 +519,22 @@ box-sizing: border-box;
         padding: 0.5rem;
         text-align: center;
     }
-    .expand-wrapper.open{
-        margin: -0.5rem  -0.5rem  -0.5rem  -0.5rem;
-    }
+
+.history-expand-row {
+  height: 0;
+  padding: 0;
+  border: none;
+}
+.history-expand-row > td {
+  padding: 0;
+  border: none;
+}
+.history-expand-row.open {
+  height: auto;
+}
     .history-action-buttons {
-        flex-direction: row;
-        flex-wrap: wrap;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
         justify-content: center;
         gap: 0.25rem;
     }

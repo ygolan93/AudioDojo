@@ -40,50 +40,47 @@ export default function HistoryPage() {
     localStorage.setItem("quizHistory", JSON.stringify(updated));
   };
 
-const handleExportPDF = async (entry) => {
-  const doc = new jsPDF({ orientation: "portrait", unit: "pt", format: "a4" });
-  const date = new Date(entry.timestamp);
+  const handleExportPDF = async (entry) => {
+    const doc = new jsPDF({ orientation: "portrait", unit: "pt", format: "a4" });
+    const date = new Date(entry.timestamp);
 
-  doc.text(
-    `Quiz Summary - ${date.toLocaleDateString()} ${date.toLocaleTimeString()}`,
-    10,
-    20
-  );
+    doc.text(
+      `Quiz Summary - ${date.toLocaleDateString()} ${date.toLocaleTimeString()}`,
+      10,
+      20
+    );
 
-  let y = 30;
+    let y = 30;
 
-  entry.results.forEach((r) => {
-    autoTable(doc, {
-      head: [["Question", "Picked", "Correct", "Result"]],
-      body: [[
+    entry.results.forEach((r) => {
+      autoTable(doc, {
+        head: [["Question", "Picked", "Correct", "Result"]],
+        body: [[
+          r.questionText || r.question || "",
+          r.pickedAnswer || r.userAnswer || "",
+          r.correctAnswer || "",
+          r.isCorrect ? "Correct" : "Wrong"
+        ]],
+        startY: y,
+        didDrawPage: (data) => {
+          y = data.cursor.y + 10;
+        }
+      });
+    });
+
+    doc.save(`quiz_${date.toISOString()}.pdf`);
+  };
+
+  const handleExportExcel = (entry) => {
+    const wsData = [
+      ["Question", "Picked", "Correct", "Result"],
+      ...entry.results.map((r) => [
         r.questionText || r.question || "",
         r.pickedAnswer || r.userAnswer || "",
         r.correctAnswer || "",
-        r.isCorrect ? "Correct" : "Wrong"
-      ]],
-      startY: y,
-      didDrawPage: (data) => {
-        y = data.cursor.y + 10;
-      }
-    });
-  });
-
-  doc.save(`quiz_${date.toISOString()}.pdf`);
-};
-
-
-
-  const handleExportExcel = (entry) => {
-  const wsData = [
-    ["Question", "Picked", "Correct", "Result"],
-    ...entry.results.map((r) => [
-      r.questionText || r.question || "",
-      r.pickedAnswer || r.userAnswer || "",
-      r.correctAnswer || "",
-      r.isCorrect ? "Correct" : "Wrong",
-    ]),
-  ];
-
+        r.isCorrect ? "Correct" : "Wrong",
+      ]),
+    ];
 
     const ws = XLSX.utils.aoa_to_sheet(wsData);
     const wb = XLSX.utils.book_new();
@@ -102,10 +99,8 @@ const handleExportPDF = async (entry) => {
   return (
     <PageWrapper className="p-4">
       <div className="history-container">
-        <div className="page-wrapper">
-          <div className="page-left">
-            <h1>HISTORY</h1>
-          </div>
+        <div className="history-center">
+          <h1>HISTORY</h1>
           <div className="history-table-wrapper">
             <table className="history-table">
               <thead>
@@ -208,13 +203,6 @@ const handleExportPDF = async (entry) => {
                                       />
                                     </>
                                   )}
-                                  {/* {res.rawUrl && (
-                                    <div style={{ marginTop: "1rem" }}>
-                                      <p style={{ fontSize: "0.9rem", color: "#aaa" }}>Audio Samples:</p>
-                                      <audio controls src={res.rawUrl} style={{ marginRight: "1rem" }} />
-                                      {res.processedUrl && <audio controls src={res.processedUrl} />}
-                                    </div>
-                                  )} */}
                                 </div>
                               );
                             })()}
