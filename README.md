@@ -77,5 +77,5 @@ Optional user profiles (post-MVP)
 
 👤 Author
 
-Developed and maintained by Yonatan Golan
+Developed and maintained by ygolan93
 Frontend Developer focused on interactive, audio-driven web applications.
