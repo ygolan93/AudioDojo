@@ -51,6 +51,25 @@ function App() {
           </Routes>
         </AnimatePresence>
       </div>
+        <footer class="custom-footer">
+          <div class="footer-content">
+          <div class="footer-copy">
+            © 2026 Yonatan Golan -  All rights reserved
+          </div>
+            |
+            <a href="https://github.com/ygolan93" target="_blank" rel="noopener noreferrer">
+              <i class="fab fa-github"></i> ygolan93
+            </a>
+            <a href="https://yonatan-personal.netlify.app" target="_blank" rel="noopener noreferrer">
+              <i class="fas fa-folder-open"></i> Projects and CV
+            </a>
+
+          </div>
+
+        </footer>
+
+
+
       </SetupProvider>
     </>
   );

@@ -1,3 +1,5 @@
+@import "@fortawesome/fontawesome-free/css/all.min.css";
+
 :root {
   font-family: 'Assistant', sans-serif;
   line-height: 1.5;
@@ -32,7 +34,50 @@ body {
   /* place-items: center;
   min-width: 320px;
   min-height: 100vh; */
+  padding-bottom: 0;
 }
+
+.custom-footer {
+  background-color: #0b132080; /* טיפה כהה יותר מה־#0f172a */
+  color: #d0d0d0;
+  padding: 16px 0 8px;
+  border-top: 1px solid #1f2a37;
+  font-size: 14px;
+  text-align: center;
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 10;
+}
+
+.footer-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+
+.footer-content a {
+  color: #88ff6a;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.footer-content a:hover {
+  color: #ffffff;
+  text-decoration: underline;
+}
+
+.footer-copy {
+  font-size: 15px;
+  color: #adadad;
+}
+
+
+
 
 h1 {
   font-size: 3.2em;
