@@ -1,156 +1,228 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import PageWrapper from '../components/PageWrapper';
-import { useSetup } from '../context/setupContext.jsx';
-import { generateQuestionsFromTemplates } from '../utils/questionGenerator';
-import { doc, getDoc } from 'firebase/firestore';
-import { db } from '../firebase';
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import PageWrapper from "../components/PageWrapper";
+import { useSetup } from "../context/setupContext.jsx";
+import { generateQuestionsFromTemplates } from "../utils/questionGenerator";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../firebase";
 
 export default function SummaryPage() {
   const navigate = useNavigate();
   const { quizSetup, processSetup } = useSetup();
   const { processes = [], sampleBanks = [], numOfQuestions } = quizSetup;
 
-  const [actualQuestions, setActualQuestions] = useState(null);
-useEffect(() => {
-  async function loadAndCountQuestions() {
-    try {
-      let allTemplates = [];
+  const [isLoading, setIsLoading] = useState(true);
+  const [hasError, setHasError] = useState(false);
 
-      for (let proc of processes) {
-        const docRef = doc(db, 'questionBanks', proc);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          const { questions = [] } = docSnap.data();
-          allTemplates.push(...questions.map(q => ({ ...q, process: proc })));
+  const [availableTotal, setAvailableTotal] = useState(0); // כמה שאלות זמינות בפועל אחרי סינון
+  const [availablePerBank, setAvailablePerBank] = useState({}); // פירוט לפי בנק
+  const [finalCount, setFinalCount] = useState(0); // כמה יכנסו בפועל לQuiz (min)
+  const [details, setDetails] = useState({}); // טקסטים למסך
+
+  // === helpers for filtering like Quiz ===
+  function toNum(x) {
+    if (x == null) return NaN;
+    const s = String(x).toLowerCase().replace(/[^0-9.+\-:]/g, "");
+    if (s.includes(":")) return parseFloat(s.split(":")[0]); // ratio "4:1" -> 4
+    return parseFloat(s);
+  }
+  function normStr(x) {
+    return String(x).trim().toLowerCase();
+  }
+  function filterByProcessSetup(questions, setup) {
+    return questions.filter((q) => {
+      const proc = q.process;
+      const cfg = setup?.[proc] || {};
+
+      if (proc === "EQ") {
+        if (q.shape !== undefined) {
+          const sel = (cfg.shape || []).map(normStr);
+          if (sel.length === 0 || !sel.includes(normStr(q.shape))) return false;
         }
+        if (q.frequency !== undefined) {
+          const sel = (cfg.frequency || []).map(toNum);
+          if (sel.length === 0 || !sel.includes(toNum(q.frequency))) return false;
+        }
+        if (q.gain !== undefined && q.gain !== null && !Number.isNaN(q.gain)) {
+          const sel = (cfg.gain || []).map(toNum);
+          if (sel.length === 0 || !sel.includes(toNum(q.gain))) return false;
+        }
+        return true;
       }
 
-      const filtered = allTemplates.filter((t) =>
-        sampleBanks.includes(t.parts?.[0])
-      );
+      // other processes — rely on paramKey/paramValue tags from questionGenerator
+      const key = q.paramKey;
+      const val = q.paramValue;
+      if (!key) return false;
 
-      const expanded = generateQuestionsFromTemplates(filtered);
+      const selected = cfg?.[key] || [];
+      if (selected.length === 0) return false;
 
-      // 🔁 לוגיקת חלוקה כמו ב-Quiz.jsx
-      const banks = sampleBanks;
-      const numQ = numOfQuestions;
-      const groups = banks.reduce((acc, inst) => {
-        acc[inst] = expanded.filter((q) => q.parts[0] === inst);
-        return acc;
-      }, {});
-
-      const shuffle = (arr) => {
-        for (let i = arr.length - 1; i > 0; i--) {
-          const j = Math.floor(Math.random() * (i + 1));
-          [arr[i], arr[j]] = [arr[j], arr[i]];
-        }
-        return arr;
-      };
-
-      let instrumentOrder = [];
-      const fullCycles = Math.floor(numQ / banks.length);
-      const remainder = numQ % banks.length;
-
-      for (let i = 0; i < fullCycles; i++) {
-        instrumentOrder.push(...shuffle([...banks]));
+      const qNum = toNum(val);
+      if (!Number.isNaN(qNum)) {
+        const selNums = selected.map(toNum).filter((n) => !Number.isNaN(n));
+        return selNums.includes(qNum);
+      } else {
+        const selStrs = selected.map(normStr);
+        return selStrs.includes(normStr(val));
       }
-      instrumentOrder.push(...shuffle([...banks]).slice(0, remainder));
+    });
+  }
 
-      const pointers = {};
-      const totalAvailable = Object.values(groups).reduce((sum, arr) => sum + arr.length, 0);
-      const finalQs = [];
+  useEffect(() => {
+    let cancelled = false;
 
-      for (let inst of instrumentOrder) {
-        if (finalQs.length >= totalAvailable) break;
-
-        const bucket = groups[inst] || [];
-        const index = pointers[inst] || 0;
-
-        if (index < bucket.length) {
-          finalQs.push(bucket[index]);
-          pointers[inst] = index + 1;
-        } else {
-          const fallback = banks.find(
-            b => (pointers[b] || 0) < (groups[b]?.length || 0)
-          );
-          if (fallback) {
-            const fbIndex = pointers[fallback] || 0;
-            finalQs.push(groups[fallback][fbIndex]);
-            pointers[fallback] = fbIndex + 1;
+    async function loadAndCountQuestions() {
+      try {
+        // 1) משיכת כל התבניות מה־Firebase עבור ה־processes שנבחרו
+        let allTemplates = [];
+        for (let proc of processes) {
+          const ref = doc(db, "questionBanks", proc);
+          const snap = await getDoc(ref);
+          if (snap.exists()) {
+            const { questions = [] } = snap.data();
+            allTemplates.push(...questions.map((q) => ({ ...q, process: proc })));
           }
         }
 
-        if (finalQs.length >= numQ) break;
+        // 2) סינון לפי sampleBanks
+        const filteredByBank = allTemplates.filter((t) =>
+          sampleBanks.includes(t.parts?.[0])
+        );
+
+        // 3) הרחבה לשאלות
+        const expanded = generateQuestionsFromTemplates(filteredByBank);
+
+        // 4) סינון לפי ProcessSetup (בדיוק כמו ב־Quiz)
+        const expandedFiltered = filterByProcessSetup(expanded, processSetup);
+
+        // 5) חישוב זמינות כללית ולפי בנק
+        const perBank = sampleBanks.reduce((acc, inst) => {
+          acc[inst] = expandedFiltered.filter((q) => q.parts[0] === inst).length;
+          return acc;
+        }, {});
+        const totalAvailable = Object.values(perBank).reduce((s, n) => s + n, 0);
+
+        // 6) כמה באמת יכנסו (האלגוריתם ב־Quiz מאפשר fallback, לכן זה פשוט min)
+        const finalNum = Math.min(numOfQuestions || 0, totalAvailable);
+
+        if (cancelled) return;
+
+        setAvailablePerBank(perBank);
+        setAvailableTotal(totalAvailable);
+        setFinalCount(finalNum);
+
+        setDetails({
+          processes: processes.join(", ") || "None",
+          banks: sampleBanks.join(", ") || "None",
+          picked: numOfQuestions || 0,
+        });
+
+        setIsLoading(false);
+      } catch (e) {
+        console.error("Summary load failed:", e);
+        if (!cancelled) {
+          setHasError(true);
+          setIsLoading(false);
+        }
       }
-
-      setActualQuestions(finalQs.length);
-
-    } catch (err) {
-      console.error("Failed to calculate question count:", err);
     }
+
+    loadAndCountQuestions();
+    return () => {
+      cancelled = true;
+    };
+  }, [processes, sampleBanks, numOfQuestions, processSetup]);
+
+  if (isLoading) {
+    return (
+      <PageWrapper className="p-4">
+        <div className="loading">LOADING...</div>
+      </PageWrapper>
+    );
   }
 
-  loadAndCountQuestions();
-}, [processes, sampleBanks, numOfQuestions]);
+  if (hasError) {
+    return (
+      <PageWrapper className="p-4">
+        <div className="error">Failed to load summary. Please try again.</div>
+      </PageWrapper>
+    );
+  }
 
+  const warnZero = availableTotal === 0;
+  const warnLess = !warnZero && finalCount < (numOfQuestions || 0);
 
   return (
-    <PageWrapper>
-      <div className="summary-layout">
-        <h1 className="summary-header">REVIEW SETTINGS</h1>
+    <PageWrapper className="p-4">
+      <div className="summary-wrapper">
+        <h1 className="page-title">REVIEW SETTINGS</h1>
 
-        <div className="summary-grid">
-          <div className="summary-card">
-            <center><h2>Quiz Setup</h2></center>
-            <div className="quiz-summary">
-              <p><strong>Processes:</strong> {processes.length ? processes.join(', ') : 'None'}</p>
-              <p><strong>Sample Banks:</strong> {sampleBanks.length ? sampleBanks.join(', ') : 'None'}</p>
-              <p><strong>Number of Questions picked:</strong> {numOfQuestions || 0}</p>
-                {actualQuestions !== null && actualQuestions < numOfQuestions && (
-                  <p style={{ color: 'yellow', fontWeight: 'bold' }}>
-                    NOTE: Only {actualQuestions} questions could be generated out of the requested {numOfQuestions}. Try adjusting processes or sample banks for more.
-                  </p>
-                )}
-
-
-            </div>
+        <div className="summary-panels">
+          <div className="summary-panel">
+            <h2>Quiz Setup</h2>
+            <ul>
+              <li>
+                <strong>Processes:</strong> {details.processes}
+              </li>
+              <li>
+                <strong>Sample Banks:</strong> {details.banks}
+              </li>
+              <li>
+                <strong>Number of Questions picked:</strong> {details.picked}
+              </li>
+            </ul>
           </div>
 
-          <div className="summary-card">
-            <center><h2>Process Setup</h2></center> 
-            {processes.length > 0 ? (
-              processes.map((proc) => {
-                const params = processSetup[proc] || {};
-                return (
-                  <div key={proc} className="process-summary">
-                    <h3>{proc}</h3>
-                    <ul>
-                      {Object.keys(params).length > 0 ? (
-                        Object.entries(params).map(([param, value]) => (
-                          <li key={param}>
-                            <strong>{param}:</strong> {Array.isArray(value) && value.length > 0 ? value.join(', ') : 'None'}
-                          </li>
-                        ))
-                      ) : (
-                        <li>No settings defined</li>
-                      )}
-
-                    </ul>
-                  </div>
-                );
-              })
-            ) : (
-              <p>No processes selected</p>
-            )}
+          <div className="summary-panel">
+            <h2>Process Setup</h2>
+            {/* מציגים בקצרה שהסינון פעיל – אין פירוט של כל ערך כדי להשאיר מסך נקי */}
+            <p>
+              Selected parameters will filter questions for the chosen processes.
+            </p>
+            <ul>
+              {Object.entries(availablePerBank).map(([bank, count]) => (
+                <li key={bank}>
+                  <strong>{bank}:</strong> {count} available
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
 
-        <div className="summary-buttons">
-          <button className="page-button" onClick={() => navigate('/quiz')}>
+        {/* אזהרות */}
+        {warnZero && (
+          <div className="warning" style={{ color: "#ff6b6b", marginTop: 16 }}>
+            No valid questions match your current settings. Please adjust your
+            Process Setup and/or Sample Banks.
+          </div>
+        )}
+        {warnLess && (
+          <div className="warning" style={{ color: "#ffcc66", marginTop: 16 }}>
+            Only {availableTotal} questions are available for the current
+            settings. The quiz will include {finalCount}.
+          </div>
+        )}
+
+        {!warnZero && !warnLess && (
+          <div className="ok" style={{ color: "#a0ff99", marginTop: 16 }}>
+            Great! {finalCount} questions will be generated.
+          </div>
+        )}
+
+        <div className="summary-buttons" style={{ marginTop: 24 }}>
+          <button
+            className="page-button"
+            onClick={() => navigate("/quiz")}
+            disabled={warnZero}
+          >
             START QUIZ
           </button>
-          <button className="page-button" onClick={() => navigate('/quiz-setup')}>
+          <button
+            className="page-button"
+            onClick={() => navigate("/quiz-setup")}
+            style={{ marginLeft: 12 }}
+          >
             BACK TO QUIZ SETUP
           </button>
         </div>

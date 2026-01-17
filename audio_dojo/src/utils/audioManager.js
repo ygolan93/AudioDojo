@@ -240,3 +240,37 @@ export async function playOriginal({ instrument, onEnd }) {
     if (typeof onEnd === "function") onEnd();
   };
 }
+
+/* ===== NEW: UI SFX (correct / wrong) =====
+   מפעיל צליל קצר "נכון" או "שגוי" בלי לעצור את מקור האודיו הראשי */
+export async function playSfx(kind = "correct") {
+  try {
+    const folder = "ui";                    // צפי לקבצים /public/sounds/ui/correct.wav | wrong.wav
+    const key = kind === "correct" ? "correct" : "wrong";
+
+    // אם הקבצים קיימים במפה — ננגן מהם
+    if (FILE_MAP[folder]?.[key]) {
+      const buf = await loadAudioBuffer(key, folder);
+      const src = audioCtx.createBufferSource();
+      src.buffer = buf;
+      src.connect(masterGain);
+      src.start();
+      return;
+    }
+
+    // אחרת: fallback ביפ קצר עם Oscillator
+    const osc = audioCtx.createOscillator();
+    const g = audioCtx.createGain();
+    osc.type = "sine";
+    osc.frequency.value = kind === "correct" ? 880 : 220;
+    const now = audioCtx.currentTime;
+    g.gain.setValueAtTime(0.0001, now);
+    g.gain.exponentialRampToValueAtTime(0.2, now + 0.01);
+    g.gain.exponentialRampToValueAtTime(0.0001, now + 0.35);
+    osc.connect(g).connect(masterGain);
+    osc.start(now);
+    osc.stop(now + 0.4);
+  } catch (e) {
+    console.warn("SFX error:", e);
+  }
+}

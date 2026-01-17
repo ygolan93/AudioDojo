@@ -1,24 +1,30 @@
 /* === Updated General Responsive Layout === */
+.page-shell {
+    min-height: calc(100vh - var(--navbar-h));
+    padding-top: var(--navbar-h);
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
 .page-wrapper {
     background-color: rgba(104, 104, 104, 0.192);
     display: flex;
     justify-content: center;
-    align-items: flex-start;
+    align-items: center;
     width: 100%;
-    min-height: 100vh;
     box-sizing: border-box;
-    padding: 0 10rem;
+    padding: 0 var(--page-side-pad);
     gap: 2rem;
     position: relative; /* Ensure positioning is relative */
-    padding-top: 5rem;
 }
 
 .page-left, .page-right {
-    margin-top: calc(5rem + 20px); /* Adjust for navbar height and gap */
+    margin-top: 0; /* Avoid extra vertical overflow */
     display: flex;
     flex-direction: column;
     justify-content: center;
-    min-height: 70%;
     width: auto;
     max-width: 70%;
 }
@@ -31,6 +37,18 @@
 .page-right {
     align-items: flex-end;
     text-align: left;
+}
+
+.sound-test-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    color: white;
+}
+
+.sound-test-container h1 {
+    margin: 0;
 }
 
 .checkbox {
@@ -279,12 +297,11 @@
 
 /* === Quiz Setup page elements === */
 .quiz-setup-container {
-    padding-top: 10%;
+    padding: 2rem;
     justify-content: center;
     margin: auto;
     display: grid;
     grid-template-rows: auto 1fr;
-    padding-inline: 2rem;
     font-size: large;
   }
   .quiz-setup-header {
@@ -546,8 +563,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: auto;
-  margin-top: 20rem;
+  margin: 0 auto;
   max-width: 900px;
   font-size: 2rem;
   padding: 2rem;
@@ -738,7 +754,10 @@
 /* === Processing Setup page elements === */
 :root {
   --process-header-h: 140px;
-  --navbar-h: 40px;
+  --navbar-h: 3.5rem;
+  --footer-h: 64px;
+  --page-side-pad: 10rem;
+  --page-top-gap: 1.5rem;
 }
 
 .navbar {
@@ -952,7 +971,7 @@
   border: solid 2px #a3e635;
   font-weight: bold;
   font-size: 4.5rem;
-  margin-top: 22rem;
+  margin: 0 auto;
 }
 /* SummaryPage layout */
 .summary-layout {
@@ -1016,7 +1035,7 @@
   border-radius: 30px;
   color: white;
   max-width: 1100px;
-  margin: 6rem auto;
+  margin: 0 auto;
   box-shadow: 0 0 2rem rgba(0, 0, 0, 0.6);
   /* border: 1px solid #a3e635; */
   /* filter: drop-shadow(0 0 0.1em #7eff64); */

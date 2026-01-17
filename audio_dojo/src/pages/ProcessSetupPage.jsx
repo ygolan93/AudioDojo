@@ -186,8 +186,8 @@ const renderOptions = (category, options = []) => {
   };
 
   return (
-    <PageWrapper className="p-4">
-      <div className="process-setup-outer">
+    <PageWrapper className="p-4 process-page-shell">
+      <div className="page-wrapper process-setup-outer">
         <div className="process-setup-container">
           <div className="processing-setup-header">
             <h1>SETUP</h1>

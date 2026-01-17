@@ -59,14 +59,14 @@
 
     .page-wrapper {
         height: auto;
-        width: auto;
+        width: 100%;
         box-sizing: border-box;
         display: flex;
         flex-direction: column;
         align-items: stretch;
-        padding: calc(var(--navbar-h));
+        padding: 0 var(--page-side-pad);
         gap: 2vw;
-         margin-top: calc(var(--navbar-h)); /* Adjust for navbar height */
+        margin-top: 0;
     }
     .page-left,
     .page-right {
@@ -210,7 +210,7 @@
 
 
     .quiz-setup-container {
-        margin-top: 30vw;
+        margin-top: 0;
         padding: 6vw var(--page-side-pad);
         max-width: 100%;
     }
@@ -315,6 +315,9 @@
     .process-setup-container {
         padding: 6vw var(--page-side-pad);
         max-width: 100%;
+    }
+    .process-setup-outer {
+        padding: 0;
     }
     .processing-grid {
         display: grid;

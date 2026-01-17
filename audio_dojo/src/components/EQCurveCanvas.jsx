@@ -1,5 +1,27 @@
 import { useEffect, useRef } from "react";
 
+function toHz(v) {
+  if (v == null) return NaN;
+  if (typeof v === "number") return v;
+  const s = String(v).toLowerCase().trim();
+  const n = parseFloat(s.replace(/[^0-9.+-]/g, ""));
+  if (!Number.isFinite(n)) return NaN;
+  if (s.includes("khz") || /\b\d+(\.\d+)?k\b/.test(s)) return n * 1000;
+  return n;
+}
+function toDb(v, def = 0) {
+  if (v == null) return def;
+  if (typeof v === "number") return v;
+  const n = parseFloat(String(v).replace(/[^0-9.+-]/g, ""));
+  return Number.isFinite(n) ? n : def;
+}
+function toQ(v, def = 1) {
+  if (v == null) return def;
+  if (typeof v === "number") return v;
+  const n = parseFloat(String(v).replace(/[^0-9.+-]/g, ""));
+  return Number.isFinite(n) ? n : def;
+}
+
 export default function EQCurveCanvas({
   shape = "Bell",
   frequency = 1000,
@@ -14,15 +36,24 @@ export default function EQCurveCanvas({
     const container = containerRef.current;
     if (!canvas || !container) return;
 
-    // Get container width dynamically
     const width = container.offsetWidth;
     const height = 200;
-
     canvas.width = width;
     canvas.height = height;
 
     const ctx = canvas.getContext("2d");
     ctx.clearRect(0, 0, width, height);
+
+    const fHz = toHz(frequency);
+    const gDb = toDb(gain, 0);
+    const qVal = Math.max(toQ(q, 1), 0.0001);
+
+    if (!Number.isFinite(fHz) || !Number.isFinite(gDb) || !Number.isFinite(qVal)) {
+      // ציור רק רקע/צירים כדי לא לקרוס
+      ctx.fillStyle = "#111";
+      ctx.fillRect(0, 0, width, height);
+      return;
+    }
 
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     const filter = audioCtx.createBiquadFilter();
@@ -31,21 +62,23 @@ export default function EQCurveCanvas({
       Bell: "peaking",
       "Low Shelf": "lowshelf",
       "High Shelf": "highshelf",
+      "Low Cut": "highpass",
+      "High Cut": "lowpass",
     };
 
     filter.type = shapeMap[shape] || "peaking";
-    filter.frequency.value = frequency;
-    filter.gain.value = gain;
-    filter.Q.value = q;
+    filter.frequency.value = Math.min(Math.max(fHz, 20), 20000);
+    filter.gain.value = gDb;
+    filter.Q.value = qVal;
 
-    const N = width;
+    const N = Math.max(64, width);
     const freqHz = new Float32Array(N);
     const mag = new Float32Array(N);
     const phase = new Float32Array(N);
 
     for (let i = 0; i < N; i++) {
       const norm = i / (N - 1);
-      freqHz[i] = 20 * Math.pow(10, norm * 3);
+      freqHz[i] = 20 * Math.pow(10, norm * 3); // 20..20k
     }
 
     filter.getFrequencyResponse(freqHz, mag, phase);
@@ -63,7 +96,6 @@ export default function EQCurveCanvas({
       ctx.lineTo(x2, y2);
       ctx.stroke();
     };
-
     const drawText = (text, x, y, align = "center", baseline = "middle", color = "#999") => {
       ctx.fillStyle = color;
       ctx.font = "10px sans-serif";
@@ -77,30 +109,30 @@ export default function EQCurveCanvas({
       drawLine(0, y, width, y, dB === 0 ? "#666" : "#333");
       drawText(`${dB} dB`, 5, y, "left");
     }
-
-    const freqLabels = [20, 50, 100, 200, 500, 1000, 2000, 5000, 10000, 20000];
-    freqLabels.forEach((hz) => {
+    [20, 50, 100, 200, 500, 1000, 2000, 5000, 10000, 20000].forEach((hz) => {
       const norm = Math.log10(hz / 20) / 3;
       const x = norm * width;
       drawLine(x, 0, x, height, "#222");
-      const label = hz >= 1000 ? `${hz / 1000}k` : `${hz}`;
-      drawText(label, x, height - 10);
+      drawText(hz >= 1000 ? `${hz / 1000}k` : `${hz}`, x, height - 10);
     });
 
-    // EQ Curve
+    // Curve
     ctx.strokeStyle = "#a3e635";
     ctx.lineWidth = 2;
     ctx.beginPath();
-
     for (let i = 0; i < N; i++) {
-      const dB = 20 * Math.log10(mag[i]);
+      const dB = 20 * Math.log10(mag[i] || 1);
       const x = i;
       const y = height / 2 - (dB / 24) * (height / 2);
       if (i === 0) ctx.moveTo(x, y);
       else ctx.lineTo(x, y);
     }
-
     ctx.stroke();
+
+    // cleanup
+    return () => {
+      try { audioCtx.close(); } catch {}
+    };
   }, [shape, frequency, gain, q]);
 
   return (

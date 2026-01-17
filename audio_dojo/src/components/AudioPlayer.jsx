@@ -1,12 +1,18 @@
 import React, { useEffect, useRef } from "react";
 import { Howl, Howler } from "howler";
 
+function detectFormat(url) {
+  if (!url) return [];
+  const m = String(url).toLowerCase().match(/\.(mp3|wav|ogg|m4a|webm|aac)(?:\?|#|$)/);
+  return m ? [m[1]] : ["mp3", "wav", "ogg"]; // fallback
+}
+
 export default function AudioPlayer({ src, play, onEnd }) {
   const howlRef = useRef(null);
-
   Howler.html5PoolSize = 20;
 
   useEffect(() => {
+    if (!src) return () => {};
     if (howlRef.current) {
       howlRef.current.stop();
       howlRef.current.unload();
@@ -14,17 +20,13 @@ export default function AudioPlayer({ src, play, onEnd }) {
 
     const sound = new Howl({
       src: [src],
+      format: detectFormat(src), // ← מונע את האזהרה
       volume: 1.0,
       html5: true,
-      onend: () => {
-        if (typeof onEnd === "function") {
-          onEnd();
-        }
-      },
+      onend: () => typeof onEnd === "function" && onEnd(),
     });
 
     howlRef.current = sound;
-
     return () => {
       sound.stop();
       sound.unload();
@@ -35,9 +37,8 @@ export default function AudioPlayer({ src, play, onEnd }) {
   useEffect(() => {
     const sound = howlRef.current;
     if (!sound) return;
-
     if (play) {
-      sound.stop(); // ← תמיד עצור לפני שמנגן מחדש
+      sound.stop();
       sound.play();
     } else {
       sound.stop();
@@ -46,4 +47,3 @@ export default function AudioPlayer({ src, play, onEnd }) {
 
   return null;
 }
-

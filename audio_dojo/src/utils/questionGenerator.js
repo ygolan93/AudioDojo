@@ -1,164 +1,200 @@
-// Static frequency pool
+// utils/questionGenerator.js
+
+// -------- helpers --------
 const FREQUENCY_POOL = [
   "60Hz", "120Hz", "250Hz", "500Hz",
   "1KHz", "2KHz", "4KHz", "8KHz", "10KHz", "12KHz"
 ];
 
-// Shuffle helper
 function shuffleArray(array) {
   return array
-    .map(value => ({ value, sort: Math.random() }))
+    .map((value) => ({ value, sort: Math.random() }))
     .sort((a, b) => a.sort - b.sort)
     .map(({ value }) => value);
 }
 
-// Add unit to value if missing
-function addUnitIfNeeded(val, format) {
-  if (val == null) return val;
-  const str = `${val}`.toLowerCase();
-  if (format.includes("Hz") && !str.includes("hz")) return `${val}Hz`;
-  if (format.includes("dB") && !str.includes("db")) return `${val}dB`;
-  if (format.includes("ms") && !str.includes("ms")) return `${val}ms`;
-  if (format.includes("s") && !str.includes("s")) return `${val}s`;
-  if (format.includes("ratio") && !str.includes(":")) return `${val}:1`;
-  return `${val}`;
+function toNum(x) {
+  if (x == null) return NaN;
+  const s = String(x).toLowerCase().trim();
+  if (s.includes(":")) return parseFloat(s.split(":")[0]); // e.g. "4:1"
+  const n = parseFloat(s.replace(/[^0-9.+-]/g, ""));
+  return Number.isFinite(n) ? n : NaN;
 }
 
-// Generate wrong answers and mix with correct one
-function generateAnswerOptions(correctAnswer, frequencies, gains, answerFormat = []) {
-  const allCombos = [];
+function addUnitIfNeeded(val, unit) {
+  if (!unit) return String(val);
+  const s = String(val);
+  if (s.toLowerCase().includes(unit.toLowerCase())) return s;
+  return `${s}${unit}`;
+}
 
-  for (const freq of frequencies) {
-    for (const gain of gains) {
-      const formattedFreq = addUnitIfNeeded(freq, answerFormat);
-      const formattedGain = addUnitIfNeeded(gain, answerFormat);
-      const combo = answerFormat.includes("dB")
-        ? `${formattedFreq} ${formattedGain}`
-        : formattedFreq;
-      allCombos.push(combo);
-    }
-  }
+function ensureArray(x) {
+  if (Array.isArray(x)) return x;
+  if (x == null) return [];
+  return [x];
+}
 
-  const wrongOptions = allCombos.filter(combo => combo !== correctAnswer);
-  const selectedWrong = [];
-
-  while (selectedWrong.length < 3 && wrongOptions.length > 0) {
-    const random = wrongOptions[Math.floor(Math.random() * wrongOptions.length)];
-    if (!selectedWrong.includes(random)) {
-      selectedWrong.push(random);
-    }
-  }
-
-  return shuffleArray([
-    { text: correctAnswer, isCorrect: true },
-    ...selectedWrong.map(text => ({ text, isCorrect: false }))
+// Build four answers (1 correct + 3 distractors) from a pool
+function buildMCAnswers(correct, pool, unit) {
+  const all = pool.filter((v) => String(v) !== String(correct));
+  const wrong = shuffleArray(all).slice(0, 3).map((v) => ({
+    text: addUnitIfNeeded(v, unit),
+    isCorrect: false,
+  }));
+  const ans = shuffleArray([
+    { text: addUnitIfNeeded(correct, unit), isCorrect: true },
+    ...wrong,
   ]);
+  return ans;
 }
 
-// Main function
-export function generateQuestionsFromTemplates(templates) {
+// -------- main --------
+/**
+ * @param {Array<Object>} templates - firebase templates already filtered by sample bank if needed
+ * Each template is expected to look like:
+ * {
+ *   question: "Which frequency was boosted?",
+ *   process: "EQ" | "Compression" | "Reverb" | "Saturation" | ...,
+ *   parts: ["Kick"],                       // instrument at index 0
+ *   options: { frequency:[...], gain:[...], shape:[...] }, // per process
+ *   answerFormat: { frequency:"Hz", gain:"dB", attack:"ms", release:"ms", ... } // optional
+ * }
+ */
+export function generateQuestionsFromTemplates(templates = []) {
   const allQuestions = [];
 
   templates.forEach((template) => {
-    const base = { ...template, process: template.process };
-    const answerFormat = template["answer format"] || [];
-    let countBefore = allQuestions.length;
+    const countBefore = allQuestions.length;
 
-    // EQ – frequency + gain + shape
-    if (Array.isArray(template.frequency) && Array.isArray(template.shape)) {
-      const freqsRaw = template.frequency.includes("all")
-        ? FREQUENCY_POOL
-        : template.frequency;
+    const process = template.process || "EQ";
+    const parts = ensureArray(template.parts && template.parts.length ? template.parts : [template.instrument || template.instruments || "Unknown"]);
+    const instrument = parts[0];
 
-      const gainsRaw = Array.isArray(template.gain)
-        ? (template.gain.includes(null) ? [null] : template.gain)
-        : [];
+    // unify options source
+    const optsObj =
+      template.options ||
+      template.params ||
+      template.variations ||
+      {};
 
-      const shapesRaw = template.shape;
-      const freqs = freqsRaw.map((f) => addUnitIfNeeded(f, answerFormat));
-      const gains = gainsRaw.map((g) => addUnitIfNeeded(g, answerFormat));
+    const fmt = template.answerFormat || {};
 
-      shapesRaw.forEach((shape) => {
-        if (gains.length > 0) {
-          // שאלות שמשלבות frequency × gain × shape
-          freqs.forEach((f) => {
-            if (answerFormat.includes("dB")) {
-              gains.forEach((g) => {
-                const correct = `${f} ${g}`;
-                const answers = generateAnswerOptions(correct, freqs, gains, answerFormat);
+    // ---------- EQ: handle frequency / gain / shape ----------
+    if (process === "EQ") {
+      const freqArr = ensureArray(optsObj.frequency && optsObj.frequency.length ? optsObj.frequency : FREQUENCY_POOL);
+      const gainArr = ensureArray(optsObj.gain);
+      const shapeArr = ensureArray(optsObj.shape);
 
-                allQuestions.push({
-                  ...base,
-                  correctAnswer: correct,
-                  answers,
-                  id: `${template.question}-${template.parts?.[0] || "unknown"}-${shape}-${f}-${g}`,
-                  shape,
-                  frequency: parseFloat(f),
-                  gain: parseFloat(g),
-                });
-              });
-            }
-          });
-        } else {
-          // שאלות ללא gain (למשל Low Cut / High Cut)
-          freqs.forEach((f) => {
-            const correct = f;
-            const incorrectFreqs = freqs
-              .filter((item) => item !== f)
-              .slice(0, 3)
-              .map((item) => ({ text: item, isCorrect: false }));
+      const questionText = String(template.question || "Which frequency was boosted?");
+
+      // If both frequency & gain exist, create combo questions like "80Hz +12dB"
+      if (freqArr.length && gainArr.length && /boost|cut/i.test(questionText)) {
+        for (const f of freqArr) {
+          for (const g of gainArr) {
+            const correct = `${addUnitIfNeeded(f, fmt.frequency || (/[kK]?Hz$/.test(f) ? "" : "Hz"))} ${addUnitIfNeeded(g, fmt.gain || (/[dD]B$/.test(g) ? "" : "dB"))}`;
+
+            // Build pool of combos for distractors (same space-separated format)
+            const comboPool = [];
+            for (const f2 of freqArr) comboPool.push(`${addUnitIfNeeded(f2, fmt.frequency || "Hz")} ${addUnitIfNeeded(g, fmt.gain || "dB")}`);
+            for (const g2 of gainArr) comboPool.push(`${addUnitIfNeeded(f, fmt.frequency || "Hz")} ${addUnitIfNeeded(g2, fmt.gain || "dB")}`);
 
             const answers = shuffleArray([
               { text: correct, isCorrect: true },
-              ...incorrectFreqs,
+              ...shuffleArray(
+                comboPool.filter((x) => x !== correct)
+              )
+                .slice(0, 3)
+                .map((t) => ({ text: t, isCorrect: false })),
             ]);
 
             allQuestions.push({
-              ...base,
+              question: questionText,
+              process,
+              parts,
+              instrument,
+              frequency: f,
+              gain: g,
+              answers,
               correctAnswer: correct,
-              answers,
-              id: `${template.question}-${template.parts?.[0] || "unknown"}-${shape}-${f}`,
+              id: `${questionText}-${instrument}-${f}-${g}`,
             });
+          }
+        }
+      } else if (freqArr.length && /frequency/i.test(questionText)) {
+        // frequency-only question
+        for (const f of freqArr) {
+          const answers = buildMCAnswers(f, freqArr, fmt.frequency || "Hz");
+          allQuestions.push({
+            question: questionText,
+            process,
+            parts,
+            instrument,
+            frequency: f,
+            answers,
+            correctAnswer: addUnitIfNeeded(f, fmt.frequency || "Hz"),
+            id: `${questionText}-${instrument}-freq-${f}`,
           });
         }
-      });
+      }
+
+      // shape questions (if the template is about shelf/bell etc.)
+      if (shapeArr.length && /shelf|shape|bell|cut/i.test(questionText)) {
+        for (const s of shapeArr) {
+          const answers = buildMCAnswers(s, shapeArr, "");
+          allQuestions.push({
+            question: questionText,
+            process,
+            parts,
+            instrument,
+            shape: s,
+            answers,
+            correctAnswer: String(s),
+            id: `${questionText}-${instrument}-shape-${s}`,
+          });
+        }
+      }
     }
 
-    // Compression / Reverb / Saturation / others
+    // ---------- Other processes (Compression / Reverb / Saturation / ...) ----------
     else {
-      Object.entries(template).forEach(([key, opts]) => {
-        if (
-          !["question", "instruments", "parts", "answer format", "process"].includes(key) &&
-          Array.isArray(opts)
-        ) {
-          opts.forEach((val) => {
-            const formattedVal = addUnitIfNeeded(val, answerFormat);
-            const incorrect = opts.filter((item) => item !== val).slice(0, 3);
-            const answers = shuffleArray([
-              { text: formattedVal, isCorrect: true },
-              ...incorrect.map((item) => ({
-                text: addUnitIfNeeded(item, answerFormat),
-                isCorrect: false,
-              })),
-            ]);
+      // Take every option array in optsObj and turn it into a question-family.
+      // For each key K with array V[], create MC questions where correctAnswer is a single value from V[].
+      // Add paramKey/paramValue to each pushed question so the app can filter by ProcessSetup.
+      Object.entries(optsObj).forEach(([key, values]) => {
+        const arr = ensureArray(values);
+        if (!arr.length) return;
 
-            allQuestions.push({
-              ...base,
-              correctAnswer: formattedVal,
-              answers,
-              id: `${template.question}-${template.parts?.[0] || "unknown"}-${key}-${val}`,
-            });
+        const unit = (fmt && fmt[key]) || ""; // e.g. ms/dB/s/ratio/…
+        const qText =
+          String(template.question || `Pick ${key}`);
+
+        for (const val of arr) {
+          const answers = buildMCAnswers(val, arr, unit);
+
+          allQuestions.push({
+            question: qText,
+            process,
+            parts,
+            instrument,
+
+            // tagging for filtering later (THIS IS THE NEW ADDITION)
+            paramKey: key,
+            paramValue: val,
+
+            answers,
+            correctAnswer: addUnitIfNeeded(val, unit),
+            id: `${qText}-${instrument}-${key}-${val}`,
           });
         }
       });
     }
 
-    console.log(
-      "✅ Created",
-      allQuestions.length - countBefore,
-      "questions for:",
-      template.question
-    );
+    // console summary per template
+    const created = allQuestions.length - countBefore;
+    if (created > 0) {
+      // eslint-disable-next-line no-console
+      console.log("✅ Created", created, "questions for:", template.question || template.process || "template");
+    }
   });
 
   return allQuestions;

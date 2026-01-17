@@ -13,6 +13,7 @@
     "@cloudinary/react": "^1.14.1",
     "@cloudinary/url-gen": "^1.21.0",
     "@fontsource/assistant": "^5.2.6",
+    "@fortawesome/fontawesome-free": "^7.1.0",
     "autotable": "^1.0.0",
     "cloudinary": "^2.6.1",
     "dotenv": "^16.5.0",
