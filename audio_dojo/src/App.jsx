@@ -27,7 +27,7 @@ import './App.css';
 
 function App() {
   const location = useLocation();
-  const cld = new Cloudinary({ cloud: { cloudName: 'ds79llyes' } });
+  const cld = new Cloudinary({ cloud: { cloudName: import.meta.env.VITE_CLOUDINARY_CLOUD_NAME || 'ds79llyes' } });
   
 
   return (
