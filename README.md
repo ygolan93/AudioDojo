@@ -3,6 +3,8 @@
 Audio Dojo is a web-based training platform for developing critical listening skills through interactive audio quizzes.
 The app focuses on ear training for audio processing concepts (starting with EQ), using real sound examples, immediate feedback, and clear performance summaries.
 
+Live demo: https://audiodojo.netlify.app
+
 ✨ Key Features
 
 🎵 Audio-based quizzes – questions built around real sound examples
