@@ -396,6 +396,16 @@
         filter: drop-shadow(0 0 0.4em #e6e335);
     }
 
+    .effect-item.disabled {
+        opacity: 0.5;
+        pointer-events: none;
+        color: #888;
+    }
+
+    .effect-item.disabled input {
+        pointer-events: none;
+    }
+
     .custom-inline-input {
         background: transparent;
         border: none;

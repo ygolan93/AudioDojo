@@ -35,7 +35,6 @@ export default function Quiz() {
   const [userAnswers, setUserAnswers] = useState([]);
   const navigate = useNavigate();
 
-
   // NEW: Loading & error states
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
@@ -82,90 +81,119 @@ export default function Quiz() {
       }
     }, 10000);
 
-async function loadQuestions() {
-  try {
-    let allTemplates = [];
+    async function loadQuestions() {
+      try {
+        let allTemplates = [];
 
-for (let proc of quizSetup.processes) {
-  const docRef = doc(db, "questionBanks", proc);
-  const docSnap = await getDoc(docRef);
+        for (let proc of quizSetup.processes) {
+          const docRef = doc(db, "questionBanks", proc);
+          const docSnap = await getDoc(docRef);
 
-  if (docSnap.exists()) {
-    const { questions = [] } = docSnap.data();
-    console.log(`🔥 Loaded ${questions.length} from Firebase [${proc}]`);
-    allTemplates.push(...questions.map((q) => ({ ...q, process: proc })));
-  } else {
-    console.warn(`⚠ No questions found for process: ${proc}`);
-  }
-}
-
-const filtered = allTemplates.filter((t) =>
-  quizSetup.sampleBanks.includes(t.parts?.[0])
-);
-console.log("🔍 After filtering by sampleBank:", filtered);
-
-
-    const expanded = generateQuestionsFromTemplates(filtered);
-
-    // בניית סדר הופעה מאוזן בין sample banks
-    const banks = quizSetup.sampleBanks;
-    const numQ = quizSetup.numOfQuestions;
-    const groups = banks.reduce((acc, inst) => {
-      acc[inst] = expanded.filter((q) => q.parts[0] === inst);
-      return acc;
-    }, {});
-    const shuffle = (arr) => {
-      for (let i = arr.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [arr[i], arr[j]] = [arr[j], arr[i]];
-      }
-      return arr;
-    };
-    let instrumentOrder = [];
-    const fullCycles = Math.floor(numQ / banks.length);
-    const remainder = numQ % banks.length;
-    for (let i = 0; i < fullCycles; i++) {
-      instrumentOrder.push(...shuffle([...banks]));
-    }
-    instrumentOrder.push(...shuffle([...banks]).slice(0, remainder));
-
-    const pointers = {};
-    const totalAvailable = Object.values(groups).reduce((sum, arr) => sum + arr.length, 0);
-    const finalQs = [];
-
-    for (let inst of instrumentOrder) {
-      if (finalQs.length >= totalAvailable) break; // אין יותר שאלות זמינות
-
-      const bucket = groups[inst] || [];
-      const index = pointers[inst] || 0;
-
-      if (index < bucket.length) {
-        finalQs.push(bucket[index]);
-        pointers[inst] = index + 1;
-      } else {
-        // חפש bank אחר שעדיין נשארו לו שאלות
-        const fallback = banks.find(
-          b => (pointers[b] || 0) < (groups[b]?.length || 0)
-        );
-        if (fallback) {
-          const fbIndex = pointers[fallback] || 0;
-          finalQs.push(groups[fallback][fbIndex]);
-          pointers[fallback] = fbIndex + 1;
+          if (docSnap.exists()) {
+            const { questions = [] } = docSnap.data();
+            console.log(
+              `🔥 Loaded ${questions.length} from Firebase [${proc}]`,
+            );
+            allTemplates.push(
+              ...questions.map((q) => ({ ...q, process: proc })),
+            );
+          } else {
+            console.warn(`⚠ No questions found for process: ${proc}`);
+          }
         }
+
+        const filtered = allTemplates.filter((t) => {
+          if (!t.instruments) return false;
+          const instruments = Array.isArray(t.instruments)
+            ? t.instruments
+            : [t.instruments];
+          return instruments.some((inst) =>
+            quizSetup.sampleBanks.includes(inst),
+          );
+        });
+        console.log("🔍 After filtering by sampleBank:", filtered);
+
+        if (filtered.length === 0) {
+          console.error(
+            "No questions match the current quiz setup. Please check your selections.",
+          );
+          finishLoading(true);
+          return;
+        }
+
+        const expanded = generateQuestionsFromTemplates(filtered);
+
+        // בניית סדר הופעה מאוזן בין sample banks
+        const banks = quizSetup.sampleBanks;
+        const numQ = quizSetup.numOfQuestions;
+        const groups = banks.reduce((acc, inst) => {
+          acc[inst] = [];
+          return acc;
+        }, {});
+
+        expanded.forEach((q) => {
+          if (!q.instruments) return;
+          const instruments = Array.isArray(q.instruments)
+            ? q.instruments
+            : [q.instruments];
+          const matchingBank = banks.find((bank) => instruments.includes(bank));
+          if (matchingBank) {
+            groups[matchingBank].push(q);
+          }
+        });
+        const shuffle = (arr) => {
+          for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+          }
+          return arr;
+        };
+        let instrumentOrder = [];
+        const fullCycles = Math.floor(numQ / banks.length);
+        const remainder = numQ % banks.length;
+        for (let i = 0; i < fullCycles; i++) {
+          instrumentOrder.push(...shuffle([...banks]));
+        }
+        instrumentOrder.push(...shuffle([...banks]).slice(0, remainder));
+
+        const pointers = {};
+        const totalAvailable = Object.values(groups).reduce(
+          (sum, arr) => sum + arr.length,
+          0,
+        );
+        const finalQs = [];
+
+        for (let inst of instrumentOrder) {
+          if (finalQs.length >= totalAvailable) break; // אין יותר שאלות זמינות
+
+          const bucket = groups[inst] || [];
+          const index = pointers[inst] || 0;
+
+          if (index < bucket.length) {
+            finalQs.push(bucket[index]);
+            pointers[inst] = index + 1;
+          } else {
+            // חפש bank אחר שעדיין נשארו לו שאלות
+            const fallback = banks.find(
+              (b) => (pointers[b] || 0) < (groups[b]?.length || 0),
+            );
+            if (fallback) {
+              const fbIndex = pointers[fallback] || 0;
+              finalQs.push(groups[fallback][fbIndex]);
+              pointers[fallback] = fbIndex + 1;
+            }
+          }
+
+          if (finalQs.length >= numQ) break;
+        }
+
+        setQuestions(finalQs.slice(0, numQ));
+        finishLoading(false);
+      } catch (err) {
+        console.error("Error loading questions from Firebase:", err);
+        finishLoading(true);
       }
-
-      if (finalQs.length >= numQ) break;
     }
-
-
-    setQuestions(finalQs.slice(0, numQ));
-    finishLoading(false);
-  } catch (err) {
-    console.error("Error loading questions from Firebase:", err);
-    finishLoading(true);
-  }
-}
-
 
     loadQuestions();
     return () => {
@@ -174,112 +202,110 @@ console.log("🔍 After filtering by sampleBank:", filtered);
     };
   }, [quizSetup, questions.length]);
 
-// 3) Once questions exist, use pre-generated answers
-useEffect(() => {
-  if (questions.length === 0) return;
-  const current = questions[currentQuestionIndex];
-  if (!current || !Array.isArray(current.answers)) return;
+  // 3) Once questions exist, use pre-generated answers
+  useEffect(() => {
+    if (questions.length === 0) return;
+    const current = questions[currentQuestionIndex];
+    if (!current || !Array.isArray(current.answers)) return;
 
-  setShuffledOptions(current.answers);
-}, [currentQuestionIndex, questions]);
-
-
+    setShuffledOptions(current.answers);
+  }, [currentQuestionIndex, questions]);
 
   // 4) Answer click handler
-const handleAnswerOptionClick = (isCorrect, selectedText) => {
-  stopCurrent();
-  setIsPlayingOriginal(false);
-  setIsPlayingProcessed(false);
+  const handleAnswerOptionClick = (isCorrect, selectedText) => {
+    stopCurrent();
+    setIsPlayingOriginal(false);
+    setIsPlayingProcessed(false);
 
-  const feedbackSound = new Howl({
-    src: [
-      isCorrect
-        ? "/sounds/ui/Correct Answer.wav"
-        : "/sounds/ui/Wrong Answer.wav",
-    ],volume: 0.8,
-  });
-  feedbackSound.play();
-
-  // ⬇️ מוסיפים את התשובה שנבחרה ישירות (לא דרך state שעדיין לא עודכן)
-  const updatedAnswers = [
-    ...userAnswers,
-    {
-      question: questions[currentQuestionIndex].question,
-      selected: selectedText,
-      correct: questions[currentQuestionIndex].correctAnswer,
-      isCorrect,
-    },
-  ];
-
-  if (isCorrect) {
-    setScore((s) => s + 1);
-  }
-
-  setAnswerRevealed(true);
-
-  setTimeout(() => {
-    const nextQuestion = currentQuestionIndex + 1;
-
-    if (nextQuestion >= questions.length) {
-    const finalResults = questions.map((q, idx) => {
-      const isEQ = q.process === "EQ";
-      const base = {
-        question: q.question,
-        correctAnswer: q.correctAnswer,
-        userAnswer: updatedAnswers[idx]?.selected || null,
-        isCorrect: updatedAnswers[idx]?.isCorrect || false,
-        process: q.process,
-        instrument: q.parts?.[0] || null,
-        rawUrl: `/sounds/original/${encodeURIComponent(q.parts?.[0])}.wav`,
-        processedUrl: null // אפשר להשלים אם תיצור ייצוא לקובץ מעובד
-      };
-
-      if (isEQ) {
-        return {
-          ...base,
-          shape: q.shape,
-          frequency: q.frequency,
-          gain: q.gain
-        };
-      }
-
-      return base;
+    const feedbackSound = new Howl({
+      src: [
+        isCorrect
+          ? "/sounds/ui/Correct Answer.wav"
+          : "/sounds/ui/Wrong Answer.wav",
+      ],
+      volume: 0.8,
     });
+    feedbackSound.play();
 
-    const finalScore = isCorrect ? score + 1 : score;
+    // ⬇️ מוסיפים את התשובה שנבחרה ישירות (לא דרך state שעדיין לא עודכן)
+    const updatedAnswers = [
+      ...userAnswers,
+      {
+        question: questions[currentQuestionIndex].question,
+        selected: selectedText,
+        correct: questions[currentQuestionIndex].correctAnswer,
+        isCorrect,
+      },
+    ];
 
-    localStorage.setItem("quizResults", JSON.stringify(finalResults));
-    localStorage.setItem("quizScore", JSON.stringify({ score: finalScore, total: questions.length }));
-
-
-      
-// שמירה להיסטוריה לפני ניווט
-// const existing = JSON.parse(localStorage.getItem("quizHistory")) || [];
-// const newEntry = {
-//   id: crypto.randomUUID(),
-//   timestamp: new Date().toISOString(),
-//   score: finalScore,
-//   results: finalResults.map(r => ({
-//     questionText: r.question,
-//     pickedAnswer: r.userAnswer,
-//     correctAnswer: r.correctAnswer,
-//     isCorrect: r.isCorrect
-//   }))
-// };
-// const updated = [newEntry, ...existing].slice(0, 10);
-// localStorage.setItem("quizHistory", JSON.stringify(updated));
-
-navigate("/results");
-
-    } else {
-      setUserAnswers(updatedAnswers);
-      setCurrentQuestionIndex(nextQuestion);
-      setSelectedAnswer(null);
-      setAnswerRevealed(false);
+    if (isCorrect) {
+      setScore((s) => s + 1);
     }
-  }, 1500);
-};
 
+    setAnswerRevealed(true);
+
+    setTimeout(() => {
+      const nextQuestion = currentQuestionIndex + 1;
+
+      if (nextQuestion >= questions.length) {
+        const finalResults = questions.map((q, idx) => {
+          const isEQ = q.process === "EQ";
+          const base = {
+            question: q.question,
+            correctAnswer: q.correctAnswer,
+            userAnswer: updatedAnswers[idx]?.selected || null,
+            isCorrect: updatedAnswers[idx]?.isCorrect || false,
+            process: q.process,
+            instrument: q.parts?.[0] || null,
+            rawUrl: `/sounds/original/${encodeURIComponent(q.parts?.[0])}.wav`,
+            processedUrl: null, // אפשר להשלים אם תיצור ייצוא לקובץ מעובד
+          };
+
+          if (isEQ) {
+            return {
+              ...base,
+              shape: q.shape,
+              frequency: q.frequency,
+              gain: q.gain,
+            };
+          }
+
+          return base;
+        });
+
+        const finalScore = isCorrect ? score + 1 : score;
+
+        localStorage.setItem("quizResults", JSON.stringify(finalResults));
+        localStorage.setItem(
+          "quizScore",
+          JSON.stringify({ score: finalScore, total: questions.length }),
+        );
+
+        // שמירה להיסטוריה לפני ניווט
+        // const existing = JSON.parse(localStorage.getItem("quizHistory")) || [];
+        // const newEntry = {
+        //   id: crypto.randomUUID(),
+        //   timestamp: new Date().toISOString(),
+        //   score: finalScore,
+        //   results: finalResults.map(r => ({
+        //     questionText: r.question,
+        //     pickedAnswer: r.userAnswer,
+        //     correctAnswer: r.correctAnswer,
+        //     isCorrect: r.isCorrect
+        //   }))
+        // };
+        // const updated = [newEntry, ...existing].slice(0, 10);
+        // localStorage.setItem("quizHistory", JSON.stringify(updated));
+
+        navigate("/results");
+      } else {
+        setUserAnswers(updatedAnswers);
+        setCurrentQuestionIndex(nextQuestion);
+        setSelectedAnswer(null);
+        setAnswerRevealed(false);
+      }
+    }, 1500);
+  };
 
   // 5) Show loading spinner/animation if still loading
   if (isLoading) {
@@ -300,7 +326,8 @@ navigate("/results");
     return (
       <PageWrapper className="p-4">
         <div className="quiz-error">
-          Error with setting up the quiz. Check the setup menu again!
+          No questions available for the selected quiz setup. Please return to
+          the setup menu and adjust your selections.
         </div>
       </PageWrapper>
     );
@@ -318,7 +345,7 @@ navigate("/results");
       </PageWrapper>
     );
   }
-  
+
   // Map “parts[0]” (instrument) to what sampleFiles expects
   const partNameMap = {
     "Male Vocal": "Male",
@@ -337,9 +364,7 @@ navigate("/results");
   const lookupPart = partNameMap[parts[0]] || parts[0];
   const originalFile = sampleFiles.find((f) => f.part === lookupPart);
 
-  const rawOriginalUrl = `/sounds/original/${encodeURIComponent(
-    parts[0]
-  )}.wav`;
+  const rawOriginalUrl = `/sounds/original/${encodeURIComponent(parts[0])}.wav`;
 
   // Popup helper for showing process details
   const showProcessPopup = (text) => {
@@ -354,7 +379,7 @@ navigate("/results");
   // Play “post-processed” audio based on current question’s process
   const handlePlayProcessed = async () => {
     stopCurrent();
-    setIsPlayingOriginal(false); 
+    setIsPlayingOriginal(false);
     setIsPlayingProcessed(true);
 
     const instrument = Array.isArray(parts) ? parts[0] : "Unknown";
@@ -417,8 +442,10 @@ navigate("/results");
           break;
 
           break;
-          case "Compression": {
-            const [attackStr, gainStr] = currentQuestion.correctAnswer.split(" ");
+        case "Compression":
+          {
+            const [attackStr, gainStr] =
+              currentQuestion.correctAnswer.split(" ");
             const attack = parseFloat(attackStr);
             const gain = parseFloat(gainStr);
 
@@ -435,8 +462,11 @@ navigate("/results");
           }
 
           break;
-          case "Reverb": {
-            const decayTime = parseFloat(currentQuestion.correctAnswer.replace("s", ""));
+        case "Reverb":
+          {
+            const decayTime = parseFloat(
+              currentQuestion.correctAnswer.replace("s", ""),
+            );
 
             details = `decay=${decayTime}s`;
             showProcessPopup(`Reverb: ${details}`);
@@ -449,8 +479,10 @@ navigate("/results");
             break;
           }
           break;
-          case "Saturation": {
-            const [curveType, gainStr] = currentQuestion.correctAnswer.split(" ");
+        case "Saturation":
+          {
+            const [curveType, gainStr] =
+              currentQuestion.correctAnswer.split(" ");
             const gain = parseFloat(gainStr);
 
             details = `curveType=${curveType}, gain=${gainStr}`;
@@ -484,9 +516,7 @@ navigate("/results");
             <div className="quiz-question-count">
               Question {currentQuestionIndex + 1}/{questions.length}
             </div>
-            <div className="quiz-question-text">
-              {currentQuestion.question}
-            </div>
+            <div className="quiz-question-text">{currentQuestion.question}</div>
             <div className="audio-container">
               {/* Pre (original) player */}
               <div className="audio-player">
@@ -498,15 +528,18 @@ navigate("/results");
                       stopCurrent();
                       setIsPlayingProcessed(false);
                     }
-                    stopCurrent(); 
-                    setIsPlayingProcessed(false); 
+                    stopCurrent();
+                    setIsPlayingProcessed(false);
                     setIsPlayingOriginal((p) => !p);
-
                   }}
                 >
                   {isPlayingOriginal ? <IoMdPause /> : <IoMdPlay />}
                 </button>
-                <AudioPlayer src={rawOriginalUrl} play={isPlayingOriginal}  onEnd={() => setIsPlayingOriginal(false)}/>
+                <AudioPlayer
+                  src={rawOriginalUrl}
+                  play={isPlayingOriginal}
+                  onEnd={() => setIsPlayingOriginal(false)}
+                />
               </div>
 
               {/* Post (processed) player */}
@@ -538,53 +571,46 @@ navigate("/results");
             </div>
             <div className="quiz-options">
               {shuffledOptions.map((option, index) => (
-              <button
-                key={index}
-                onClick={() => {
-                  if (!answerRevealed) {
-                    stopCurrent();
-                    setIsPlayingOriginal(false);
-                    setIsPlayingProcessed(false);
-                    setSelectedAnswer(option.text);          // נשאר בשביל ההיילייט
-                    handleAnswerOptionClick(option.isCorrect, option.text); // ← מעבירים טקסט
-                  }
-                }}
-
-                className={`quiz-option-button
+                <button
+                  key={index}
+                  onClick={() => {
+                    if (!answerRevealed) {
+                      stopCurrent();
+                      setIsPlayingOriginal(false);
+                      setIsPlayingProcessed(false);
+                      setSelectedAnswer(option.text); // נשאר בשביל ההיילייט
+                      handleAnswerOptionClick(option.isCorrect, option.text); // ← מעבירים טקסט
+                    }
+                  }}
+                  className={`quiz-option-button
                   ${selectedAnswer === option.text ? "selected" : ""}
                   ${answerRevealed && option.isCorrect ? "correct" : ""}
                   ${answerRevealed && selectedAnswer === option.text && !option.isCorrect ? "wrong" : ""}
                 `}
-              >
-                <span className="quiz-option-label">
-                  {String.fromCharCode(65 + index)}
-                </span>
-                {option.text}
-              </button>
-
+                >
+                  <span className="quiz-option-label">
+                    {String.fromCharCode(65 + index)}
+                  </span>
+                  {option.text}
+                </button>
               ))}
-
-
             </div>
-              {answerRevealed && currentQuestion.process === "EQ" && (
-                <div className="eq-curve-wrapper">
-                  <h4 style={{ color: "#a3e635", marginBottom: "0.5rem" }}>
-                    EQ Curve Visualization
-                  </h4>
-                  <EQCurveCanvas
-                    shape={currentQuestion.shape}
-                    frequency={currentQuestion.frequency}
-                    gain={currentQuestion.gain}
-                    q={1.0}
-                  />
-                </div>
-              )}
-
-
+            {answerRevealed && currentQuestion.process === "EQ" && (
+              <div className="eq-curve-wrapper">
+                <h4 style={{ color: "#a3e635", marginBottom: "0.5rem" }}>
+                  EQ Curve Visualization
+                </h4>
+                <EQCurveCanvas
+                  shape={currentQuestion.shape}
+                  frequency={currentQuestion.frequency}
+                  gain={currentQuestion.gain}
+                  q={1.0}
+                />
+              </div>
+            )}
           </div>
         )}
       </div>
     </PageWrapper>
   );
 }
-
